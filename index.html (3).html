@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexo Sistemas — Gestión para tu negocio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --negro:#080810;
+  --azul:#0057ff;
+  --azul2:#3d7eff;
+  --cyan:#00d4ff;
+  --text:#f2f2f8;
+  --text2:#9090a8;
+  --card:#0e0e1a;
+  --border:rgba(255,255,255,0.07);
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--negro);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+
+/* FONDO ANIMADO */
+.bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,87,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,87,255,0.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.bg-glow{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(ellipse,rgba(0,87,255,0.12) 0%,transparent 70%);z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,8,16,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.nav-logo span{color:var(--azul)}
+.nav-cta{padding:9px 22px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .2s}
+.nav-cta:hover{background:var(--azul2);transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px}
+.hero-tag{display:inline-block;padding:6px 16px;border:1px solid rgba(0,87,255,0.4);border-radius:20px;font-size:12px;font-weight:500;color:var(--azul2);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;background:rgba(0,87,255,0.06);animation:fadeUp .6s ease both}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(42px,7vw,88px);font-weight:800;line-height:1.0;letter-spacing:-2px;margin-bottom:24px;animation:fadeUp .6s .1s ease both}
+.hero h1 .hl{background:linear-gradient(135deg,var(--azul),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:560px;margin:0 auto 40px;line-height:1.7;font-weight:300;animation:fadeUp .6s .2s ease both}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .3s ease both}
+.btn-prim{padding:14px 32px;background:var(--azul);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+.btn-prim:hover{background:var(--azul2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,87,255,0.35)}
+.btn-sec{padding:14px 32px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:16px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .25s}
+.btn-sec:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
+
+/* NÚMEROS */
+.numeros{position:relative;z-index:1;padding:60px 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:900px;margin:0 auto;border:1px solid var(--border);border-radius:16px}
+.num-item{background:var(--negro);padding:32px;text-align:center}
+.num-val{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;background:linear-gradient(135deg,var(--azul),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.num-label{font-size:13px;color:var(--text2);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+
+/* SECCIONES */
+section{position:relative;z-index:1;padding:100px 40px;max-width:1100px;margin:0 auto}
+.sec-tag{font-size:11px;font-weight:600;color:var(--azul2);text-transform:uppercase;letter-spacing:3px;margin-bottom:16px}
+.sec-titulo{font-family:'Syne',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:16px}
+.sec-sub{font-size:17px;color:var(--text2);max-width:520px;line-height:1.7;font-weight:300}
+
+/* SERVICIOS */
+.servicios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:56px}
+.serv-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
+.serv-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,87,255,0.06),transparent);opacity:0;transition:opacity .3s}
+.serv-card:hover{border-color:rgba(0,87,255,0.3);transform:translateY(-4px)}
+.serv-card:hover::before{opacity:1}
+.serv-ico{width:52px;height:52px;border-radius:14px;background:rgba(0,87,255,0.12);border:1px solid rgba(0,87,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
+.serv-titulo{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px}
+.serv-desc{font-size:14px;color:var(--text2);line-height:1.7}
+.serv-lista{margin-top:14px;list-style:none}
+.serv-lista li{font-size:13px;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:8px}
+.serv-lista li::before{content:'→';color:var(--azul2);font-size:12px}
+
+/* COMO FUNCIONA */
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:56px}
+.paso{position:relative;padding:28px}
+.paso-num{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;color:rgba(0,87,255,0.12);line-height:1;margin-bottom:12px}
+.paso-titulo{font-size:16px;font-weight:600;margin-bottom:8px}
+.paso-desc{font-size:14px;color:var(--text2);line-height:1.6}
+.paso-linea{position:absolute;top:52px;right:-12px;width:24px;height:2px;background:linear-gradient(90deg,var(--azul),transparent)}
+
+/* PRECIOS */
+.precios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:56px}
+.precio-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;position:relative}
+.precio-card.destacado{border-color:var(--azul);background:linear-gradient(135deg,rgba(0,87,255,0.08),var(--card))}
+.precio-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--azul);color:#fff;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.precio-nombre{font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.precio-val{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;margin-bottom:4px}
+.precio-val span{font-size:20px;font-weight:400;color:var(--text2)}
+.precio-period{font-size:13px;color:var(--text2);margin-bottom:28px}
+.precio-items{list-style:none;margin-bottom:28px}
+.precio-items li{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2);display:flex;align-items:center;gap:10px}
+.precio-items li:last-child{border-bottom:none}
+.precio-items li span.ok{color:var(--cyan);font-size:16px}
+.btn-precio{width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;text-align:center;display:block;text-decoration:none}
+.btn-precio.prim{background:var(--azul);color:#fff;border:none}
+.btn-precio.prim:hover{background:var(--azul2)}
+.btn-precio.sec{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-precio.sec:hover{border-color:rgba(255,255,255,0.2)}
+
+/* CTA FINAL */
+.cta-wrap{position:relative;z-index:1;padding:0 40px 120px}
+.cta-box{background:linear-gradient(135deg,rgba(0,87,255,0.15),rgba(0,212,255,0.06));border:1px solid rgba(0,87,255,0.25);border-radius:24px;padding:72px 40px;text-align:center;max-width:800px;margin:0 auto}
+.cta-box h2{font-family:'Syne',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1px;margin-bottom:16px}
+.cta-box p{font-size:17px;color:var(--text2);margin-bottom:40px;font-weight:300}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
+.footer-logo span{color:var(--azul)}
+.footer-copy{font-size:12px;color:var(--text2)}
+
+/* ANIMACIONES */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* WHATSAPP FLOTANTE */
+.wa-float{position:fixed;bottom:28px;right:28px;z-index:200;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 20px rgba(37,211,102,0.4);text-decoration:none;transition:all .2s}
+.wa-float:hover{transform:scale(1.08);box-shadow:0 8px 32px rgba(37,211,102,0.5)}
+
+@media(max-width:700px){
+  nav{padding:16px 20px}
+  section{padding:70px 20px}
+  .numeros{grid-template-columns:1fr;padding:20px}
+  .cta-wrap{padding:0 20px 80px}
+  .cta-box{padding:48px 24px}
+  footer{padding:24px 20px;flex-direction:column;text-align:center}
+  .paso-linea{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Nexo<span>.</span>Sistemas</div>
+  <a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="nav-cta">Consultar ahora</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-tag">Sistemas para negocios reales</div>
+    <h1>Tu negocio,<br><span class="hl">bajo control.</span></h1>
+    <p class="hero-sub">Sistemas de gestión a medida — ventas, cobranzas, créditos y reportes. Sin mensualidades. Tuyo para siempre.</p>
+    <div class="hero-btns">
+      <a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="btn-prim">💬 Consultá gratis</a>
+      <a href="#servicios" class="btn-sec">Ver sistemas →</a>
+    </div>
+  </div>
+</div>
+
+<!-- NÚMEROS -->
+<div class="numeros reveal">
+  <div class="num-item">
+    <div class="num-val">72h</div>
+    <div class="num-label">Entrega promedio</div>
+  </div>
+  <div class="num-item">
+    <div class="num-val">100%</div>
+    <div class="num-label">A medida</div>
+  </div>
+  <div class="num-item">
+    <div class="num-val">$0</div>
+    <div class="num-label">Mensualidades</div>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="sec-tag">Lo que hacemos</div>
+  <h2 class="sec-titulo">Sistemas que<br>realmente usás</h2>
+  <p class="sec-sub">Cada sistema se adapta a tu negocio. Sin plantillas genéricas, sin funciones que no necesitás.</p>
+
+  <div class="servicios-grid">
+    <div class="serv-card reveal">
+      <div class="serv-ico">🛒</div>
+      <div class="serv-titulo">Sistema de Ventas</div>
+      <p class="serv-desc">Control total de tus ventas, stock y vendedores en una sola pantalla.</p>
+      <ul class="serv-lista">
+        <li>Carga de productos con código de barras</li>
+        <li>Control de stock automático</li>
+        <li>Comisiones por vendedor</li>
+        <li>Historial y reportes</li>
+        
+      </ul>
+    </div>
+    <div class="serv-card reveal">
+      <div class="serv-ico">💳</div>
+      <div class="serv-titulo">Sistema de Créditos</div>
+      <p class="serv-desc">Generá pagarés, controlá cuotas y administrá tu cartera de clientes.</p>
+      <ul class="serv-lista">
+        <li>Generador de pagarés automático</li>
+        <li>Seguimiento de cuotas semanales</li>
+        <li>Alertas de vencimiento</li>
+        <li>Cartera con estado de mora</li>
+        <li>Comprobantes de pago</li>
+      </ul>
+    </div>
+    <div class="serv-card reveal">
+      <div class="serv-ico">📊</div>
+      <div class="serv-titulo">Sistema de Cobranzas</div>
+      <p class="serv-desc">Alertas automáticas y mensajes de WhatsApp para cada cliente que vence.</p>
+      <ul class="serv-lista">
+        <li>Alertas diarias de vencimiento</li>
+        <li>Mensajes WhatsApp pre-armados</li>
+        <li>Clasificación por mora</li>
+        <li>Dashboard de cartera</li>
+        <li>Reportes mensuales</li>
+      </ul>
+    </div>
+    <div class="serv-card reveal">
+      <div class="serv-ico">⚙️</div>
+      <div class="serv-titulo">Sistema a Medida</div>
+      <p class="serv-desc">¿Tenés algo específico en mente? Lo desarrollamos desde cero para tu negocio.</p>
+      <ul class="serv-lista">
+        <li>Relevamiento gratuito</li>
+        <li>Desarrollo personalizado</li>
+        <li>Capacitación incluida</li>
+        <li>Soporte post-entrega</li>
+        <li>Actualizaciones incluidas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section style="background:rgba(0,87,255,0.03);border-top:1px solid var(--border);border-bottom:1px solid var(--border);max-width:100%;padding:100px 40px">
+  <div style="max-width:1100px;margin:0 auto">
+    <div class="sec-tag">El proceso</div>
+    <h2 class="sec-titulo">Simple y rápido</h2>
+    <div class="pasos">
+      <div class="paso reveal">
+        <div class="paso-num">01</div>
+        <div class="paso-titulo">Me contás tu negocio</div>
+        <div class="paso-desc">Me explicás qué necesitás — por WhatsApp, sin formularios ni reuniones largas.</div>
+        <div class="paso-linea"></div>
+      </div>
+      <div class="paso reveal">
+        <div class="paso-num">02</div>
+        <div class="paso-titulo">Te presento el sistema</div>
+        <div class="paso-desc">En 24-72 horas tenés una demo funcional para revisar y ajustar.</div>
+        <div class="paso-linea"></div>
+      </div>
+      <div class="paso reveal">
+        <div class="paso-num">03</div>
+        <div class="paso-titulo">Lo ajustamos</div>
+        <div class="paso-desc">Hacemos los cambios que necesitás hasta que quede exactamente como querés.</div>
+        <div class="paso-linea"></div>
+      </div>
+      <div class="paso reveal">
+        <div class="paso-num">04</div>
+        <div class="paso-titulo">Lo usás desde hoy</div>
+        <div class="paso-desc">Entrega, capacitación y soporte incluidos. Tuyo para siempre, sin costos mensuales.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIOS -->
+<section id="precios">
+  <div class="sec-tag">Inversión</div>
+  <h2 class="sec-titulo">Precios claros,<br>sin sorpresas</h2>
+  <p class="sec-sub">Pagás una vez. El sistema es tuyo para siempre.</p>
+
+  <div class="precios-grid">
+    <div class="precio-card reveal">
+      <div class="precio-nombre">Básico</div>
+      <div class="precio-val"><span>USD </span>95</div>
+      <div class="precio-period">pago único</div>
+      <ul class="precio-items">
+        <li><span class="ok">✓</span> Un módulo a elección</li>
+        <li><span class="ok">✓</span> Personalización básica</li>
+        <li><span class="ok">✓</span> Capacitación incluida</li>
+        <li><span class="ok">✓</span> 30 días de soporte</li>
+        <li><span class="ok">✓</span> Sin mensualidades</li>
+      </ul>
+      <a href="https://wa.me/595983020696?text=Quiero%20el%20plan%20Básico%20de%20Nexo%20Sistemas" target="_blank" class="btn-precio sec">Consultar →</a>
+    </div>
+
+    <div class="precio-card destacado reveal">
+      <div class="precio-badge">MÁS ELEGIDO</div>
+      <div class="precio-nombre">Completo</div>
+      <div class="precio-val"><span>USD </span>200</div>
+      <div class="precio-period">pago único</div>
+      <ul class="precio-items">
+        <li><span class="ok">✓</span> Sistema completo a medida</li>
+        <li><span class="ok">✓</span> Ventas + Créditos + Cobranzas</li>
+        <li><span class="ok">✓</span> Multi-usuario y roles</li>
+        <li><span class="ok">✓</span> Sincronización en la nube</li>
+        <li><span class="ok">✓</span> Capacitación incluida</li>
+        <li><span class="ok">✓</span> 90 días de soporte</li>
+      </ul>
+      <a href="https://wa.me/595983020696?text=Quiero%20el%20plan%20Completo%20de%20Nexo%20Sistemas" target="_blank" class="btn-precio prim">Consultar →</a>
+    </div>
+
+    <div class="precio-card reveal">
+      <div class="precio-nombre">Mantenimiento</div>
+      <div class="precio-val"><span>USD </span>45</div>
+      <div class="precio-period">por mes (opcional)</div>
+      <ul class="precio-items">
+        <li><span class="ok">✓</span> Actualizaciones continuas</li>
+        <li><span class="ok">✓</span> Soporte prioritario</li>
+        <li><span class="ok">✓</span> Nuevas funciones</li>
+        <li><span class="ok">✓</span> Respaldo de datos</li>
+        <li><span class="ok">✓</span> Cancelás cuando querés</li>
+      </ul>
+      <a href="https://wa.me/595983020696?text=Quiero%20información%20sobre%20mantenimiento%20de%20Nexo%20Sistemas" target="_blank" class="btn-precio sec">Consultar →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-wrap">
+  <div class="cta-box reveal">
+    <h2>¿Listo para ordenar<br>tu negocio?</h2>
+    <p>Escribinos por WhatsApp y en menos de 24 horas te mostramos cómo podemos ayudarte.</p>
+    <a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="btn-prim" style="font-size:17px;padding:16px 40px;display:inline-flex">💬 Escribinos por WhatsApp</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Nexo<span>.</span>Sistemas</div>
+  <div class="footer-copy">© 2025 Nexo Sistemas — Desarrollo de software para comercios</div>
+</footer>
+
+<!-- WHATSAPP FLOTANTE -->
+<a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="wa-float" title="Escribinos por WhatsApp">💬</a>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.onclick=e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth'});
+  };
+});
+</script>
+</body>
+</html>
