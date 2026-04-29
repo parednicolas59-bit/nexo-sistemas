@@ -3,412 +3,755 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexo Sistemas — Gestión para tu negocio</title>
+<title>Nexo Sistemas — Para tu negocio</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --negro:#080810;
-  --azul:#0057ff;
-  --azul2:#3d7eff;
-  --cyan:#00d4ff;
-  --text:#f2f2f8;
-  --text2:#9090a8;
-  --card:#0e0e1a;
-  --border:rgba(255,255,255,0.07);
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'DM Sans',sans-serif}
+
+#wrap{
+  width:390px;height:844px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
 }
 
-html{scroll-behavior:smooth}
-body{background:var(--negro);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;display:flex;flex-direction:column}
+.slide.active{opacity:1}
 
-/* FONDO ANIMADO */
-.bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,87,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,87,255,0.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
-.bg-glow{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(ellipse,rgba(0,87,255,0.12) 0%,transparent 70%);z-index:0;pointer-events:none}
+/* PROGRESS */
+#progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.08);z-index:100}
+#prog-fill{height:100%;background:linear-gradient(90deg,#2563eb,#00d4ff);width:0%;transition:width .1s linear}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,8,16,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px}
-.nav-logo span{color:var(--azul)}
-.nav-cta{padding:9px 22px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .2s}
-.nav-cta:hover{background:var(--azul2);transform:translateY(-1px)}
+/* DOTS */
+#dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:100}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all .3s;cursor:pointer}
+.dot.active{background:#fff;width:16px;border-radius:3px}
 
-/* HERO */
-.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px}
-.hero-tag{display:inline-block;padding:6px 16px;border:1px solid rgba(0,87,255,0.4);border-radius:20px;font-size:12px;font-weight:500;color:var(--azul2);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;background:rgba(0,87,255,0.06);animation:fadeUp .6s ease both}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(42px,7vw,88px);font-weight:800;line-height:1.0;letter-spacing:-2px;margin-bottom:24px;animation:fadeUp .6s .1s ease both}
-.hero h1 .hl{background:linear-gradient(135deg,var(--azul),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:560px;margin:0 auto 40px;line-height:1.7;font-weight:300;animation:fadeUp .6s .2s ease both}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .3s ease both}
-.btn-prim{padding:14px 32px;background:var(--azul);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
-.btn-prim:hover{background:var(--azul2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,87,255,0.35)}
-.btn-sec{padding:14px 32px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:16px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all .25s}
-.btn-sec:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
+#logo-top{position:absolute;top:18px;left:20px;font-family:'Bebas Neue';font-size:12px;letter-spacing:2px;color:rgba(255,255,255,0.25);z-index:50}
+#slide-num{position:absolute;top:18px;right:20px;font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:2px;z-index:50}
+#replay{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);padding:8px 22px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:30px;color:#fff;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;display:none;z-index:100;letter-spacing:1px}
 
-/* NÚMEROS */
-.numeros{position:relative;z-index:1;padding:60px 40px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:900px;margin:0 auto;border:1px solid var(--border);border-radius:16px}
-.num-item{background:var(--negro);padding:32px;text-align:center}
-.num-val{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;background:linear-gradient(135deg,var(--azul),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.num-label{font-size:13px;color:var(--text2);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+/* ============ SLIDE INTRO ============ */
+#s0{background:linear-gradient(160deg,#06060f,#0a0a1a)}
+#s0::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(37,99,235,0.15) 0%,transparent 60%)}
+.s0-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px 28px}
+.s0-tag{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(37,99,235,0.8);margin-bottom:20px}
+.s0-title{font-family:'Bebas Neue';font-size:54px;letter-spacing:2px;line-height:1;margin-bottom:16px}
+.s0-title .hl{background:linear-gradient(135deg,#2563eb,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.s0-sub{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:32px;font-weight:300}
+.rubros-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%}
+.rubro-chip{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 8px;text-align:center;animation:chipIn .4s ease both}
+.rubro-chip-ico{font-size:22px;margin-bottom:4px}
+.rubro-chip-txt{font-size:11px;color:rgba(255,255,255,0.6)}
+@keyframes chipIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 
-/* SECCIONES */
-section{position:relative;z-index:1;padding:100px 40px;max-width:1100px;margin:0 auto}
-.sec-tag{font-size:11px;font-weight:600;color:var(--azul2);text-transform:uppercase;letter-spacing:3px;margin-bottom:16px}
-.sec-titulo{font-family:'Syne',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:16px}
-.sec-sub{font-size:17px;color:var(--text2);max-width:520px;line-height:1.7;font-weight:300}
-
-/* SERVICIOS */
-.servicios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:56px}
-.serv-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
-.serv-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,87,255,0.06),transparent);opacity:0;transition:opacity .3s}
-.serv-card:hover{border-color:rgba(0,87,255,0.3);transform:translateY(-4px)}
-.serv-card:hover::before{opacity:1}
-.serv-ico{width:52px;height:52px;border-radius:14px;background:rgba(0,87,255,0.12);border:1px solid rgba(0,87,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
-.serv-titulo{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:10px}
-.serv-desc{font-size:14px;color:var(--text2);line-height:1.7}
-.serv-lista{margin-top:14px;list-style:none}
-.serv-lista li{font-size:13px;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:8px}
-.serv-lista li::before{content:'→';color:var(--azul2);font-size:12px}
-
-/* COMO FUNCIONA */
-.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:56px}
-.paso{position:relative;padding:28px}
-.paso-num{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;color:rgba(0,87,255,0.12);line-height:1;margin-bottom:12px}
-.paso-titulo{font-size:16px;font-weight:600;margin-bottom:8px}
-.paso-desc{font-size:14px;color:var(--text2);line-height:1.6}
-.paso-linea{position:absolute;top:52px;right:-12px;width:24px;height:2px;background:linear-gradient(90deg,var(--azul),transparent)}
-
-/* PRECIOS */
-.precios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:56px}
-.precio-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;position:relative}
-.precio-card.destacado{border-color:var(--azul);background:linear-gradient(135deg,rgba(0,87,255,0.08),var(--card))}
-.precio-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--azul);color:#fff;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
-.precio-nombre{font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
-.precio-val{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;margin-bottom:4px}
-.precio-val span{font-size:20px;font-weight:400;color:var(--text2)}
-.precio-period{font-size:13px;color:var(--text2);margin-bottom:28px}
-.precio-items{list-style:none;margin-bottom:28px}
-.precio-items li{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2);display:flex;align-items:center;gap:10px}
-.precio-items li:last-child{border-bottom:none}
-.precio-items li span.ok{color:var(--cyan);font-size:16px}
-.btn-precio{width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;text-align:center;display:block;text-decoration:none}
-.btn-precio.prim{background:var(--azul);color:#fff;border:none}
-.btn-precio.prim:hover{background:var(--azul2)}
-.btn-precio.sec{background:transparent;color:var(--text);border:1px solid var(--border)}
-.btn-precio.sec:hover{border-color:rgba(255,255,255,0.2)}
-
-/* CTA FINAL */
-.cta-wrap{position:relative;z-index:1;padding:0 40px 120px}
-.cta-box{background:linear-gradient(135deg,rgba(0,87,255,0.15),rgba(0,212,255,0.06));border:1px solid rgba(0,87,255,0.25);border-radius:24px;padding:72px 40px;text-align:center;max-width:800px;margin:0 auto}
-.cta-box h2{font-family:'Syne',sans-serif;font-size:clamp(32px,4vw,52px);font-weight:800;letter-spacing:-1px;margin-bottom:16px}
-.cta-box p{font-size:17px;color:var(--text2);margin-bottom:40px;font-weight:300}
-
-/* FOOTER */
-footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:32px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.footer-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
-.footer-logo span{color:var(--azul)}
-.footer-copy{font-size:12px;color:var(--text2)}
-
-/* ANIMACIONES */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-
-/* WHATSAPP FLOTANTE */
-.wa-float{position:fixed;bottom:28px;right:28px;z-index:200;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 20px rgba(37,211,102,0.4);text-decoration:none;transition:all .2s}
-.wa-float:hover{transform:scale(1.08);box-shadow:0 8px 32px rgba(37,211,102,0.5)}
-
-@media(max-width:700px){
-  nav{padding:16px 20px}
-  section{padding:70px 20px}
-  .numeros{grid-template-columns:1fr;padding:20px}
-  .cta-wrap{padding:0 20px 80px}
-  .cta-box{padding:48px 24px}
-  footer{padding:24px 20px;flex-direction:column;text-align:center}
-  .paso-linea{display:none}
+/* ============ SLIDE RUBRO ============ */
+.rubro-slide{}
+.rubro-bg{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:200px;
+  filter:blur(0px);
+  opacity:0.06;
+  user-select:none;
+  pointer-events:none;
 }
+.rubro-hero{
+  position:relative;z-index:1;
+  height:55%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  padding:60px 24px 20px;
+  text-align:center;
+}
+.rubro-ico-big{font-size:72px;margin-bottom:12px;animation:iconPop .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes iconPop{from{transform:scale(0) rotate(-10deg)}to{transform:scale(1) rotate(0)}}
+.rubro-nombre{font-family:'Bebas Neue';font-size:38px;letter-spacing:2px;margin-bottom:6px}
+.rubro-desc{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5;max-width:280px;font-weight:300}
+
+.rubro-features{
+  position:relative;z-index:1;
+  flex:1;
+  padding:0 20px 60px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.feat-row{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:12px;
+  padding:12px 14px;
+  animation:featIn .4s ease both;
+}
+@keyframes featIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+.feat-ico{font-size:22px;flex-shrink:0;width:36px;text-align:center}
+.feat-info{flex:1}
+.feat-titulo{font-size:13px;font-weight:600;margin-bottom:2px}
+.feat-sub{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.4}
+.feat-badge{
+  font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:8px;
+  flex-shrink:0;white-space:nowrap;
+}
+
+/* ============ SLIDE CIERRE ============ */
+#s_cierre{background:linear-gradient(160deg,#06060f,#08082a)}
+#s_cierre::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(37,99,235,0.12) 0%,transparent 60%)}
+.cierre-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px 28px}
+.cierre-logo{font-family:'Bebas Neue';font-size:60px;letter-spacing:4px;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.cierre-sub{font-size:11px;letter-spacing:6px;color:rgba(255,255,255,0.2);text-transform:uppercase;margin-bottom:28px}
+.cierre-lista{display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:28px;width:100%;max-width:260px}
+.cierre-item{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,0.7)}
+.cierre-item::before{content:'✓';color:#2563eb;font-weight:700;flex-shrink:0}
+.cierre-precio-wrap{margin-bottom:8px}
+.cierre-desde{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.cierre-precio{font-family:'Bebas Neue';font-size:56px;background:linear-gradient(135deg,#2563eb,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.cierre-garantia{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:22px}
+.cierre-wa{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 28px;background:#25D366;
+  border-radius:12px;font-size:15px;font-weight:700;
+  color:#fff;text-decoration:none;
+  animation:waPulse 1.5s ease-in-out infinite;
+}
+@keyframes waPulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0.4)}50%{box-shadow:0 0 0 10px rgba(37,211,102,0)}}
+
 </style>
 </head>
 <body>
+<div id="wrap">
+  <div id="logo-top">NEXO.</div>
+  <div id="slide-num">1 / 8</div>
 
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">Nexo<span>.</span>Sistemas</div>
-  <a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="nav-cta">Consultar ahora</a>
-</nav>
-
-<!-- HERO -->
-<div class="hero">
-  <div>
-    <div class="hero-tag">Sistemas para negocios reales</div>
-    <h1>Tu negocio,<br><span class="hl">bajo control.</span></h1>
-    <p style="font-size:clamp(13px,1.5vw,16px);color:#ff6b6b;font-weight:600;letter-spacing:.5px;margin-bottom:12px;animation:fadeUp .6s .15s ease both">"Si no podés controlarlo ahora, menos lo harás cuando crezca."</p>
-    <p class="hero-sub">Sistemas de gestión a medida — ventas, cobranzas, créditos y reportes. Sin mensualidades. Tuyo para siempre.</p>
-    <div class="hero-btns">
-      <a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="btn-prim">💬 Consultá gratis</a>
-      <a href="#servicios" class="btn-sec">Ver sistemas →</a>
+  <!-- SLIDE 0 — INTRO -->
+  <div class="slide active" id="s0">
+    <div class="s0-inner">
+      <div class="s0-tag">Sistemas para tu negocio</div>
+      <div class="s0-title">¿CUÁL ES<br>TU <span class="hl">NEGOCIO?</span></div>
+      <div class="s0-sub">Tenemos un sistema adaptado<br>para cada rubro</div>
+      <div class="rubros-grid">
+        <div class="rubro-chip" style="animation-delay:.05s"><div class="rubro-chip-ico">🛒</div><div class="rubro-chip-txt">Comercio</div></div>
+        <div class="rubro-chip" style="animation-delay:.1s"><div class="rubro-chip-ico">🏪</div><div class="rubro-chip-txt">Minimarket</div></div>
+        <div class="rubro-chip" style="animation-delay:.15s"><div class="rubro-chip-ico">📱</div><div class="rubro-chip-txt">Electrónica</div></div>
+        <div class="rubro-chip" style="animation-delay:.2s"><div class="rubro-chip-ico">🚗</div><div class="rubro-chip-txt">Lavado</div></div>
+        <div class="rubro-chip" style="animation-delay:.25s"><div class="rubro-chip-ico">✨</div><div class="rubro-chip-txt">Detailing</div></div>
+        <div class="rubro-chip" style="animation-delay:.3s"><div class="rubro-chip-ico">🏨</div><div class="rubro-chip-txt">Hotelería</div></div>
+      </div>
     </div>
   </div>
+
+  <!-- SLIDE 1 — COMERCIO -->
+  <div class="slide rubro-slide" id="s1" style="background:linear-gradient(160deg,#06060f,#0a100a)">
+    <div class="rubro-bg">🛒</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🛒</div>
+      <div class="rubro-nombre" style="color:#52b788">Comercio General</div>
+      <div class="rubro-desc">Ropa, calzado, bazar, ferretería, muebles — cualquier comercio que vende y cobra</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(82,183,136,0.2)">
+        <div class="feat-ico">💰</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Registro de ventas</div>
+          <div class="feat-sub">Cada venta anotada al instante con cliente, producto y monto</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(82,183,136,0.15);color:#52b788">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(82,183,136,0.2)">
+        <div class="feat-ico">📦</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Control de stock</div>
+          <div class="feat-sub">Alerta automática cuando un producto está por agotarse</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(82,183,136,0.15);color:#52b788">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(82,183,136,0.2)">
+        <div class="feat-ico">👥</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Comisiones por vendedor</div>
+          <div class="feat-sub">Cada vendedor tiene su usuario — ves quién vendió qué</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(82,183,136,0.15);color:#52b788">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(82,183,136,0.2)">
+        <div class="feat-ico">💳</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ventas en cuotas</div>
+          <div class="feat-sub">Si vendés fiado o en cuotas, seguís cada pago sin papeles</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(82,183,136,0.15);color:#52b788">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — MINIMARKET -->
+  <div class="slide rubro-slide" id="s2" style="background:linear-gradient(160deg,#06060f,#0f0a06)">
+    <div class="rubro-bg">🏪</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🏪</div>
+      <div class="rubro-nombre" style="color:#f4a261">Minimarket / Almacén</div>
+      <div class="rubro-desc">Despensa, almacén, minimercado, kiosco — control total de tu mercadería</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(244,162,97,0.2)">
+        <div class="feat-ico">🏷️</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Precios y productos</div>
+          <div class="feat-sub">Cargás todos tus productos con código, precio y categoría</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(244,162,97,0.15);color:#f4a261">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(244,162,97,0.2)">
+        <div class="feat-ico">📊</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Reporte diario</div>
+          <div class="feat-sub">Cuánto entraste, qué productos se vendieron más, qué falta reponer</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(244,162,97,0.15);color:#f4a261">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(244,162,97,0.2)">
+        <div class="feat-ico">📒</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Cuentas corrientes</div>
+          <div class="feat-sub">Los clientes que "se apuntan" — controlás quién te debe y cuánto</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(244,162,97,0.15);color:#f4a261">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(244,162,97,0.2)">
+        <div class="feat-ico">🔔</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Avisos de cobro</div>
+          <div class="feat-sub">WhatsApp automático a los clientes con deuda pendiente</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(244,162,97,0.15);color:#f4a261">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — ELECTRONICA -->
+  <div class="slide rubro-slide" id="s3" style="background:linear-gradient(160deg,#06060f,#060a10)">
+    <div class="rubro-bg">📱</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">📱</div>
+      <div class="rubro-nombre" style="color:#60a5fa">Electrónica / Celulares</div>
+      <div class="rubro-desc">Venta de celulares, accesorios, electrodomésticos y reparaciones</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(96,165,250,0.2)">
+        <div class="feat-ico">🔢</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Control por número de serie</div>
+          <div class="feat-sub">Cada equipo registrado con su IMEI o código único</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(96,165,250,0.15);color:#60a5fa">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(96,165,250,0.2)">
+        <div class="feat-ico">💳</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ventas en cuotas con pagaré</div>
+          <div class="feat-sub">Generás el pagaré automáticamente con los datos del cliente</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(96,165,250,0.15);color:#60a5fa">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(96,165,250,0.2)">
+        <div class="feat-ico">🔧</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Órdenes de reparación</div>
+          <div class="feat-sub">Seguimiento de cada equipo en reparación con estado y entrega</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(96,165,250,0.15);color:#60a5fa">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(96,165,250,0.2)">
+        <div class="feat-ico">📈</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ganancias por producto</div>
+          <div class="feat-sub">Qué modelo te deja más margen, cuánto vendiste por categoría</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(96,165,250,0.15);color:#60a5fa">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — LAVADO DE AUTOS -->
+  <div class="slide rubro-slide" id="s4" style="background:linear-gradient(160deg,#06060f,#060c10)">
+    <div class="rubro-bg">🚗</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🚗</div>
+      <div class="rubro-nombre" style="color:#38bdf8">Lavado de Autos</div>
+      <div class="rubro-desc">Car wash, lavadero de autos — controlá turnos, servicios y facturación del día</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(56,189,248,0.2)">
+        <div class="feat-ico">🗓️</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Registro de servicios</div>
+          <div class="feat-sub">Qué servicio se hizo, en qué auto, a qué hora y cuánto cobró</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(56,189,248,0.2)">
+        <div class="feat-ico">💰</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Caja diaria</div>
+          <div class="feat-sub">Cuánto entraste por día, semana o mes — sin contar billetes</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(56,189,248,0.2)">
+        <div class="feat-ico">👨‍💼</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Control de empleados</div>
+          <div class="feat-sub">Cuántos autos lavó cada uno, comisión o sueldo calculado solo</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(56,189,248,0.2)">
+        <div class="feat-ico">🏅</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Clientes frecuentes</div>
+          <div class="feat-sub">Historial de cada cliente, servicios que tomó y abonos prepagos</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — DETAILING -->
+  <div class="slide rubro-slide" id="s5" style="background:linear-gradient(160deg,#06060f,#100610)">
+    <div class="rubro-bg">✨</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">✨</div>
+      <div class="rubro-nombre" style="color:#c084fc">Detailing Automotriz</div>
+      <div class="rubro-desc">Pulido, plastificado, ceramic coating, limpieza profunda — gestioná cada trabajo</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(192,132,252,0.2)">
+        <div class="feat-ico">📋</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Órdenes de trabajo</div>
+          <div class="feat-sub">Cada vehículo con su ficha: servicio, estado, fecha de entrega</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(192,132,252,0.15);color:#c084fc">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(192,132,252,0.2)">
+        <div class="feat-ico">💎</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Servicios y precios</div>
+          <div class="feat-sub">Menú de servicios con precios diferenciados por tipo de vehículo</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(192,132,252,0.15);color:#c084fc">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(192,132,252,0.2)">
+        <div class="feat-ico">📸</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Historial del cliente</div>
+          <div class="feat-sub">Qué servicios tomó cada cliente, cuándo fue la última vez</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(192,132,252,0.15);color:#c084fc">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(192,132,252,0.2)">
+        <div class="feat-ico">💸</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Cobros y señas</div>
+          <div class="feat-sub">Registrás la seña al inicio y el saldo al entregar el vehículo</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(192,132,252,0.15);color:#c084fc">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — HOTELERIA -->
+  <div class="slide rubro-slide" id="s6" style="background:linear-gradient(160deg,#06060f,#0a0a08)">
+    <div class="rubro-bg">🏨</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🏨</div>
+      <div class="rubro-nombre" style="color:#fbbf24">Hotelería / Hospedaje</div>
+      <div class="rubro-desc">Hotel, hospedaje, apart hotel, cabaña — check-in digital y control de habitaciones</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(251,191,36,0.2)">
+        <div class="feat-ico">🛏️</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Estado de habitaciones</div>
+          <div class="feat-sub">Libre, ocupada, en limpieza — en tiempo real desde el celu</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,191,36,0.15);color:#fbbf24">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(251,191,36,0.2)">
+        <div class="feat-ico">📅</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Check-in / Check-out</div>
+          <div class="feat-sub">Registrás al huésped en segundos con sus datos y la habitación</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,191,36,0.15);color:#fbbf24">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(251,191,36,0.2)">
+        <div class="feat-ico">💰</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Cobros y comprobantes</div>
+          <div class="feat-sub">Registrás el pago y generás el comprobante al instante</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,191,36,0.15);color:#fbbf24">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(251,191,36,0.2)">
+        <div class="feat-ico">📊</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ocupación diaria</div>
+          <div class="feat-sub">Reporte de ocupación, ingresos del mes y habitaciones más demandadas</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,191,36,0.15);color:#fbbf24">✓</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 7 — GIMNASIO -->
+  <div class="slide rubro-slide" id="s7" style="background:linear-gradient(160deg,#06060f,#0a0608)">
+    <div class="rubro-bg">🏋️</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🏋️</div>
+      <div class="rubro-nombre" style="color:#f87171">Gimnasio / Fitness</div>
+      <div class="rubro-desc">Gym, box, pilates, crossfit — controlá socios, cuotas y clases sin papeles</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(248,113,113,0.2)">
+        <div class="feat-ico">👤</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Registro de socios</div>
+          <div class="feat-sub">Ficha de cada socio con plan, vencimiento y estado de pago</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(248,113,113,0.15);color:#f87171">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(248,113,113,0.2)">
+        <div class="feat-ico">💳</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Control de cuotas</div>
+          <div class="feat-sub">Quién pagó, quién debe, cuándo vence cada membresía</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(248,113,113,0.15);color:#f87171">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(248,113,113,0.2)">
+        <div class="feat-ico">🔔</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Alertas de vencimiento</div>
+          <div class="feat-sub">WhatsApp automático al socio antes de que venza su membresía</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(248,113,113,0.15);color:#f87171">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(248,113,113,0.2)">
+        <div class="feat-ico">📊</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ingresos del mes</div>
+          <div class="feat-sub">Cuánto entraste, cuántos socios activos y cuántos en mora</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(248,113,113,0.15);color:#f87171">✓</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 8 — COMPRA VENTA AUTOS -->
+  <div class="slide rubro-slide" id="s8" style="background:linear-gradient(160deg,#06060f,#0a0906)">
+    <div class="rubro-bg">🚘</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🚘</div>
+      <div class="rubro-nombre" style="color:#fb923c">Agencia / Compra y Venta de Autos</div>
+      <div class="rubro-desc">Concesionaria, corralón, intermediario — controlá tu stock de vehículos y cada operación</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(251,146,60,0.2)">
+        <div class="feat-ico">🚗</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Stock de vehículos</div>
+          <div class="feat-sub">Cada auto con marca, modelo, año, precio de compra y precio de venta</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,146,60,0.15);color:#fb923c">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(251,146,60,0.2)">
+        <div class="feat-ico">💰</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ganancia por operación</div>
+          <div class="feat-sub">Cuánto compraste, cuánto vendiste y cuánto ganaste en cada vehículo</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,146,60,0.15);color:#fb923c">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(251,146,60,0.2)">
+        <div class="feat-ico">📋</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Registro de operaciones</div>
+          <div class="feat-sub">Comprador, vendedor, fecha, forma de pago y documentación de cada venta</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,146,60,0.15);color:#fb923c">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(251,146,60,0.2)">
+        <div class="feat-ico">🤝</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Seguimiento de deudas</div>
+          <div class="feat-sub">Si el comprador paga en cuotas — cuándo vence cada pago y alertas automáticas</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,146,60,0.15);color:#fb923c">✓</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 9 — FINANCIACIONES / PRESTAMISTAS -->
+  <div class="slide rubro-slide" id="s9" style="background:linear-gradient(160deg,#06060f,#060a08)">
+    <div class="rubro-bg">💵</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">💵</div>
+      <div class="rubro-nombre" style="color:#34d399">Financieras y Prestamistas</div>
+      <div class="rubro-desc">Préstamos personales, microcréditos, empeño — controlá toda tu cartera sin papeles</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(52,211,153,0.2)">
+        <div class="feat-ico">📄</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Pagarés digitales</div>
+          <div class="feat-sub">Generás el pagaré automáticamente con datos del cliente, monto y cuotas</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(52,211,153,0.15);color:#34d399">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(52,211,153,0.2)">
+        <div class="feat-ico">📊</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Cartera de clientes</div>
+          <div class="feat-sub">Quién debe, cuánto, cuándo vence — todo en una pantalla</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(52,211,153,0.15);color:#34d399">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(52,211,153,0.2)">
+        <div class="feat-ico">💎</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Control de empeños</div>
+          <div class="feat-sub">Artículo empeñado, monto prestado, fecha de vencimiento y estado</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(52,211,153,0.15);color:#34d399">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(52,211,153,0.2)">
+        <div class="feat-ico">🔔</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Alertas de cobro WhatsApp</div>
+          <div class="feat-sub">Mensaje automático al cliente antes de cada vencimiento — cero morosidad</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(52,211,153,0.15);color:#34d399">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 — ELECTRODOMESTICOS -->
+  <div class="slide rubro-slide" id="s10" style="background:linear-gradient(160deg,#06060f,#06080f)">
+    <div class="rubro-bg">🛋️</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🛋️</div>
+      <div class="rubro-nombre" style="color:#818cf8">Electrodomésticos y Hogar</div>
+      <div class="rubro-desc">Muebles, electrodomésticos, colchones, artículos del hogar — ventas y créditos propios</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(129,140,248,0.2)">
+        <div class="feat-ico">🛒</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Ventas en cuotas con pagaré</div>
+          <div class="feat-sub">Financiás al cliente y generás el pagaré con un click</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(129,140,248,0.15);color:#818cf8">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(129,140,248,0.2)">
+        <div class="feat-ico">📦</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Stock por categoría</div>
+          <div class="feat-sub">Línea blanca, muebles, electrónica — cada categoría con su stock</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(129,140,248,0.15);color:#818cf8">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(129,140,248,0.2)">
+        <div class="feat-ico">👥</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Multi-vendedor</div>
+          <div class="feat-sub">Cada vendedor con su usuario y sus comisiones calculadas solas</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(129,140,248,0.15);color:#818cf8">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(129,140,248,0.2)">
+        <div class="feat-ico">🔔</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Cobranzas automáticas</div>
+          <div class="feat-sub">Alertas de vencimiento por WhatsApp a cada cliente automáticamente</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(129,140,248,0.15);color:#818cf8">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 — COMIDA -->
+  <div class="slide rubro-slide" id="s11" style="background:linear-gradient(160deg,#06060f,#100608)">
+    <div class="rubro-bg">🍔</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🍔</div>
+      <div class="rubro-nombre" style="color:#fb7185">Negocios de Comida</div>
+      <div class="rubro-desc">Restaurante, rotisería, pizzería, delivery, kiosco de comida — controlá pedidos y caja</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(251,113,133,0.2)">
+        <div class="feat-ico">🧾</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Registro de pedidos</div>
+          <div class="feat-sub">Cada pedido registrado con productos, precio y forma de pago</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,113,133,0.15);color:#fb7185">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(251,113,133,0.2)">
+        <div class="feat-ico">💰</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Caja del día</div>
+          <div class="feat-sub">Cuánto entraste en efectivo, transferencia o tarjeta — sin mezclar</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,113,133,0.15);color:#fb7185">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(251,113,133,0.2)">
+        <div class="feat-ico">🏆</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Productos más vendidos</div>
+          <div class="feat-sub">Qué plato o producto te deja más ganancia para enfocarte ahí</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,113,133,0.15);color:#fb7185">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(251,113,133,0.2)">
+        <div class="feat-ico">👨‍💼</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Control de empleados</div>
+          <div class="feat-sub">Sueldos, horas y rendimiento de cada empleado en un solo lugar</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(251,113,133,0.15);color:#fb7185">✓</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 12 — SERIGRAFIA / FABRICACION -->
+  <div class="slide rubro-slide" id="s12" style="background:linear-gradient(160deg,#06060f,#0a0806)">
+    <div class="rubro-bg">🎨</div>
+    <div class="rubro-hero">
+      <div class="rubro-ico-big">🎨</div>
+      <div class="rubro-nombre" style="color:#fdba74">Serigrafía y Fabricación</div>
+      <div class="rubro-desc">Bolsas, remeras, publicidad, estampado — controlá pedidos, producción y entregas</div>
+    </div>
+    <div class="rubro-features">
+      <div class="feat-row" style="animation-delay:.1s;border-color:rgba(253,186,116,0.2)">
+        <div class="feat-ico">📋</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Pedidos de producción</div>
+          <div class="feat-sub">Cada pedido con cliente, cantidad, diseño, fecha de entrega y estado</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(253,186,116,0.15);color:#fdba74">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.2s;border-color:rgba(253,186,116,0.2)">
+        <div class="feat-ico">📦</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Stock de insumos</div>
+          <div class="feat-sub">Tela, tintas, bolsas en blanco — sabés cuándo pedir antes de quedarte sin nada</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(253,186,116,0.15);color:#fdba74">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.3s;border-color:rgba(253,186,116,0.2)">
+        <div class="feat-ico">💰</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Cobros y señas</div>
+          <div class="feat-sub">Registrás la seña al pedir y el saldo al entregar — sin dejar escapar cobros</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(253,186,116,0.15);color:#fdba74">✓</div>
+      </div>
+      <div class="feat-row" style="animation-delay:.4s;border-color:rgba(253,186,116,0.2)">
+        <div class="feat-ico">🔔</div>
+        <div class="feat-info">
+          <div class="feat-titulo">Aviso de entrega</div>
+          <div class="feat-sub">WhatsApp automático al cliente cuando su pedido está listo para retirar</div>
+        </div>
+        <div class="feat-badge" style="background:rgba(253,186,116,0.15);color:#fdba74">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 — CIERRE -->
+  <div class="slide" id="s_cierre">
+    <div class="cierre-inner">
+      <div class="cierre-logo">NEXO</div>
+      <div class="cierre-sub">Sistemas</div>
+      <div class="cierre-lista">
+        <div class="cierre-item">Adaptado a tu rubro específico</div>
+        <div class="cierre-item">Demo gratis con tus datos reales</div>
+        <div class="cierre-item">Sin mensualidades — pagás una vez</div>
+        <div class="cierre-item">Capacitación incluida</div>
+        <div class="cierre-item">Garantía 15 días</div>
+      </div>
+      <div class="cierre-precio-wrap">
+        <div class="cierre-desde">Desde</div>
+        <div class="cierre-precio">USD 50</div>
+      </div>
+      <div class="cierre-garantia">🛡️ Si no te sirve, te devolvemos el dinero</div>
+      <a href="https://wa.me/595983020696?text=Hola!%20Vi%20los%20sistemas%20por%20rubro%20y%20quiero%20una%20demo%20gratis" target="_blank" class="cierre-wa">💬 Quiero una demo gratis</a>
+    </div>
+  </div>
+
+  <div id="progress"><div id="prog-fill"></div></div>
+  <div id="dots"></div>
+  <button id="replay" onclick="start()">↺ Ver de nuevo</button>
 </div>
-
-<!-- NÚMEROS -->
-<div style="position:relative;z-index:1;max-width:900px;margin:0 auto 24px;padding:0 40px">
-  <div style="background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(0,87,255,0.06));border:1px solid rgba(0,212,255,0.25);border-radius:16px;padding:20px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-    <div style="font-size:36px">🛡️</div>
-    <div style="flex:1;min-width:200px">
-      <div style="font-size:16px;font-weight:700;color:var(--cyan);margin-bottom:4px">Garantía de 15 días — Sin preguntas</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.6">Probá el sistema con tu negocio real. Si en 15 días no estás 100% conforme, te devolvemos el dinero completo. Sin vueltas, sin letra chica.</div>
-    </div>
-    <a href="https://wa.me/595983020696?text=Hola!%20Quiero%20saber%20más%20sobre%20la%20garantía%20de%20Nexo%20Sistemas" target="_blank" style="padding:10px 22px;background:var(--cyan);color:#000;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap">Consultá gratis →</a>
-  </div>
-</div>
-
-<div class="numeros reveal">
-  <div class="num-item">
-    <div class="num-val">72h</div>
-    <div class="num-label">Entrega promedio</div>
-  </div>
-  <div class="num-item">
-    <div class="num-val">100%</div>
-    <div class="num-label">A medida</div>
-  </div>
-  <div class="num-item">
-    <div class="num-val">$0</div>
-    <div class="num-label">Mensualidades</div>
-  </div>
-</div>
-
-<!-- SERVICIOS -->
-<section id="servicios">
-  <div class="sec-tag">Lo que hacemos</div>
-  <h2 class="sec-titulo">Sistemas que<br>realmente usás</h2>
-  <p class="sec-sub">Cada sistema se adapta a tu negocio. Sin plantillas genéricas, sin funciones que no necesitás.</p>
-
-  <div class="servicios-grid">
-    <div class="serv-card reveal">
-      <div class="serv-ico">🛒</div>
-      <div class="serv-titulo">Sistema de Ventas</div>
-      <p class="serv-desc">Control total de tus ventas, stock y vendedores en una sola pantalla.</p>
-      <ul class="serv-lista">
-        <li>Carga de productos con código de barras</li>
-        <li>Control de stock automático</li>
-        <li>Comisiones por vendedor</li>
-        <li>Historial y reportes</li>
-        
-      </ul>
-    </div>
-    <div class="serv-card reveal">
-      <div class="serv-ico">💳</div>
-      <div class="serv-titulo">Sistema de Créditos</div>
-      <p class="serv-desc">Generá pagarés, controlá cuotas y administrá tu cartera de clientes.</p>
-      <ul class="serv-lista">
-        <li>Generador de pagarés automático</li>
-        <li>Seguimiento de cuotas semanales</li>
-        <li>Alertas de vencimiento</li>
-        <li>Cartera con estado de mora</li>
-        <li>Comprobantes de pago</li>
-      </ul>
-    </div>
-    <div class="serv-card reveal">
-      <div class="serv-ico">📊</div>
-      <div class="serv-titulo">Sistema de Cobranzas</div>
-      <p class="serv-desc">Alertas automáticas y mensajes de WhatsApp para cada cliente que vence.</p>
-      <ul class="serv-lista">
-        <li>Alertas diarias de vencimiento</li>
-        <li>Mensajes WhatsApp pre-armados</li>
-        <li>Clasificación por mora</li>
-        <li>Dashboard de cartera</li>
-        <li>Reportes mensuales</li>
-      </ul>
-    </div>
-    <div class="serv-card reveal">
-      <div class="serv-ico">⚙️</div>
-      <div class="serv-titulo">Sistema a Medida</div>
-      <p class="serv-desc">¿Tenés algo específico en mente? Lo desarrollamos desde cero para tu negocio.</p>
-      <ul class="serv-lista">
-        <li>Relevamiento gratuito</li>
-        <li>Desarrollo personalizado</li>
-        <li>Capacitación incluida</li>
-        <li>Soporte post-entrega</li>
-        <li>Actualizaciones incluidas</li>
-      </ul>
-    </div>
-    <div class="serv-card reveal">
-      <div class="serv-ico">🏨</div>
-      <div class="serv-titulo">Hoteles y Hospedajes</div>
-      <p class="serv-desc">Control total de tu hotel o hospedaje — reservas, huéspedes y facturación en un solo lugar.</p>
-      <ul class="serv-lista">
-        <li>Check-in y check-out digital</li>
-        <li>Estado de habitaciones en tiempo real</li>
-        <li>Gestión de reservas con fechas</li>
-        <li>Cobros y comprobantes</li>
-        <li>Reporte de ocupación diaria</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- CÓMO FUNCIONA -->
-<section style="background:rgba(0,87,255,0.03);border-top:1px solid var(--border);border-bottom:1px solid var(--border);max-width:100%;padding:100px 40px">
-  <div style="max-width:1100px;margin:0 auto">
-    <div class="sec-tag">El proceso</div>
-    <h2 class="sec-titulo">Simple y rápido</h2>
-    <div class="pasos">
-      <div class="paso reveal">
-        <div class="paso-num">01</div>
-        <div class="paso-titulo">Me contás tu negocio</div>
-        <div class="paso-desc">Me explicás qué necesitás — por WhatsApp, sin formularios ni reuniones largas.</div>
-        <div class="paso-linea"></div>
-      </div>
-      <div class="paso reveal">
-        <div class="paso-num">02</div>
-        <div class="paso-titulo">Te presento el sistema</div>
-        <div class="paso-desc">En 24-72 horas tenés una demo funcional para revisar y ajustar.</div>
-        <div class="paso-linea"></div>
-      </div>
-      <div class="paso reveal">
-        <div class="paso-num">03</div>
-        <div class="paso-titulo">Lo ajustamos</div>
-        <div class="paso-desc">Hacemos los cambios que necesitás hasta que quede exactamente como querés.</div>
-        <div class="paso-linea"></div>
-      </div>
-      <div class="paso reveal">
-        <div class="paso-num">04</div>
-        <div class="paso-titulo">Lo usás desde hoy</div>
-        <div class="paso-desc">Entrega, capacitación y soporte incluidos. Tuyo para siempre, sin costos mensuales.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PLANES -->
-<section id="precios">
-  <div class="sec-tag">Planes</div>
-  <h2 class="sec-titulo">Elegí tu plan,<br>arrancá hoy.</h2>
-  <p class="sec-sub">Pago único. Sin mensualidades. El sistema es tuyo para siempre.</p>
-
-  <div style="background:rgba(0,87,255,0.06);border:1px solid rgba(0,87,255,0.2);border-radius:12px;padding:14px 20px;margin-bottom:40px;display:flex;align-items:center;gap:12px;max-width:600px">
-    <span style="font-size:22px">🎁</span>
-    <div>
-      <div style="font-size:14px;font-weight:600;color:var(--cyan)">Garantía 15 días — Si no te sirve, te devolvemos el dinero</div>
-      <div style="font-size:12px;color:var(--text2);margin-top:2px">Probalo con tu negocio real. Sin riesgos.</div>
-    </div>
-  </div>
-
-  <div class="precios-grid">
-
-    <div class="precio-card reveal">
-      <div class="precio-nombre">🚀 Básico</div>
-      <div class="precio-val"><span>USD </span>50</div>
-      <div class="precio-period">pago único — tuyo para siempre</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:20px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;line-height:1.6">
-        Ideal para arrancar. Ordenás un área clave de tu negocio sin complicaciones.
-      </div>
-      <ul class="precio-items">
-        <li><span class="ok">✓</span> 1 módulo a elección (ventas, créditos o cobranzas)</li>
-        <li><span class="ok">✓</span> Personalización con tu marca y datos</li>
-        <li><span class="ok">✓</span> Capacitación incluida</li>
-        <li><span class="ok">✓</span> 30 días de soporte por WhatsApp</li>
-        <li><span class="ok">✓</span> Entrega en 72 horas</li>
-        <li><span class="ok">✓</span> Garantía de devolución 15 días</li>
-      </ul>
-      <a href="https://wa.me/595983020696?text=Hola!%20Me%20interesa%20el%20Plan%20Básico%20de%20Nexo%20Sistemas%20(USD%2050)" target="_blank" class="btn-precio sec">Quiero este plan →</a>
-    </div>
-
-    <div class="precio-card destacado reveal">
-      <div class="precio-badge">⭐ MÁS ELEGIDO</div>
-      <div class="precio-nombre">💼 Completo</div>
-      <div class="precio-val"><span>USD </span>90</div>
-      <div class="precio-period">pago único — tuyo para siempre</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:20px;padding:10px;background:rgba(0,87,255,0.06);border-radius:8px;line-height:1.6">
-        El más elegido. Control total de ventas, créditos y cobranzas en un solo lugar.
-      </div>
-      <ul class="precio-items">
-        <li><span class="ok">✓</span> Sistema completo — los 3 módulos integrados</li>
-        <li><span class="ok">✓</span> Ventas + Stock + Créditos + Cobranzas</li>
-        <li><span class="ok">✓</span> Multi-usuario con roles (admin / vendedor)</li>
-        <li><span class="ok">✓</span> Sincronización en la nube — acceso desde cualquier dispositivo</li>
-        <li><span class="ok">✓</span> Alertas de cobro automáticas por WhatsApp</li>
-        <li><span class="ok">✓</span> Capacitación para todo el equipo</li>
-        <li><span class="ok">✓</span> 90 días de soporte prioritario</li>
-        <li><span class="ok">✓</span> Garantía de devolución 15 días</li>
-      </ul>
-      <a href="https://wa.me/595983020696?text=Hola!%20Me%20interesa%20el%20Plan%20Completo%20de%20Nexo%20Sistemas%20(USD%2090)" target="_blank" class="btn-precio prim">Quiero este plan →</a>
-    </div>
-
-    <div class="precio-card reveal">
-      <div class="precio-nombre">👑 Premium</div>
-      <div class="precio-val"><span>USD </span>130</div>
-      <div class="precio-period">pago único + soporte mensual incluido</div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:20px;padding:10px;background:rgba(255,255,255,0.03);border-radius:8px;line-height:1.6">
-        Para negocios que quieren crecer sin límites. Sistema completo + evolución continua.
-      </div>
-      <ul class="precio-items">
-        <li><span class="ok">✓</span> Todo lo del Plan Completo</li>
-        <li><span class="ok">✓</span> <strong style="color:var(--cyan)">6 meses de mantenimiento incluidos</strong></li>
-        <li><span class="ok">✓</span> Nuevas funciones y mejoras continuas</li>
-        <li><span class="ok">✓</span> Soporte VIP — respuesta en menos de 2 horas</li>
-        <li><span class="ok">✓</span> Módulo hotelería si aplica al negocio</li>
-        <li><span class="ok">✓</span> Backup automático de datos</li>
-        <li><span class="ok">✓</span> Capacitación extendida para todo el equipo</li>
-        <li><span class="ok">✓</span> Garantía de devolución 15 días</li>
-      </ul>
-      <a href="https://wa.me/595983020696?text=Hola!%20Me%20interesa%20el%20Plan%20Premium%20de%20Nexo%20Sistemas%20(USD%20130)" target="_blank" class="btn-precio sec">Quiero este plan →</a>
-    </div>
-
-  </div>
-</section>
-
-<!-- FRASE PODEROSA -->
-<div style="position:relative;z-index:1;padding:0 40px 60px;text-align:center">
-  <div style="max-width:800px;margin:0 auto;border-top:1px solid var(--border);padding-top:60px">
-    <div style="font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,48px);font-weight:800;letter-spacing:-1px;line-height:1.2;margin-bottom:20px">
-      No trabajes <span style="color:var(--red)">para</span> tu negocio.<br>
-      Hacé que tu negocio<br>trabaje <span style="background:linear-gradient(135deg,var(--azul),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">para vos.</span>
-    </div>
-    <p style="font-size:16px;color:var(--text2);max-width:500px;margin:0 auto;line-height:1.7;font-weight:300">Controlá hoy. Escalá mañana. Viví libre después.</p>
-  </div>
-</div>
-
-<!-- CTA FINAL -->
-<div class="cta-wrap">
-  <div class="cta-box reveal">
-    <h2>¿Listo para ordenar<br>tu negocio?</h2>
-    <p>Escribinos por WhatsApp y en menos de 24 horas te mostramos cómo podemos ayudarte.</p>
-    <a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="btn-prim" style="font-size:17px;padding:16px 40px;display:inline-flex">💬 Escribinos por WhatsApp</a>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">Nexo<span>.</span>Sistemas</div>
-  <div class="footer-copy">© 2025 Nexo Sistemas — Desarrollo de software para comercios</div>
-</footer>
-
-<!-- WHATSAPP FLOTANTE -->
-<a href="https://wa.me/595983020696?text=Hola,%20quiero%20información%20sobre%20Nexo%20Sistemas" target="_blank" class="wa-float" title="Escribinos por WhatsApp">💬</a>
 
 <script>
-// Scroll reveal
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){ e.target.classList.add('visible'); }
-  });
-},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+const slides = ['s0','s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s_cierre'];
+const durations = [4000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,6000];
+const total = durations.reduce((a,b)=>a+b,0);
+let cur=0, timer=null, startTime=null;
 
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.onclick=e=>{
-    e.preventDefault();
-    const t=document.querySelector(a.getAttribute('href'));
-    if(t) t.scrollIntoView({behavior:'smooth'});
-  };
+const dotsEl=document.getElementById('dots');
+slides.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
 });
+
+function show(idx){
+  slides.forEach((s,i)=>{
+    document.getElementById(s).classList.toggle('active',i===idx);
+    dotsEl.children[i].className='dot'+(i===idx?' active':'');
+  });
+  document.getElementById('slide-num').textContent=(idx+1)+' / '+slides.length;
+}
+
+function next(){
+  if(cur>=slides.length-1){document.getElementById('replay').style.display='block';return;}
+  cur++;show(cur);timer=setTimeout(next,durations[cur]);
+}
+
+function goTo(idx){
+  clearTimeout(timer);cur=idx;show(cur);timer=setTimeout(next,durations[cur]);
+}
+
+function start(){
+  cur=0;startTime=Date.now();
+  document.getElementById('replay').style.display='none';
+  document.getElementById('prog-fill').style.width='0%';
+  clearTimeout(timer);show(0);
+  requestAnimationFrame(function tick(){
+    const pct=Math.min(100,(Date.now()-startTime)/total*100);
+    document.getElementById('prog-fill').style.width=pct+'%';
+    if(pct<100)requestAnimationFrame(tick);
+  });
+  timer=setTimeout(next,durations[0]);
+}
+
+document.getElementById('wrap').addEventListener('click',e=>{
+  if(e.target.closest('#replay')||e.target.closest('#dots')||e.target.closest('a'))return;
+  clearTimeout(timer);
+  if(cur<slides.length-1){cur++;show(cur);timer=setTimeout(next,durations[cur]);}
+  else{document.getElementById('replay').style.display='block';}
+});
+
+window.onload=()=>setTimeout(start,300);
 </script>
 </body>
 </html>
