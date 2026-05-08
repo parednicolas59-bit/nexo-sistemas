@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Tecno — Sistema de Gestión</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --lt-gold: #c9a84c; --lt-gold-light: #f0d080; --lt-dark: #1a1a2e;
+    --bg: #f4f6f9; --white: #ffffff; --border: #e2e2e2;
+    --text: #1a1a2e; --text-sec: #6b7280; --text-light: #9ca3af;
+    --success-bg: #f0faf5; --success-text: #15803d; --success-border: #bbf7d0;
+    --warning-bg: #fffbeb; --warning-text: #b45309; --warning-border: #fde68a;
+    --danger-bg: #fff1f2; --danger-text: #be123c; --danger-border: #fecdd3;
+    --info-bg: #eff6ff; --info-text: #1d4ed8; --info-border: #bfdbfe;
+    --radius: 10px; --radius-sm: 7px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+  .app { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar { width: 210px; background: var(--lt-dark); display: flex; flex-direction: column; flex-shrink: 0; position: fixed; top: 0; left: 0; height: 100vh; z-index: 10; }
+  .sidebar-logo { padding: 22px 18px 16px; border-bottom: 0.5px solid rgba(201,168,76,0.3); }
+  .sidebar-logo .brand { font-size: 15px; font-weight: 600; color: var(--lt-gold); letter-spacing: 0.06em; }
+  .sidebar-logo .sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 3px; }
+  .nav-section { padding: 14px 10px; flex: 1; overflow-y: auto; }
+  .nav-label { font-size: 10px; color: rgba(255,255,255,0.28); letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 8px 4px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.5); transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+  .nav-item:hover { background: rgba(201,168,76,0.1); color: rgba(255,255,255,0.9); }
+  .nav-item.active { background: rgba(201,168,76,0.18); color: var(--lt-gold); }
+  .nav-item i { font-size: 17px; width: 20px; }
+  .badge-nav { margin-left: auto; background: #e94560; color: white; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 600; }
+  .sidebar-footer { padding: 12px 10px 20px; border-top: 0.5px solid rgba(255,255,255,0.08); }
+  .user-pill { display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--lt-gold); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--lt-dark); flex-shrink: 0; }
+  .user-info .name { font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 500; }
+  .user-info .role { font-size: 10px; color: rgba(255,255,255,0.3); }
+  .nexo-tag { text-align: center; font-size: 9px; color: rgba(255,255,255,0.15); padding: 4px; letter-spacing: 0.08em; margin-bottom: 8px; }
+
+  /* MAIN */
+  .main { flex: 1; margin-left: 210px; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: var(--white); padding: 14px 28px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 5; }
+  .page-title { font-size: 17px; font-weight: 600; color: var(--text); }
+  .content { padding: 24px 28px; flex: 1; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text); transition: all 0.15s; font-family: inherit; }
+  .btn:hover { background: #f3f4f6; }
+  .btn-primary { background: var(--lt-dark); color: var(--lt-gold); border-color: var(--lt-dark); }
+  .btn-primary:hover { background: #2a2a4a; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-danger { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-border); }
+  .btn-danger:hover { background: #ffe4e6; }
+
+  /* KPIs */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .kpi { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 16px 18px; }
+  .kpi-label { font-size: 11px; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 7px; }
+  .kpi-value { font-size: 22px; font-weight: 600; color: var(--text); }
+  .kpi-sub { font-size: 11px; color: var(--text-sec); margin-top: 4px; }
+  .kpi-up { color: var(--success-text); }
+  .kpi-warn { color: var(--warning-text); }
+
+  /* LIQUIDEZ */
+  .liquidez-banner { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .liq-card { border-radius: var(--radius); padding: 16px 20px; border: 1px solid; }
+  .liq-card.cobrado { background: var(--success-bg); border-color: var(--success-border); }
+  .liq-card.pendiente { background: var(--warning-bg); border-color: var(--warning-border); }
+  .liq-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .liq-title { font-size: 12px; font-weight: 600; }
+  .liq-card.cobrado .liq-title { color: var(--success-text); }
+  .liq-card.pendiente .liq-title { color: var(--warning-text); }
+  .liq-amount { font-size: 28px; font-weight: 700; color: var(--text); }
+  .liq-breakdown { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .liq-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sec); }
+  .liq-row span:last-child { font-weight: 600; color: var(--text); }
+
+  /* CARDS */
+  .card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .card-link { font-size: 12px; color: var(--info-text); cursor: pointer; text-decoration: none; }
+  .grid-3 { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { font-size: 11px; color: var(--text-sec); font-weight: 600; text-align: left; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 11px 12px 11px 0; border-bottom: 1px solid #f3f4f6; color: var(--text); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .pend-row td { background: #fffbf0; }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-success { background: var(--success-bg); color: var(--success-text); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+  .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+  .badge-info { background: var(--info-bg); color: var(--info-text); }
+
+  /* MEDIOS DE PAGO */
+  .mp-efectivo { background: #e8f5e9; color: #2e7d32; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
+  .mp-transferencia { background: #e3f2fd; color: #1565c0; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
+  .mp-tarjeta { background: #EEEDFE; color: #534AB7; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
+  .mp-credivip { background: #fff3e0; color: #e65100; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
+
+  /* BARS */
+  .cat-bar { display: flex; flex-direction: column; gap: 12px; }
+  .cat-row { display: flex; flex-direction: column; gap: 4px; }
+  .cat-meta { display: flex; justify-content: space-between; font-size: 12px; }
+  .cat-name { color: var(--text-sec); }
+  .cat-val { font-weight: 600; color: var(--text); }
+  .bar-track { background: #f3f4f6; border-radius: 4px; height: 7px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--lt-gold); }
+
+  /* DONUT */
+  .profit-visual { display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
+  .donut-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 14px; }
+  .donut-wrap svg { transform: rotate(-90deg); }
+  .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .donut-pct { font-size: 22px; font-weight: 700; color: var(--text); }
+  .donut-lbl { font-size: 10px; color: var(--text-sec); }
+  .profit-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 5px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  /* STOCK */
+  .stock-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .prod-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; transition: box-shadow 0.15s; }
+  .prod-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .prod-cat { font-size: 10px; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; }
+  .prod-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+  .prod-prices { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .prod-price { font-size: 15px; font-weight: 700; color: var(--text); }
+  .prod-cost { font-size: 11px; color: var(--text-sec); margin-top: 2px; }
+  .prod-stock { display: flex; align-items: center; justify-content: space-between; }
+  .stock-num { font-size: 12px; color: var(--text-sec); }
+  .prod-prov { font-size: 11px; color: var(--info-text); margin-top: 8px; display: flex; align-items: center; gap: 4px; border-top: 1px solid #f3f4f6; padding-top: 8px; }
+
+  /* ALERTAS */
+  .alerta-list { display: flex; flex-direction: column; gap: 10px; }
+  .alerta-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+  .alerta-icon { font-size: 20px; margin-top: 1px; }
+  .alerta-body { flex: 1; }
+  .alerta-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .alerta-desc { font-size: 12px; color: var(--text-sec); margin-top: 3px; }
+  .alerta-action { margin-top: 10px; display: flex; gap: 8px; }
+  .wa-btn { display: inline-flex; align-items: center; gap: 5px; background: #25d366; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 500; }
+  .confirm-btn { display: inline-flex; align-items: center; gap: 5px; background: var(--lt-dark); color: var(--lt-gold); border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 500; }
+
+  /* PROVEEDORES */
+  .proveedores-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .prov-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; display: flex; align-items: flex-start; gap: 14px; background: var(--white); }
+  .prov-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--info-bg); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--info-text); flex-shrink: 0; }
+  .prov-info { flex: 1; min-width: 0; }
+  .prov-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .prov-meta { font-size: 12px; color: var(--text-sec); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  .prov-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--text-sec); margin-bottom: 5px; }
+  .form-label .optional { font-size: 11px; color: var(--text-light); font-weight: 400; margin-left: 4px; }
+  input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; color: var(--text); background: var(--white); font-family: inherit; transition: border-color 0.15s; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--lt-gold); }
+  .prov-select-wrap { display: flex; gap: 8px; align-items: center; }
+  .prov-select-wrap select { flex: 1; }
+  .divider { border: none; border-top: 1px solid #f3f4f6; margin: 14px 0; }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: var(--radius); padding: 22px 24px; width: 440px; max-width: 96vw; max-height: 92vh; overflow-y: auto; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .modal-title { font-size: 16px; font-weight: 600; color: var(--text); }
+  .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-sec); line-height: 1; }
+  .summary-box { background: #f9fafb; border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 14px; margin-top: 10px; }
+  .sum-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; }
+  .sum-val { font-size: 16px; font-weight: 700; color: var(--text); }
+  .sum-lbl { font-size: 10px; color: var(--text-sec); margin-top: 3px; }
+  .mp-aviso { margin-top: 10px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 12px; display: none; }
+  .mp-aviso.show { display: block; }
+  .mp-aviso.warn { background: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-border); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .sidebar { width: 60px; }
+    .sidebar-logo .brand, .sidebar-logo .sub, .nav-item span, .user-info, .nexo-tag { display: none; }
+    .nav-item { justify-content: center; padding: 10px; }
+    .nav-item i { width: auto; }
+    .main { margin-left: 60px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-3, .liquidez-banner, .stock-grid, .proveedores-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">LUXURY TECNO</div>
+      <div class="sub">Sistema de Gestión</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label"><span>Principal</span></div>
+      <button class="nav-item active" onclick="goTo('dashboard',this)"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+      <button class="nav-item" onclick="goTo('stock',this)"><i class="ti ti-package"></i><span>Stock</span></button>
+      <button class="nav-item" onclick="goTo('ventas',this)"><i class="ti ti-receipt"></i><span>Ventas</span></button>
+      <div class="nav-label" style="margin-top:8px"><span>Atención</span></div>
+      <button class="nav-item" onclick="goTo('alertas',this)"><i class="ti ti-bell"></i><span>Alertas</span><span class="badge-nav" id="badgeAlertas">3</span></button>
+      <button class="nav-item" onclick="goTo('proveedores',this)"><i class="ti ti-truck"></i><span>Proveedores</span></button>
+      <button class="nav-item" onclick="goTo('admin',this)"><i class="ti ti-settings"></i><span>Admin</span></button>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar">LT</div>
+        <div class="user-info"><div class="name">Luxury Tecno</div><div class="role">Plan Completo</div></div>
+      </div>
+      <div class="nexo-tag">NEXO SISTEMAS</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div id="topbarActions">
+        <button class="btn btn-primary" onclick="openModal('modalVenta')"><i class="ti ti-plus"></i> Nueva venta</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">Total vendido</div><div class="kpi-value" id="kpiTotal">$0</div><div class="kpi-sub kpi-up" id="kpiOps">0 operaciones</div></div>
+          <div class="kpi"><div class="kpi-label">Ganancia neta</div><div class="kpi-value" id="kpiGanancia">$0</div><div class="kpi-sub kpi-up" id="kpiMargen">Margen 0%</div></div>
+          <div class="kpi"><div class="kpi-label">Capital invertido</div><div class="kpi-value" id="kpiCapital">$0</div><div class="kpi-sub">Costo productos</div></div>
+          <div class="kpi"><div class="kpi-label">Alertas activas</div><div class="kpi-value kpi-warn" id="kpiAlertas">0</div><div class="kpi-sub kpi-warn">Requieren atención</div></div>
+        </div>
+        <div class="liquidez-banner">
+          <div class="liq-card cobrado">
+            <div class="liq-top"><i class="ti ti-cash" style="font-size:20px;color:var(--success-text)"></i><span class="liq-title">Cobrado — plata en mano</span></div>
+            <div class="liq-amount" id="liqCobrado">$0</div>
+            <div class="liq-breakdown">
+              <div class="liq-row"><span>Efectivo</span><span id="liqEfectivo">$0</span></div>
+              <div class="liq-row"><span>Transferencia</span><span id="liqTransferencia">$0</span></div>
+            </div>
+          </div>
+          <div class="liq-card pendiente">
+            <div class="liq-top"><i class="ti ti-clock" style="font-size:20px;color:var(--warning-text)"></i><span class="liq-title">Pendiente de liquidar</span></div>
+            <div class="liq-amount" id="liqPendiente">$0</div>
+            <div class="liq-breakdown">
+              <div class="liq-row"><span>Tarjeta</span><span id="liqTarjeta">$0</span></div>
+              <div class="liq-row"><span>CrediVIP</span><span id="liqCredivip">$0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Últimas ventas</span><a class="card-link" onclick="goTo('ventas',document.querySelectorAll('.nav-item')[2])">Ver todas →</a></div>
+            <table>
+              <thead><tr><th>Producto</th><th>Cliente</th><th>Monto</th><th>Medio</th><th>Estado</th></tr></thead>
+              <tbody id="tbodyDash"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Ventas por categoría</span></div>
+            <div class="cat-bar" id="catBar"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Ganancia vs inversión</span></div>
+            <div class="profit-visual">
+              <div class="donut-wrap">
+                <svg width="110" height="110" viewBox="0 0 110 110">
+                  <circle cx="55" cy="55" r="44" fill="none" stroke="#f3f4f6" stroke-width="14"/>
+                  <circle id="donutArc" cx="55" cy="55" r="44" fill="none" stroke="#c9a84c" stroke-width="14" stroke-dasharray="0 276.5" stroke-linecap="round"/>
+                </svg>
+                <div class="donut-center"><div class="donut-pct" id="donutPct">0%</div><div class="donut-lbl">ganancia</div></div>
+              </div>
+              <div class="profit-row"><div class="dot" style="background:#c9a84c"></div><span style="color:var(--text-sec)">Ganancia —</span><span id="donutGan" style="font-weight:600">$0</span></div>
+              <div class="profit-row"><div class="dot" style="background:#f3f4f6;border:1px solid #e2e2e2"></div><span style="color:var(--text-sec)">Inversión —</span><span id="donutInv" style="font-weight:600">$0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STOCK -->
+      <div class="page" id="page-stock">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div style="display:flex;gap:10px">
+            <div class="kpi" style="min-width:110px;padding:12px 16px"><div class="kpi-label">Productos</div><div class="kpi-value" id="kpiProds" style="font-size:20px">0</div></div>
+            <div class="kpi" style="min-width:160px;padding:12px 16px"><div class="kpi-label">Valor stock</div><div class="kpi-value" id="kpiValStock" style="font-size:20px">$0</div></div>
+            <div class="kpi" style="min-width:120px;padding:12px 16px"><div class="kpi-label">Stock bajo</div><div class="kpi-value kpi-warn" id="kpiStockBajo" style="font-size:20px">0</div></div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modalProducto')"><i class="ti ti-plus"></i> Agregar producto</button>
+        </div>
+        <div class="stock-grid" id="stockGrid"></div>
+      </div>
+
+      <!-- VENTAS -->
+      <div class="page" id="page-ventas">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div style="display:flex;gap:10px">
+            <div class="kpi" style="min-width:140px;padding:12px 16px"><div class="kpi-label">Total mes</div><div class="kpi-value" id="vKpiTotal" style="font-size:20px">$0</div></div>
+            <div class="kpi" style="min-width:130px;padding:12px 16px"><div class="kpi-label">Cobrado</div><div class="kpi-value kpi-up" id="vKpiCobrado" style="font-size:20px">$0</div></div>
+            <div class="kpi" style="min-width:150px;padding:12px 16px"><div class="kpi-label">Pend. liquidar</div><div class="kpi-value kpi-warn" id="vKpiPend" style="font-size:20px">$0</div></div>
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modalVenta')"><i class="ti ti-plus"></i> Nueva venta</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Registro de ventas</span></div>
+          <table>
+            <thead><tr><th>Producto</th><th>Cliente</th><th>Precio</th><th>Ganancia</th><th>Medio de pago</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="tbodyVentas"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ALERTAS -->
+      <div class="page" id="page-alertas">
+        <div class="alerta-list" id="listaAlertas"></div>
+      </div>
+
+      <!-- PROVEEDORES -->
+      <div class="page" id="page-proveedores">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div class="kpi" style="min-width:130px;padding:12px 16px"><div class="kpi-label">Proveedores</div><div class="kpi-value" id="kpiProvs" style="font-size:20px">0</div></div>
+          <button class="btn btn-primary" onclick="openModal('modalProveedor')"><i class="ti ti-plus"></i> Nuevo proveedor</button>
+        </div>
+        <div class="proveedores-grid" id="listaProveedores"></div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="page" id="page-admin">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Usuarios del sistema</span></div>
+            <table><thead><tr><th>Nombre</th><th>Rol</th><th>Estado</th></tr></thead><tbody>
+              <tr><td><div style="font-weight:600">Luciana</div><div style="font-size:11px;color:var(--text-sec)">Encargada</div></td><td>Admin</td><td><span class="badge badge-success">Activo</span></td></tr>
+              <tr><td><div style="font-weight:600">Marcos</div><div style="font-size:11px;color:var(--text-sec)">Vendedor</div></td><td>Vendedor</td><td><span class="badge badge-success">Activo</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Configuración de alertas</span></div>
+            <div class="form-group"><label class="form-label">Avisar cuando stock baje de</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="cfgStockMin" value="3" style="width:80px"><span style="font-size:12px;color:var(--text-sec)">unidades</span></div></div>
+            <div class="form-group"><label class="form-label">Avisar cobros con anticipación de</label><div style="display:flex;align-items:center;gap:8px"><input type="number" id="cfgDiasAntes" value="5" style="width:80px"><span style="font-size:12px;color:var(--text-sec)">días</span></div></div>
+            <button class="btn btn-primary" style="margin-top:6px" onclick="alert('Configuración guardada.')">Guardar cambios</button>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">WhatsApp automático</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6"><span style="font-size:13px">Recordatorio de cobro</span><span class="badge badge-success">Activo</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f3f4f6"><span style="font-size:13px">Alerta de mora</span><span class="badge badge-success">Activo</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><span style="font-size:13px">Confirmación de venta</span><span class="badge badge-success">Activo</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Plan actual</span></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="background:var(--lt-dark);color:var(--lt-gold);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600">Plan Completo</div><span class="badge badge-success">Activo</span></div>
+            <div style="font-size:12px;color:var(--text-sec);line-height:2.2">
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> Dashboard con liquidez en tiempo real</div>
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> 4 medios de pago (Efectivo, Transfer., Tarjeta, CrediVIP)</div>
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> Confirmación de liquidaciones</div>
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> ABM de proveedores</div>
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> Stock ilimitado con alertas</div>
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> WhatsApp automático</div>
+              <div><i class="ti ti-check" style="color:var(--success-text)"></i> 2 usuarios incluidos</div>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:var(--text-sec)">Soporte: <a href="#" style="color:var(--info-text)">Nexo Sistemas</a></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA VENTA -->
+<div class="modal-overlay" id="modalVenta">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Nueva venta</span><button class="modal-close" onclick="closeModal('modalVenta')">×</button></div>
+    <div class="form-group"><label class="form-label">Producto</label><select id="ventaProd" onchange="updateVentaResumen()"><option value="">— Seleccionar —</option></select></div>
+    <div class="form-group"><label class="form-label">Cliente</label><input type="text" id="ventaCliente" placeholder="Nombre del cliente"></div>
+    <div class="form-group"><label class="form-label">DNI</label><input type="text" id="ventaDni" placeholder="Número de documento"></div>
+    <div class="form-group"><label class="form-label">Teléfono WhatsApp</label><input type="text" id="ventaTel" placeholder="Ej: 3644 123 456"></div>
+    <div class="form-group"><label class="form-label">Medio de pago</label>
+      <select id="ventaMedio" onchange="updateVentaResumen()">
+        <option value="efectivo">Efectivo</option>
+        <option value="transferencia">Transferencia</option>
+        <option value="tarjeta">Tarjeta</option>
+        <option value="credivip">CrediVIP</option>
+      </select>
+    </div>
+    <div class="mp-aviso warn" id="avisoMedio"></div>
+    <div class="summary-box">
+      <div class="sum-grid">
+        <div class="sum-item"><div class="sum-val" id="resTotal">$0</div><div class="sum-lbl">Total</div></div>
+        <div class="sum-item"><div class="sum-val" id="resGanancia" style="color:var(--success-text)">$0</div><div class="sum-lbl">Ganancia</div></div>
+        <div class="sum-item"><div class="sum-val" id="resEstado" style="color:var(--success-text)">Cobrado</div><div class="sum-lbl">Estado</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn" style="flex:1" onclick="closeModal('modalVenta')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2" onclick="registrarVenta()"><i class="ti ti-check"></i> Registrar venta</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR PRODUCTO -->
+<div class="modal-overlay" id="modalProducto">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Agregar producto</span><button class="modal-close" onclick="closeModal('modalProducto')">×</button></div>
+    <div class="form-group"><label class="form-label">Nombre del producto</label><input type="text" id="pNombre" placeholder="Ej: Samsung Galaxy A35"></div>
+    <div class="form-group"><label class="form-label">Categoría</label><select id="pCat"><option>Celulares</option><option>Smart TV</option><option>Notebooks</option><option>Accesorios</option><option>Electrodomésticos</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label class="form-label">Precio de costo</label><input type="number" id="pCosto" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Precio de venta</label><input type="number" id="pVenta" placeholder="0"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label class="form-label">Stock inicial</label><input type="number" id="pStock" placeholder="0"></div>
+      <div class="form-group"><label class="form-label">Stock mínimo alerta</label><input type="number" id="pStockMin" placeholder="3"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-label">Proveedor</div>
+    <div class="form-group">
+      <label class="form-label">Proveedor <span class="optional">(opcional)</span></label>
+      <div class="prov-select-wrap">
+        <select id="pProveedor"><option value="">— Sin proveedor —</option></select>
+        <button class="btn btn-primary btn-sm" onclick="closeModal('modalProducto');openModal('modalProveedor');document.getElementById('volverAProducto').style.display='block'"><i class="ti ti-plus"></i> Nuevo</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:6px">
+      <button class="btn" style="flex:1" onclick="closeModal('modalProducto')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2" onclick="guardarProducto()"><i class="ti ti-check"></i> Guardar producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO PROVEEDOR -->
+<div class="modal-overlay" id="modalProveedor">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Nuevo proveedor</span><button class="modal-close" onclick="closeModal('modalProveedor')">×</button></div>
+    <div id="volverAProducto" style="display:none;margin-bottom:12px"><button class="btn btn-sm" onclick="closeModal('modalProveedor');openModal('modalProducto');document.getElementById('volverAProducto').style.display='none'"><i class="ti ti-arrow-left"></i> Volver al producto</button></div>
+    <div class="form-group"><label class="form-label">Nombre del proveedor</label><input type="text" id="prvNombre" placeholder="Ej: Samsung Distribuidora"></div>
+    <div class="form-group"><label class="form-label">Contacto <span class="optional">(opcional)</span></label><input type="text" id="prvContacto" placeholder="Nombre de la persona de contacto"></div>
+    <div class="form-group"><label class="form-label">Teléfono / WhatsApp <span class="optional">(opcional)</span></label><input type="text" id="prvTel" placeholder="Ej: 3644 123 456"></div>
+    <div class="form-group"><label class="form-label">Rubro <span class="optional">(opcional)</span></label><input type="text" id="prvRubro" placeholder="Ej: Celulares, TV, Accesorios"></div>
+    <div class="form-group"><label class="form-label">Notas <span class="optional">(opcional)</span></label><input type="text" id="prvNotas" placeholder="Ej: Paga a 30 días, entrega en sucursal"></div>
+    <div style="display:flex;gap:10px;margin-top:6px">
+      <button class="btn" style="flex:1" onclick="closeModal('modalProveedor')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2" onclick="guardarProveedor()"><i class="ti ti-check"></i> Guardar proveedor</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ——— ESTADO ———
+let ventas = [];
+let productos = [
+  { id:1, nombre:'Samsung Galaxy A55', cat:'Celulares', costo:145000, precio:185000, stock:8, stockMin:3, proveedor:'Samsung Distribuidora' },
+  { id:2, nombre:'iPhone 14 128GB', cat:'Celulares', costo:540000, precio:680000, stock:2, stockMin:3, proveedor:'iCenter Mayorista' },
+  { id:3, nombre:'LG Smart TV 55"', cat:'Smart TV', costo:245000, precio:320000, stock:5, stockMin:3, proveedor:'LG Chaco' },
+  { id:4, nombre:'Notebook HP 15" i5', cat:'Notebooks', costo:340000, precio:420000, stock:1, stockMin:3, proveedor:'HP Mayorista Norte' },
+  { id:5, nombre:'Sony WH-1000XM5', cat:'Accesorios', costo:72000, precio:98000, stock:6, stockMin:3, proveedor:'Samsung Distribuidora' },
+  { id:6, nombre:'Samsung QLED 65"', cat:'Smart TV', costo:460000, precio:580000, stock:0, stockMin:3, proveedor:'Samsung Distribuidora' },
+];
+let proveedores = [
+  { nombre:'Samsung Distribuidora', contacto:'Carlos Méndez', tel:'3644 881 200', rubro:'Celulares, Smart TV', notas:'Entrega en 48hs' },
+  { nombre:'iCenter Mayorista', contacto:'Andrea López', tel:'3624 445 771', rubro:'Apple / iPhone', notas:'Pago anticipado' },
+  { nombre:'LG Chaco', contacto:'Roberto Soria', tel:'3624 112 334', rubro:'Smart TV', notas:'Visita mensual' },
+  { nombre:'HP Mayorista Norte', contacto:'Marcelo Ruiz', tel:'3644 993 001', rubro:'Notebooks', notas:'Garantía 1 año' },
+];
+let nextId = 7;
+
+const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
+const pageTitles = { dashboard:'Dashboard', stock:'Stock', ventas:'Ventas', alertas:'Alertas', proveedores:'Proveedores', admin:'Admin' };
+
+// ——— NAVEGACIÓN ———
+function goTo(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[page] || page;
+  const tb = document.getElementById('topbarActions');
+  if (page === 'proveedores') {
+    tb.innerHTML = `<button class="btn btn-primary" onclick="openModal('modalProveedor')"><i class="ti ti-plus"></i> Nuevo proveedor</button>`;
+  } else if (page === 'stock') {
+    tb.innerHTML = `<button class="btn btn-primary" onclick="openModal('modalProducto')"><i class="ti ti-plus"></i> Agregar producto</button>`;
+  } else {
+    tb.innerHTML = `<button class="btn btn-primary" onclick="openModal('modalVenta')"><i class="ti ti-plus"></i> Nueva venta</button>`;
+  }
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'stock') renderStock();
+  if (page === 'ventas') renderVentas();
+  if (page === 'alertas') renderAlertas();
+  if (page === 'proveedores') renderProveedores();
+}
+
+// ——— MODALES ———
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ——— DASHBOARD ———
+function renderDashboard() {
+  const total = ventas.reduce((s,v) => s + v.precio, 0);
+  const gan = ventas.reduce((s,v) => s + (v.precio - v.costo), 0);
+  const cap = ventas.reduce((s,v) => s + v.costo, 0);
+  const cobrado = ventas.filter(v => v.estado === 'cobrado').reduce((s,v) => s + v.precio, 0);
+  const pend = ventas.filter(v => v.estado === 'pendiente').reduce((s,v) => s + v.precio, 0);
+  const efec = ventas.filter(v => v.medio === 'efectivo').reduce((s,v) => s + v.precio, 0);
+  const trans = ventas.filter(v => v.medio === 'transferencia').reduce((s,v) => s + v.precio, 0);
+  const tarj = ventas.filter(v => v.medio === 'tarjeta' && v.estado === 'pendiente').reduce((s,v) => s + v.precio, 0);
+  const credi = ventas.filter(v => v.medio === 'credivip' && v.estado === 'pendiente').reduce((s,v) => s + v.precio, 0);
+  const margen = total > 0 ? Math.round(gan / total * 100) : 0;
+  const alertas = alertasCount();
+
+  document.getElementById('kpiTotal').textContent = fmt(total);
+  document.getElementById('kpiOps').textContent = ventas.length + ' operaciones';
+  document.getElementById('kpiGanancia').textContent = fmt(gan);
+  document.getElementById('kpiMargen').textContent = 'Margen ' + margen + '%';
+  document.getElementById('kpiCapital').textContent = fmt(cap);
+  document.getElementById('kpiAlertas').textContent = alertas;
+  document.getElementById('liqCobrado').textContent = fmt(cobrado);
+  document.getElementById('liqPendiente').textContent = fmt(pend);
+  document.getElementById('liqEfectivo').textContent = fmt(efec);
+  document.getElementById('liqTransferencia').textContent = fmt(trans);
+  document.getElementById('liqTarjeta').textContent = fmt(tarj);
+  document.getElementById('liqCredivip').textContent = fmt(credi);
+
+  // donut
+  const circ = 276.5;
+  const dash = total > 0 ? (gan / total) * circ : 0;
+  document.getElementById('donutArc').setAttribute('stroke-dasharray', dash.toFixed(1) + ' ' + circ);
+  document.getElementById('donutPct').textContent = margen + '%';
+  document.getElementById('donutGan').textContent = fmt(gan);
+  document.getElementById('donutInv').textContent = fmt(cap);
+
+  // tabla últimas ventas
+  const recientes = [...ventas].reverse().slice(0, 5);
+  const mpBadge = mp => ({ efectivo:'<span class="mp-efectivo">Efectivo</span>', transferencia:'<span class="mp-transferencia">Transfer.</span>', tarjeta:'<span class="mp-tarjeta">Tarjeta</span>', credivip:'<span class="mp-credivip">CrediVIP</span>' }[mp] || mp);
+  document.getElementById('tbodyDash').innerHTML = recientes.length ? recientes.map(v =>
+    `<tr><td><div style="font-weight:600">${v.nombre}</div></td><td style="color:var(--text-sec)">${v.cliente}</td><td>${fmt(v.precio)}</td><td>${mpBadge(v.medio)}</td><td>${v.estado === 'cobrado' ? '<span class="badge badge-success">Cobrado</span>' : '<span class="badge badge-warning">Pend. liq.</span>'}</td></tr>`
+  ).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--text-sec);padding:20px">Sin ventas aún</td></tr>';
+
+  // barras categorias
+  const cats = {};
+  ventas.forEach(v => { cats[v.cat] = (cats[v.cat] || 0) + v.precio; });
+  const maxCat = Math.max(...Object.values(cats), 1);
+  document.getElementById('catBar').innerHTML = Object.keys(cats).length ?
+    Object.entries(cats).sort((a,b) => b[1]-a[1]).map(([c,v]) =>
+      `<div class="cat-row"><div class="cat-meta"><span class="cat-name">${c}</span><span class="cat-val">${fmt(v)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxCat*100)}%"></div></div></div>`
+    ).join('') : '<div style="color:var(--text-sec);font-size:13px">Sin datos aún</div>';
+}
+
+// ——— STOCK ———
+function renderStock() {
+  const stockBajo = productos.filter(p => p.stock <= p.stockMin).length;
+  const valStock = productos.reduce((s,p) => s + p.costo * p.stock, 0);
+  document.getElementById('kpiProds').textContent = productos.length;
+  document.getElementById('kpiValStock').textContent = fmt(valStock);
+  document.getElementById('kpiStockBajo').textContent = stockBajo;
+  document.getElementById('stockGrid').innerHTML = productos.map(p => {
+    const gan = p.precio - p.costo;
+    const stockBadge = p.stock === 0 ? '<span class="badge badge-danger">Sin stock</span>' : p.stock <= p.stockMin ? '<span class="badge badge-warning">Bajo</span>' : '<span class="badge badge-success">OK</span>';
+    const borderColor = p.stock === 0 ? 'border-color:var(--danger-border)' : '';
+    return `<div class="prod-card" style="${borderColor}">
+      <div class="prod-cat">${p.cat}</div>
+      <div class="prod-name">${p.nombre}</div>
+      <div class="prod-prices">
+        <div><div class="prod-price">${fmt(p.precio)}</div><div class="prod-cost">Costo: ${fmt(p.costo)}</div></div>
+        <div style="text-align:right"><div style="font-size:12px;color:var(--success-text);font-weight:600">+${fmt(gan)}</div><div style="font-size:10px;color:var(--text-sec)">ganancia/u</div></div>
+      </div>
+      <div class="prod-stock"><span class="stock-num">Stock: ${p.stock} unid.</span>${stockBadge}</div>
+      ${p.proveedor ? `<div class="prod-prov"><i class="ti ti-truck" style="font-size:12px"></i> ${p.proveedor}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ——— VENTAS ———
+function renderVentas() {
+  const total = ventas.reduce((s,v) => s + v.precio, 0);
+  const cobrado = ventas.filter(v => v.estado === 'cobrado').reduce((s,v) => s + v.precio, 0);
+  const pend = ventas.filter(v => v.estado === 'pendiente').reduce((s,v) => s + v.precio, 0);
+  document.getElementById('vKpiTotal').textContent = fmt(total);
+  document.getElementById('vKpiCobrado').textContent = fmt(cobrado);
+  document.getElementById('vKpiPend').textContent = fmt(pend);
+  const mpBadge = mp => ({ efectivo:'<span class="mp-efectivo">Efectivo</span>', transferencia:'<span class="mp-transferencia">Transferencia</span>', tarjeta:'<span class="mp-tarjeta">Tarjeta</span>', credivip:'<span class="mp-credivip">CrediVIP</span>' }[mp] || mp);
+  document.getElementById('tbodyVentas').innerHTML = ventas.length ? [...ventas].reverse().map((v,ri) => {
+    const i = ventas.length - 1 - ri;
+    const gan = v.precio - v.costo;
+    const isPend = v.estado === 'pendiente';
+    return `<tr class="${isPend ? 'pend-row' : ''}">
+      <td><div style="font-weight:600">${v.nombre}</div><div style="font-size:11px;color:var(--text-sec)">${v.fecha}</div></td>
+      <td>${v.cliente}</td><td>${fmt(v.precio)}</td>
+      <td style="color:var(--success-text);font-weight:600">${fmt(gan)}</td>
+      <td>${mpBadge(v.medio)}</td>
+      <td>${isPend ? '<span class="badge badge-warning">Pend. liq.</span>' : '<span class="badge badge-success">Cobrado</span>'}</td>
+      <td>${isPend ? `<button class="confirm-btn btn-sm" onclick="confirmarVenta(${i})"><i class="ti ti-check" style="font-size:12px"></i> Confirmar</button>` : ''}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text-sec);padding:24px">Sin ventas registradas</td></tr>';
+}
+
+function confirmarVenta(i) {
+  ventas[i].estado = 'cobrado';
+  renderVentas();
+  renderDashboard();
+  renderAlertas();
+}
+
+// ——— ALERTAS ———
+function alertasCount() {
+  let c = 0;
+  ventas.filter(v => v.estado === 'pendiente').forEach(() => c++);
+  productos.filter(p => p.stock === 0).forEach(() => c++);
+  productos.filter(p => p.stock > 0 && p.stock <= p.stockMin).forEach(() => c++);
+  return c;
+}
+
+function renderAlertas() {
+  const count = alertasCount();
+  document.getElementById('kpiAlertas').textContent = count;
+  document.getElementById('badgeAlertas').textContent = count;
+  const items = [];
+  ventas.forEach((v, i) => {
+    if (v.estado !== 'pendiente') return;
+    const label = v.medio === 'credivip' ? 'CrediVIP — liquida el mes siguiente' : 'Tarjeta — liquida a fin de mes';
+    items.push(`<div class="alerta-item" style="background:var(--warning-bg);border-color:var(--warning-border)">
+      <i class="ti ti-clock alerta-icon" style="color:var(--warning-text)"></i>
+      <div class="alerta-body">
+        <div class="alerta-title">${v.medio === 'credivip' ? '<span class="mp-credivip">CrediVIP</span>' : '<span class="mp-tarjeta">Tarjeta</span>'} — ${v.nombre} — ${v.cliente}</div>
+        <div class="alerta-desc">${fmt(v.precio)} pendiente. ${label}.</div>
+        <div class="alerta-action"><button class="confirm-btn" onclick="confirmarVenta(${i});goTo('alertas',document.querySelector('.nav-item.active'))"><i class="ti ti-check" style="font-size:12px"></i> Marcar como cobrado</button></div>
+      </div>
+    </div>`);
+  });
+  productos.filter(p => p.stock === 0).forEach(p => {
+    items.push(`<div class="alerta-item" style="background:var(--danger-bg);border-color:var(--danger-border)">
+      <i class="ti ti-alert-circle alerta-icon" style="color:var(--danger-text)"></i>
+      <div class="alerta-body"><div class="alerta-title">Sin stock — ${p.nombre}</div><div class="alerta-desc">${p.proveedor ? `Contactar: ${p.proveedor}` : 'Sin proveedor asignado.'}</div></div>
+    </div>`);
+  });
+  productos.filter(p => p.stock > 0 && p.stock <= p.stockMin).forEach(p => {
+    items.push(`<div class="alerta-item">
+      <i class="ti ti-bell alerta-icon" style="color:var(--info-text)"></i>
+      <div class="alerta-body"><div class="alerta-title">Stock bajo — ${p.nombre}</div><div class="alerta-desc">Quedan ${p.stock} unid. Mínimo configurado: ${p.stockMin}.</div></div>
+    </div>`);
+  });
+  document.getElementById('listaAlertas').innerHTML = items.length ? items.join('') : '<div style="color:var(--text-sec);font-size:13px;padding:20px 0">Sin alertas activas 🎉</div>';
+}
+
+// ——— PROVEEDORES ———
+function renderProveedores() {
+  document.getElementById('kpiProvs').textContent = proveedores.length;
+  const sel = document.getElementById('pProveedor');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— Sin proveedor —</option>' + proveedores.map(p => `<option value="${p.nombre}">${p.nombre}</option>`).join('');
+  sel.value = current;
+  document.getElementById('listaProveedores').innerHTML = proveedores.map((p, i) => {
+    const ini = p.nombre.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+    return `<div class="prov-card">
+      <div class="prov-avatar">${ini}</div>
+      <div class="prov-info">
+        <div class="prov-name">${p.nombre}</div>
+        ${p.rubro ? `<div class="prov-meta"><i class="ti ti-tag" style="font-size:12px"></i>${p.rubro}</div>` : ''}
+        ${p.contacto ? `<div class="prov-meta"><i class="ti ti-user" style="font-size:12px"></i>${p.contacto}</div>` : ''}
+        ${p.tel ? `<div class="prov-meta"><i class="ti ti-brand-whatsapp" style="font-size:12px;color:#25d366"></i>${p.tel}</div>` : ''}
+        ${p.notas ? `<div class="prov-meta" style="font-style:italic">${p.notas}</div>` : ''}
+      </div>
+      <div class="prov-actions">
+        ${p.tel ? `<button class="wa-btn" style="padding:5px 10px;font-size:11px" onclick="window.open('https://wa.me/549${p.tel.replace(/\D/g,'')}','_blank')"><i class="ti ti-brand-whatsapp" style="font-size:14px"></i></button>` : ''}
+        <button class="btn btn-sm btn-danger" onclick="eliminarProveedor(${i})" title="Eliminar"><i class="ti ti-trash" style="font-size:13px"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function eliminarProveedor(i) {
+  if (confirm('¿Eliminar ' + proveedores[i].nombre + '?')) {
+    proveedores.splice(i, 1);
+    renderProveedores();
+  }
+}
+
+function guardarProveedor() {
+  const nombre = document.getElementById('prvNombre').value.trim();
+  if (!nombre) { alert('Ingresá el nombre del proveedor.'); return; }
+  proveedores.push({
+    nombre,
+    contacto: document.getElementById('prvContacto').value.trim(),
+    tel: document.getElementById('prvTel').value.trim(),
+    rubro: document.getElementById('prvRubro').value.trim(),
+    notas: document.getElementById('prvNotas').value.trim(),
+  });
+  ['prvNombre','prvContacto','prvTel','prvRubro','prvNotas'].forEach(id => document.getElementById(id).value = '');
+  renderProveedores();
+  closeModal('modalProveedor');
+}
+
+// ——— PRODUCTOS ———
+function populateVentaProd() {
+  const sel = document.getElementById('ventaProd');
+  sel.innerHTML = '<option value="">— Seleccionar producto —</option>' + productos.filter(p => p.stock > 0).map(p => `<option value="${p.id}">${p.nombre} — ${fmt(p.precio)}</option>`).join('');
+}
+
+function guardarProducto() {
+  const nombre = document.getElementById('pNombre').value.trim();
+  const costo = parseFloat(document.getElementById('pCosto').value) || 0;
+  const precio = parseFloat(document.getElementById('pVenta').value) || 0;
+  const stock = parseInt(document.getElementById('pStock').value) || 0;
+  const stockMin = parseInt(document.getElementById('pStockMin').value) || 3;
+  if (!nombre) { alert('Ingresá el nombre del producto.'); return; }
+  if (precio <= 0) { alert('Ingresá el precio de venta.'); return; }
+  productos.push({ id: nextId++, nombre, cat: document.getElementById('pCat').value, costo, precio, stock, stockMin, proveedor: document.getElementById('pProveedor').value });
+  ['pNombre','pCosto','pVenta','pStock','pStockMin'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pProveedor').value = '';
+  renderStock();
+  renderAlertas();
+  populateVentaProd();
+  closeModal('modalProducto');
+}
+
+// ——— VENTAS ———
+function updateVentaResumen() {
+  const prodId = parseInt(document.getElementById('ventaProd').value);
+  const prod = productos.find(p => p.id === prodId);
+  const medio = document.getElementById('ventaMedio').value;
+  const aviso = document.getElementById('avisoMedio');
+  const isPend = medio === 'tarjeta' || medio === 'credivip';
+  if (prod) {
+    document.getElementById('resTotal').textContent = fmt(prod.precio);
+    document.getElementById('resGanancia').textContent = '+' + fmt(prod.precio - prod.costo);
+  }
+  if (isPend) {
+    aviso.textContent = medio === 'credivip' ? 'CrediVIP liquida el mes siguiente. Quedará pendiente hasta que confirmes.' : 'La tarjeta queda pendiente de liquidación hasta que confirmes el pago.';
+    aviso.className = 'mp-aviso warn show';
+    document.getElementById('resEstado').textContent = 'Pend. liq.';
+    document.getElementById('resEstado').style.color = 'var(--warning-text)';
+  } else {
+    aviso.className = 'mp-aviso';
+    document.getElementById('resEstado').textContent = 'Cobrado';
+    document.getElementById('resEstado').style.color = 'var(--success-text)';
+  }
+}
+
+function registrarVenta() {
+  const prodId = parseInt(document.getElementById('ventaProd').value);
+  const prod = productos.find(p => p.id === prodId);
+  const cliente = document.getElementById('ventaCliente').value.trim();
+  if (!prod) { alert('Seleccioná un producto.'); return; }
+  if (!cliente) { alert('Ingresá el nombre del cliente.'); return; }
+  const medio = document.getElementById('ventaMedio').value;
+  const isPend = medio === 'tarjeta' || medio === 'credivip';
+  const ahora = new Date();
+  ventas.push({
+    nombre: prod.nombre, cat: prod.cat, precio: prod.precio, costo: prod.costo,
+    cliente, dni: document.getElementById('ventaDni').value, tel: document.getElementById('ventaTel').value,
+    medio, estado: isPend ? 'pendiente' : 'cobrado',
+    fecha: ahora.toLocaleDateString('es-AR') + ' ' + ahora.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'})
+  });
+  prod.stock = Math.max(0, prod.stock - 1);
+  ['ventaCliente','ventaDni','ventaTel'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ventaProd').value = '';
+  document.getElementById('ventaMedio').value = 'efectivo';
+  document.getElementById('avisoMedio').className = 'mp-aviso';
+  renderDashboard();
+  renderAlertas();
+  closeModal('modalVenta');
+}
+
+// ——— INIT ———
+renderProveedores();
+populateVentaProd();
+renderDashboard();
+renderStock();
+renderAlertas();
+</script>
+</body>
+</html>
