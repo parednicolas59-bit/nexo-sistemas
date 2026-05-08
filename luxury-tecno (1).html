@@ -515,22 +515,38 @@ function intentarLogin() {
 }
 
 // ——— ESTADO ———
+const SK_LT = 'luxury_tecno_v1';
+
+function saveData() {
+  try {
+    localStorage.setItem(SK_LT, JSON.stringify({ ventas, productos, proveedores, nextId }));
+  } catch(e) { console.error('Error guardando:', e); }
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(SK_LT);
+    if (raw) {
+      const d = JSON.parse(raw);
+      ventas = d.ventas || [];
+      productos = d.productos || [];
+      proveedores = d.proveedores || [];
+      nextId = d.nextId || 1;
+      return;
+    }
+  } catch(e) { console.error('Error cargando:', e); }
+  // Primera vez — datos vacíos
+  ventas = [];
+  productos = [];
+  proveedores = [];
+  nextId = 1;
+}
+
 let ventas = [];
-let productos = [
-  { id:1, nombre:'Samsung Galaxy A55', cat:'Celulares', costo:145000, precio:185000, stock:8, stockMin:3, proveedor:'Samsung Distribuidora' },
-  { id:2, nombre:'iPhone 14 128GB', cat:'Celulares', costo:540000, precio:680000, stock:2, stockMin:3, proveedor:'iCenter Mayorista' },
-  { id:3, nombre:'LG Smart TV 55"', cat:'Smart TV', costo:245000, precio:320000, stock:5, stockMin:3, proveedor:'LG Chaco' },
-  { id:4, nombre:'Notebook HP 15" i5', cat:'Notebooks', costo:340000, precio:420000, stock:1, stockMin:3, proveedor:'HP Mayorista Norte' },
-  { id:5, nombre:'Sony WH-1000XM5', cat:'Accesorios', costo:72000, precio:98000, stock:6, stockMin:3, proveedor:'Samsung Distribuidora' },
-  { id:6, nombre:'Samsung QLED 65"', cat:'Smart TV', costo:460000, precio:580000, stock:0, stockMin:3, proveedor:'Samsung Distribuidora' },
-];
-let proveedores = [
-  { nombre:'Samsung Distribuidora', contacto:'Carlos Méndez', tel:'3644 881 200', rubro:'Celulares, Smart TV', notas:'Entrega en 48hs' },
-  { nombre:'iCenter Mayorista', contacto:'Andrea López', tel:'3624 445 771', rubro:'Apple / iPhone', notas:'Pago anticipado' },
-  { nombre:'LG Chaco', contacto:'Roberto Soria', tel:'3624 112 334', rubro:'Smart TV', notas:'Visita mensual' },
-  { nombre:'HP Mayorista Norte', contacto:'Marcelo Ruiz', tel:'3644 993 001', rubro:'Notebooks', notas:'Garantía 1 año' },
-];
-let nextId = 7;
+let productos = [];
+let proveedores = [];
+let nextId = 1;
+loadData();
 
 const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
 const pageTitles = { dashboard:'Dashboard', stock:'Stock', ventas:'Ventas', alertas:'Alertas', proveedores:'Proveedores', admin:'Admin' };
@@ -666,6 +682,7 @@ function renderVentas() {
 
 function confirmarVenta(i) {
   ventas[i].estado = 'cobrado';
+  saveData();
   renderVentas();
   renderDashboard();
   renderAlertas();
@@ -741,6 +758,7 @@ function renderProveedores() {
 function eliminarProveedor(i) {
   if (confirm('¿Eliminar ' + proveedores[i].nombre + '?')) {
     proveedores.splice(i, 1);
+    saveData();
     renderProveedores();
   }
 }
@@ -756,6 +774,7 @@ function guardarProveedor() {
     notas: document.getElementById('prvNotas').value.trim(),
   });
   ['prvNombre','prvContacto','prvTel','prvRubro','prvNotas'].forEach(id => document.getElementById(id).value = '');
+  saveData();
   renderProveedores();
   closeModal('modalProveedor');
 }
@@ -777,6 +796,7 @@ function guardarProducto() {
   productos.push({ id: nextId++, nombre, cat: document.getElementById('pCat').value, costo, precio, stock, stockMin, proveedor: document.getElementById('pProveedor').value });
   ['pNombre','pCosto','pVenta','pStock','pStockMin'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pProveedor').value = '';
+  saveData();
   renderStock();
   renderAlertas();
   populateVentaProd();
@@ -826,6 +846,7 @@ function registrarVenta() {
   document.getElementById('ventaProd').value = '';
   document.getElementById('ventaMedio').value = 'efectivo';
   document.getElementById('avisoMedio').className = 'mp-aviso';
+  saveData();
   renderDashboard();
   renderAlertas();
   closeModal('modalVenta');
