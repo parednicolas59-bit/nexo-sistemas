@@ -94,6 +94,7 @@ tr:hover td{background:rgba(124,92,252,0.04)}
 .f-otro{background:rgba(160,154,184,0.12);color:#a09ab8}
 .f-ahorros{background:rgba(255,157,226,0.12);color:#ff9de2}
 .f-supervielle{background:rgba(0,207,170,0.12);color:#00cfaa}
+.f-acciones{background:rgba(245,158,11,0.12);color:#f59e0b}
 
 /* GRÁFICO */
 .bar-wrap{padding:16px 18px}
@@ -126,12 +127,28 @@ tr:hover td{background:rgba(124,92,252,0.04)}
   table{font-size:11px}
   th,td{padding:8px 10px}
 }
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.login-box h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.login-box p{font-size:12px;color:var(--ink3);margin-bottom:24px}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:20px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--bg3);border:2px solid var(--border);transition:all .2s}
+.pin-dot.filled{background:var(--purple);border-color:var(--purple)}
+.pin-dot.error{background:var(--red);border-color:var(--red)}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.pin-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;font-family:var(--font);font-size:18px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .2s}
+.pin-btn:hover{background:var(--bg4);border-color:var(--purple);color:var(--purple2)}
+.pin-btn:active{transform:scale(0.95)}
+.pin-error{color:var(--red);font-size:12px;margin-top:8px;min-height:18px}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div class="logo">Mis <span>Gastos</span></div>
   <div class="topbar-actions">
+    <button class="btn" id="nuevo-accion-btn" style="border-color:rgba(245,158,11,0.4);color:#f59e0b">📈 Acciones</button>
     <button class="btn" id="nuevo-supervielle-btn" style="border-color:rgba(0,207,170,0.4);color:#00cfaa">🏦 Supervielle</button>
     <button class="btn" id="nuevo-ahorro-btn" style="border-color:rgba(255,157,226,0.4);color:#ff9de2">💰 Ahorros</button>
     <button class="btn primary" id="nuevo-gasto-btn">+ Nuevo gasto</button>
@@ -147,6 +164,9 @@ tr:hover td{background:rgba(124,92,252,0.04)}
     <div class="card-header"><span class="card-title">Gasto por fuente</span><span id="grafico-moneda-toggle" style="font-size:11px;color:var(--ink3);cursor:pointer">Ver en USD</span></div>
     <div class="bar-wrap" id="grafico"></div>
   </div>
+
+  <!-- ACCIONES -->
+  <div class="card" id="acciones-card"></div>
 
   <!-- SUPERVIELLE -->
   <div class="card" id="supervielle-card"></div>
@@ -175,15 +195,15 @@ tr:hover td{background:rgba(124,92,252,0.04)}
 const SK = 'nicogastos_v1';
 const FUENTES = ['Lemon Card','NBCH','Galicia','Supervielle','Nickcel','Sueldo','Capital Inversión','DolarApp','Ahorros','Otro'];
 const CATEGORIAS = ['Vivienda','Comida','Transporte','Salud','Trabajo','Tecnología','Ropa','Entretenimiento','Servicios','Inversión','Otro'];
-const FUENTE_CLASS = {'Lemon Card':'f-lemon','NBCH':'f-nbch','Galicia':'f-galicia','Supervielle':'f-supervielle','Nickcel':'f-nickcel','Sueldo':'f-sueldo','Capital Inversión':'f-capital','DolarApp':'f-dolarapp','Ahorros':'f-ahorros','Otro':'f-otro'};
-const FUENTE_COLOR = {'Lemon Card':'#ffd100','NBCH':'#38bdf8','Galicia':'#ff4d4d','Supervielle':'#00cfaa','Nickcel':'#a07aff','Sueldo':'#00e5a0','Capital Inversión':'#ffa500','DolarApp':'#00c8ff','Ahorros':'#ff9de2','Otro':'#a09ab8'};
+const FUENTE_CLASS = {'Acciones':'f-acciones','Lemon Card':'f-lemon','NBCH':'f-nbch','Galicia':'f-galicia','Supervielle':'f-supervielle','Nickcel':'f-nickcel','Sueldo':'f-sueldo','Capital Inversión':'f-capital','DolarApp':'f-dolarapp','Ahorros':'f-ahorros','Otro':'f-otro'};
+const FUENTE_COLOR = {'Acciones':'#f59e0b','Lemon Card':'#ffd100','NBCH':'#38bdf8','Galicia':'#ff4d4d','Supervielle':'#00cfaa','Nickcel':'#a07aff','Sueldo':'#00e5a0','Capital Inversión':'#ffa500','DolarApp':'#00c8ff','Ahorros':'#ff9de2','Otro':'#a09ab8'};
 
 const fmtARS = n => '$' + Math.round(n||0).toLocaleString('es-AR');
 const fmtUSD = n => 'U$S ' + (n||0).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
 const hoy = () => new Date().toISOString().split('T')[0];
 const fd = s => { if(!s) return '—'; const [y,m,d] = s.split('-'); return `${d}/${m}/${y}`; };
 
-const DEF = { gastos: [], ahorros: [], supervielle: [], nextIdAhorro: 1, nextIdSupervielle: 1, nextId: 1 };
+const DEF = { gastos: [], ahorros: [], supervielle: [], acciones: [], nextIdAhorro: 1, nextIdSupervielle: 1, nextIdAccion: 1, nextId: 1 };
 
 function loadData() {
   try {
@@ -196,6 +216,8 @@ function loadData() {
     if(!d.nextId) d.nextId = (d.gastos.reduce((m,g) => Math.max(m,g.id),0) + 1);
     if(!d.nextIdAhorro) d.nextIdAhorro = (d.ahorros.reduce((m,a) => Math.max(m,a.id),0) + 1);
     if(!d.nextIdSupervielle) d.nextIdSupervielle = (d.supervielle.reduce((m,s) => Math.max(m,s.id),0) + 1);
+    if(!d.acciones) d.acciones = [];
+    if(!d.nextIdAccion) d.nextIdAccion = (d.acciones.reduce((m,a) => Math.max(m,a.id),0) + 1);
     return d;
   } catch(e) { return JSON.parse(JSON.stringify(DEF)); }
 }
@@ -209,6 +231,7 @@ let modal = null;
 
 function render() {
   renderMetrics();
+  renderAccionesCard();
   renderSupervielleCard();
   renderAhorrosCard();
   renderGrafico();
@@ -224,6 +247,48 @@ function getGastosFiltrados() {
     if(filtroMoneda !== 'Todos' && g.moneda !== filtroMoneda) return false;
     return true;
   });
+}
+
+function getTotalAcciones(moneda) {
+  return data.acciones.filter(a=>a.moneda===moneda).reduce((s,a)=>s+a.capitalInvertido,0);
+}
+
+function renderAccionesCard() {
+  const card = document.getElementById('acciones-card');
+  if(!card) return;
+  const totalARS = getTotalAcciones('ARS');
+  const totalUSD = getTotalAcciones('USD');
+  const acciones = data.acciones.slice().sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  card.innerHTML = `
+    <div class="card-header">
+      <span class="card-title">📈 Ahorro en Acciones</span>
+      <span style="font-size:11px;color:var(--ink3)">${data.acciones.length} posiciones</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border)">
+      <div style="background:var(--bg3);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink3);margin-bottom:6px">Capital ARS</div>
+        <div style="font-family:var(--mono);font-size:20px;color:#f59e0b;">${fmtARS(totalARS)}</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink3);margin-bottom:6px">Capital USD</div>
+        <div style="font-family:var(--mono);font-size:20px;color:#f59e0b;">${fmtUSD(totalUSD)}</div>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Fecha</th><th>Ticker</th><th>Descripción</th><th>Moneda</th><th>Capital invertido</th><th></th></tr></thead>
+      <tbody>
+        ${acciones.length===0?`<tr><td colspan="6" class="empty">Sin posiciones registradas</td></tr>`:''}
+        ${acciones.map(a=>`<tr>
+          <td style="color:var(--ink3);font-family:var(--mono);font-size:11px">${fd(a.fecha)}</td>
+          <td><span style="font-family:var(--mono);font-weight:700;color:#f59e0b;font-size:13px">${a.ticker}</span></td>
+          <td style="color:var(--ink2)">${a.descripcion||'—'}</td>
+          <td><span class="badge ${a.moneda==='ARS'?'badge-ars':'badge-usd'}">${a.moneda}</span></td>
+          <td style="font-family:var(--mono);font-weight:500;color:#f59e0b;">${a.moneda==='ARS'?fmtARS(a.capitalInvertido):fmtUSD(a.capitalInvertido)}</td>
+          <td><button class="btn danger" data-del-accion="${a.id}" style="font-size:10px;padding:2px 8px">✕</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
 }
 
 function getSaldoSupervielle(moneda) {
@@ -339,6 +404,11 @@ function renderMetrics() {
       <div class="metric-val">${fmtUSD(totalMesUSD)}</div>
       <div class="metric-sub">${new Date().toLocaleDateString('es-AR',{month:'long',year:'numeric'})}</div>
     </div>
+    <div class="metric" style="border-top:2px solid #f59e0b">
+      <div class="metric-label">Acciones USD</div>
+      <div class="metric-val" style="color:#f59e0b">${fmtUSD(getTotalAcciones('USD'))}</div>
+      <div class="metric-sub">capital invertido</div>
+    </div>
     <div class="metric" style="border-top:2px solid #00cfaa">
       <div class="metric-label">Supervielle ARS</div>
       <div class="metric-val" style="color:#00cfaa">${fmtARS(getSaldoSupervielle('ARS'))}</div>
@@ -408,6 +478,46 @@ function renderTabla() {
 
 function renderModal() {
   if(!modal) { document.getElementById('modal-container').innerHTML = ''; return; }
+  if(modal.type === 'nueva-accion') {
+    document.getElementById('modal-container').innerHTML = `
+      <div class="modal-bg" id="modal-overlay">
+        <div class="modal" onclick="event.stopPropagation()">
+          <div class="modal-title">📈 Nueva posición en acciones</div>
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-label">Fecha *</label>
+              <input class="inp" type="date" id="ac-fecha" value="${hoy()}">
+            </div>
+            <div class="form-row">
+              <label class="form-label">Moneda *</label>
+              <select class="inp" id="ac-moneda">
+                <option value="USD">USD — Dólares</option>
+                <option value="ARS">ARS — Pesos</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Ticker *</label>
+              <input class="inp" id="ac-ticker" placeholder="ej. NVDA, AAPL, MSFT">
+            </div>
+            <div class="form-row">
+              <label class="form-label">Capital invertido *</label>
+              <input class="inp" type="number" id="ac-capital" placeholder="0" min="0" step="0.01">
+            </div>
+            <div class="form-row full">
+              <label class="form-label">Descripción</label>
+              <input class="inp" id="ac-desc" placeholder="ej. Compra de 5 acciones NVIDIA">
+            </div>
+          </div>
+          <div id="ac-error" style="color:var(--red);font-size:12px;margin:0 18px 8px;display:none"></div>
+          <div class="form-actions" style="padding:0 18px 4px">
+            <button class="btn" id="modal-cancel">Cancelar</button>
+            <button class="btn primary" id="modal-save-accion" style="background:#f59e0b;border-color:#f59e0b;color:#1a0a00">Guardar</button>
+          </div>
+        </div>
+      </div>`;
+    bindEvents();
+    return;
+  }
   if(modal.type === 'nuevo-supervielle') {
     document.getElementById('modal-container').innerHTML = `
       <div class="modal-bg" id="modal-overlay">
@@ -593,6 +703,37 @@ function bindEvents() {
   const gt = q('grafico-moneda-toggle');
   if(gt) gt.onclick = () => { graficoMoneda = graficoMoneda === 'ARS' ? 'USD' : 'ARS'; render(); };
 
+  // Nuevo accion btn
+  const nac = document.getElementById('nuevo-accion-btn');
+  if(nac) nac.onclick = () => { modal = { type: 'nueva-accion' }; render(); };
+
+  // Guardar accion
+  const msac = document.getElementById('modal-save-accion');
+  if(msac) msac.onclick = () => {
+    const fecha = document.getElementById('ac-fecha')?.value || hoy();
+    const ticker = (document.getElementById('ac-ticker')?.value || '').trim().toUpperCase();
+    const capital = parseFloat(document.getElementById('ac-capital')?.value) || 0;
+    const moneda = document.getElementById('ac-moneda')?.value || 'USD';
+    const desc = (document.getElementById('ac-desc')?.value || '').trim();
+    const errDiv = document.getElementById('ac-error');
+    if(!ticker) { if(errDiv){ errDiv.textContent='⚠️ Ingresá el ticker.'; errDiv.style.display='block'; } return; }
+    if(!capital || capital <= 0) { if(errDiv){ errDiv.textContent='⚠️ Ingresá el capital invertido.'; errDiv.style.display='block'; } return; }
+    data.acciones.unshift({ id: data.nextIdAccion++, fecha, ticker, capitalInvertido: capital, moneda, descripcion: desc });
+    save(data);
+    modal = null;
+    render();
+  };
+
+  // Eliminar accion
+  document.querySelectorAll('[data-del-accion]').forEach(b => {
+    b.onclick = () => {
+      if(!confirm('¿Eliminar esta posición?')) return;
+      data.acciones = data.acciones.filter(a => a.id !== Number(b.dataset.delAccion));
+      save(data);
+      render();
+    };
+  });
+
   // Nuevo supervielle btn
   const nsv = document.getElementById('nuevo-supervielle-btn');
   if(nsv) nsv.onclick = () => { modal = { type: 'nuevo-supervielle' }; render(); };
@@ -675,6 +816,84 @@ function bindEvents() {
 }
 
 render();
+</script>
+
+<div id="login-screen" class="login-screen">
+  <div class="login-box">
+    <div style="font-size:32px;margin-bottom:12px">🔐</div>
+    <h2>Mis <span style="color:var(--purple2)">Finanzas</span></h2>
+    <p>Ingresá tu PIN para continuar</p>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+    <div class="pin-grid">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <div></div>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn" onclick="pinBorrar()" style="font-size:14px">⌫</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
+
+<script>
+const PIN_CORRECTO = '5044';
+let pinActual = '';
+
+function pinPress(n) {
+  if(pinActual.length >= 4) return;
+  pinActual += n;
+  actualizarDots();
+  if(pinActual.length === 4) {
+    setTimeout(() => {
+      if(pinActual === PIN_CORRECTO) {
+        document.getElementById('login-screen').style.display = 'none';
+      } else {
+        const dots = document.querySelectorAll('.pin-dot');
+        dots.forEach(d => d.classList.add('error'));
+        document.getElementById('pin-error').textContent = 'PIN incorrecto. Intentá de nuevo.';
+        setTimeout(() => {
+          pinActual = '';
+          actualizarDots();
+          dots.forEach(d => d.classList.remove('error'));
+          document.getElementById('pin-error').textContent = '';
+        }, 800);
+      }
+    }, 100);
+  }
+}
+
+function pinBorrar() {
+  pinActual = pinActual.slice(0, -1);
+  actualizarDots();
+  document.getElementById('pin-error').textContent = '';
+}
+
+function actualizarDots() {
+  const dots = document.querySelectorAll('.pin-dot');
+  dots.forEach((d, i) => {
+    d.classList.toggle('filled', i < pinActual.length);
+    d.classList.remove('error');
+  });
+}
+
+// Teclado físico
+document.addEventListener('keydown', e => {
+  if(document.getElementById('login-screen').style.display === 'none') return;
+  if(e.key >= '0' && e.key <= '9') pinPress(e.key);
+  if(e.key === 'Backspace') pinBorrar();
+});
 </script>
 </body>
 </html>
