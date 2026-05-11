@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarot Online Personalizado</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --oro: #c9a96e;
+    --oro-claro: #f0d080;
+    --fondo: #0f0720;
+    --fondo2: #1a0a2e;
+    --fondo3: #2d1654;
+    --texto: #e8d5b0;
+    --texto2: #a89070;
+    --verde-wp: #25D366;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Fondo estrellado */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(201,169,110,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 20%, rgba(201,169,110,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 5%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 12%, rgba(201,169,110,0.8) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 88% 18%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 40%, rgba(201,169,110,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 18% 65%, rgba(201,169,110,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 70% 70%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 85%, rgba(201,169,110,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 90%, rgba(255,255,255,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 50px 0 30px;
+  }
+
+  .luna {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    position: relative;
+  }
+
+  .luna svg { width: 100%; height: 100%; }
+
+  .titulo {
+    font-family: 'Cinzel', serif;
+    font-size: 42px;
+    font-weight: 600;
+    color: var(--oro);
+    letter-spacing: 6px;
+    line-height: 1;
+    animation: fadeDown 1s ease both;
+  }
+
+  .subtitulo {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: var(--texto2);
+    margin-top: 8px;
+    animation: fadeDown 1s ease 0.2s both;
+  }
+
+  .linea-deco {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px auto;
+    animation: fadeIn 1s ease 0.4s both;
+  }
+
+  .linea-deco::before, .linea-deco::after {
+    content: '';
+    width: 80px;
+    height: 0.5px;
+    background: var(--oro);
+    opacity: 0.5;
+  }
+
+  .linea-deco span { color: var(--oro); font-size: 14px; }
+
+  .bajada {
+    font-size: 18px;
+    font-style: italic;
+    color: var(--texto2);
+    text-align: center;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    animation: fadeIn 1s ease 0.5s both;
+  }
+
+  /* TEMAS */
+  .temas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 50px;
+    animation: fadeIn 1s ease 0.6s both;
+  }
+
+  .tema-badge {
+    background: var(--fondo3);
+    border: 0.5px solid var(--oro);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--oro);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    opacity: 0.85;
+  }
+
+  /* TIRADAS */
+  .seccion-titulo {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 5px;
+    color: var(--oro);
+    text-align: center;
+    margin-bottom: 24px;
+    opacity: 0.8;
+  }
+
+  .tiradas {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 50px;
+  }
+
+  .tirada-card {
+    background: var(--fondo2);
+    border: 0.5px solid rgba(201,169,110,0.3);
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    transition: border-color 0.3s, transform 0.2s;
+    animation: fadeIn 1s ease both;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .tirada-card:hover {
+    border-color: var(--oro);
+    transform: translateY(-2px);
+  }
+
+  .tirada-card.destacada {
+    border: 1px solid var(--oro);
+    background: #2d1654;
+    position: relative;
+  }
+
+  .badge-popular {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--oro);
+    color: var(--fondo);
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 3px 14px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .tirada-info { flex: 1; }
+
+  .tirada-nombre {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    color: var(--oro-claro);
+    margin-bottom: 6px;
+  }
+
+  .tirada-desc {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--texto2);
+    line-height: 1.5;
+  }
+
+  .tirada-precio-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+  }
+
+  .precio {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--oro);
+    white-space: nowrap;
+  }
+
+  .precio span {
+    font-size: 12px;
+    color: var(--texto2);
+    display: block;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  .btn-pagar {
+    background: var(--oro);
+    color: var(--fondo);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .btn-pagar:hover {
+    background: var(--oro-claro);
+    transform: scale(1.03);
+  }
+
+  /* COMO FUNCIONA */
+  .como-funciona {
+    background: var(--fondo2);
+    border: 0.5px solid rgba(201,169,110,0.2);
+    border-radius: 12px;
+    padding: 30px 28px;
+    margin-bottom: 50px;
+    animation: fadeIn 1s ease 0.8s both;
+  }
+
+  .pasos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .paso {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .paso-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 0.5px solid var(--oro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--oro);
+    flex-shrink: 0;
+  }
+
+  .paso-texto {
+    font-size: 16px;
+    color: var(--texto);
+    line-height: 1.5;
+    padding-top: 4px;
+  }
+
+  .paso-texto strong {
+    color: var(--oro-claro);
+    font-weight: 600;
+  }
+
+  /* DATOS FORMULARIO INFO */
+  .datos-box {
+    background: var(--fondo3);
+    border: 0.5px solid var(--oro);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 50px;
+    text-align: center;
+    animation: fadeIn 1s ease 0.9s both;
+  }
+
+  .datos-box p {
+    font-size: 15px;
+    color: var(--texto2);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .datos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dato-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+    color: var(--oro-claro);
+  }
+
+  .dato-item::before {
+    content: '✦';
+    color: var(--oro);
+    font-size: 12px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 0.5px solid rgba(201,169,110,0.2);
+    animation: fadeIn 1s ease 1s both;
+  }
+
+  .footer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0.5px solid var(--verde-wp);
+    border-radius: 20px;
+    padding: 8px 20px;
+    color: var(--verde-wp);
+    font-size: 13px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .footer p {
+    font-size: 13px;
+    color: var(--texto2);
+    font-style: italic;
+  }
+
+  /* ANIMACIONES */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tirada-card:nth-child(1) { animation-delay: 0.6s; }
+  .tirada-card:nth-child(2) { animation-delay: 0.75s; }
+  .tirada-card:nth-child(3) { animation-delay: 0.9s; }
+
+  @media (max-width: 480px) {
+    .titulo { font-size: 32px; }
+    .tirada-card { flex-direction: column; text-align: center; }
+    .tirada-precio-btn { width: 100%; }
+    .btn-pagar { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="luna">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="32" fill="#2d1654"/>
+        <circle cx="52" cy="30" r="24" fill="#0f0720"/>
+        <g transform="translate(40,40)">
+          <polygon points="0,-10 2.5,-2.5 10,0 2.5,2.5 0,10 -2.5,2.5 -10,0 -2.5,-2.5" fill="#c9a96e"/>
+          <circle cx="0" cy="0" r="3" fill="#f0d080"/>
+        </g>
+      </svg>
+    </div>
+    <h1 class="titulo">TAROT</h1>
+    <p class="subtitulo">ONLINE · PERSONALIZADO</p>
+    <div class="linea-deco"><span>✦</span></div>
+    <p class="bajada">Las cartas tienen un mensaje para vos.<br>Descubrí qué te depara el universo.</p>
+  </div>
+
+  <!-- TEMAS -->
+  <div class="temas">
+    <span class="tema-badge">♥ Amor</span>
+    <span class="tema-badge">✦ Trabajo</span>
+    <span class="tema-badge">☽ Dinero</span>
+    <span class="tema-badge">★ Salud</span>
+    <span class="tema-badge">◈ Estudios</span>
+    <span class="tema-badge">⊕ Decisiones</span>
+  </div>
+
+  <!-- TIRADAS -->
+  <p class="seccion-titulo">ELEGÍ TU TIRADA</p>
+  <div class="tiradas">
+
+    <a class="tirada-card" href="https://mpago.la/1hTbx5d" target="_blank">
+      <div class="tirada-info">
+        <div class="tirada-nombre">Tirada Simple</div>
+        <div class="tirada-desc">Una pregunta puntual.<br>Foto de las cartas + mensaje explicativo.</div>
+      </div>
+      <div class="tirada-precio-btn">
+        <div class="precio">$3.300<span>ARS</span></div>
+        <span class="btn-pagar">PAGAR</span>
+      </div>
+    </a>
+
+    <a class="tirada-card destacada" href="https://mpago.la/2u1eo7S" target="_blank">
+      <div class="badge-popular">MÁS ELEGIDA</div>
+      <div class="tirada-info">
+        <div class="tirada-nombre">Tirada Completa</div>
+        <div class="tirada-desc">Lectura profunda de tu situación actual, energía y caminos posibles.</div>
+      </div>
+      <div class="tirada-precio-btn">
+        <div class="precio">$6.500<span>ARS</span></div>
+        <span class="btn-pagar">PAGAR</span>
+      </div>
+    </a>
+
+    <a class="tirada-card" href="https://mpago.la/23iSvHd" target="_blank">
+      <div class="tirada-info">
+        <div class="tirada-nombre">Tirada Profunda</div>
+        <div class="tirada-desc">Amor + trabajo + salud juntos. La lectura más completa para vos.</div>
+      </div>
+      <div class="tirada-precio-btn">
+        <div class="precio">$9.800<span>ARS</span></div>
+        <span class="btn-pagar">PAGAR</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- DATOS QUE SE NECESITAN -->
+  <p class="seccion-titulo">¿QUÉ NECESITO DE VOS?</p>
+  <div class="datos-box">
+    <p>Una vez que pagás, enviame estos datos por WhatsApp:</p>
+    <div class="datos-lista">
+      <div class="dato-item">Nombre y apellido completo</div>
+      <div class="dato-item">Fecha de nacimiento</div>
+      <div class="dato-item">Tema o consulta</div>
+    </div>
+  </div>
+
+  <!-- CÓMO FUNCIONA -->
+  <p class="seccion-titulo">¿CÓMO FUNCIONA?</p>
+  <div class="como-funciona">
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-num">1</div>
+        <div class="paso-texto"><strong>Elegís tu tirada</strong> y pagás por MercadoPago</div>
+      </div>
+      <div class="paso">
+        <div class="paso-num">2</div>
+        <div class="paso-texto"><strong>Me enviás tus datos</strong> por WhatsApp — nombre, apellido, fecha de nacimiento y tu consulta</div>
+      </div>
+      <div class="paso">
+        <div class="paso-num">3</div>
+        <div class="paso-texto"><strong>Realizo tu tirada</strong> de forma personalizada con tus cartas</div>
+      </div>
+      <div class="paso">
+        <div class="paso-num">4</div>
+        <div class="paso-texto"><strong>Recibís las fotos</strong> de tus cartas con la interpretación completa directamente en tu WhatsApp</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      CONSULTAS 100% ONLINE · WHATSAPP
+    </div>
+    <p>Respuesta rápida · Privada · Confidencial</p>
+    <p style="margin-top:10px; font-size:12px; opacity:0.5;">✦ El universo tiene mensajes que esperan ser escuchados ✦</p>
+  </div>
+
+</div>
+</body>
+</html>
