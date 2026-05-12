@@ -301,14 +301,14 @@ async function confirmarPago(){
   var prompt='Sos una tarotista experta y mística. Realizá una lectura de tarot personalizada y profunda.\n\nDATOS DEL CONSULTANTE:\n- Nombre: '+nombre+'\n- Fecha de nacimiento: '+fecha+'\n- Tema de consulta: '+tema+'\n- Consulta: '+consulta+'\n\nTIPO DE TIRADA: '+tiradaActual.nombre+'\n\nCARTAS REVELADAS:\n'+cartasTexto+'\n\nRealizá una lectura COMPLETA y PERSONALIZADA. Dirigite a '+primerNombre+' directamente usando su nombre.\nUsá un tono místico, poético y profundo pero accesible.\nPara cada carta explicá su significado en relación directa a la consulta específica.\nAl final dá un mensaje integrador poderoso y un consejo del universo.\nEstructurá la respuesta con el nombre de cada posición como título (usando ###).\nLa lectura debe ser emotiva, significativa y de al menos 400 palabras.';
 
   try{
-    var response=await fetch('https://api.anthropic.com/v1/messages',{
+    var response=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer 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'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
     clearInterval(interval);
     var data=await response.json();
-    var lectura=(data.content&&data.content[0]&&data.content[0].text)||'Las cartas guardaron silencio. Intentá de nuevo.';
+    var lectura=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'Las cartas guardaron silencio. Intentá de nuevo.';
     var lecturaFmt=lectura.replace(/### (.+)/g,'<h3>$1</h3>').replace(/## (.+)/g,'<h3>$1</h3>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
     document.getElementById('res-nombre').textContent=primerNombre+', tu lectura está lista';
     document.getElementById('res-tipo').textContent=tiradaActual.nombre.toUpperCase();
