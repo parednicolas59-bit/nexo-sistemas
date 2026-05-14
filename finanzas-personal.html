@@ -22,20 +22,12 @@
   --r:12px;
 }
 body{background:var(--bg);font-family:var(--font);color:var(--ink);min-height:100vh}
-
-/* BG */
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(124,92,252,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 100%,rgba(0,229,160,0.06) 0%,transparent 60%);pointer-events:none;z-index:0}
-
-/* TOPBAR */
 .topbar{position:sticky;top:0;z-index:100;background:rgba(10,10,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
 .logo{font-size:16px;font-weight:800;letter-spacing:-0.5px;color:var(--ink)}
 .logo span{color:var(--purple2)}
 .topbar-actions{display:flex;gap:8px}
-
-/* CONTENT */
 .wrap{max-width:1000px;margin:0 auto;padding:24px 20px;position:relative;z-index:1}
-
-/* MÉTRICAS */
 .metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
 .metric{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;overflow:hidden}
 .metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
@@ -46,21 +38,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .metric-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
 .metric-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--ink)}
 .metric-sub{font-size:11px;color:var(--ink3);margin-top:4px}
-
-/* CARD */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
 .card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--ink2);text-transform:uppercase}
-
-/* BOTONES */
 .btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--ink);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.3px}
 .btn:hover{border-color:var(--purple);color:var(--purple2)}
 .btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}
 .btn.primary:hover{background:var(--purple2);border-color:var(--purple2)}
 .btn.danger{border-color:rgba(255,77,109,0.3);color:var(--red)}
 .btn.danger:hover{background:var(--redl)}
-
-/* FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 18px}
 .form-row{display:flex;flex-direction:column;gap:5px}
 .form-row.full{grid-column:1/-1}
@@ -68,21 +54,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .inp{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--ink);font-family:var(--font);font-size:13px;outline:none;transition:border-color .2s;width:100%}
 .inp:focus{border-color:var(--purple)}
 .inp option{background:var(--bg3)}
-
-/* TABLA */
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink3);border-bottom:1px solid var(--border);background:var(--bg3)}
 td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--ink);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(124,92,252,0.04)}
 .empty{text-align:center;padding:40px;color:var(--ink3);font-size:13px}
-
-/* BADGES */
 .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px}
 .badge-ars{background:var(--goldl);color:var(--gold)}
 .badge-usd{background:var(--greenl);color:var(--green)}
-
-/* FUENTE TAGS */
 .fuente-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.3px}
 .f-lemon{background:rgba(255,209,0,0.12);color:#ffd100}
 .f-nbch{background:rgba(56,189,248,0.12);color:#38bdf8}
@@ -95,30 +75,27 @@ tr:hover td{background:rgba(124,92,252,0.04)}
 .f-ahorros{background:rgba(255,157,226,0.12);color:#ff9de2}
 .f-supervielle{background:rgba(0,207,170,0.12);color:#00cfaa}
 .f-acciones{background:rgba(245,158,11,0.12);color:#f59e0b}
-
-/* GRÁFICO */
 .bar-wrap{padding:16px 18px}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .bar-label{font-size:11px;font-weight:600;color:var(--ink2);width:90px;flex-shrink:0;text-align:right}
 .bar-track{flex:1;background:var(--bg3);border-radius:20px;height:8px;overflow:hidden}
 .bar-fill{height:100%;border-radius:20px;transition:width .6s ease}
 .bar-val{font-family:var(--mono);font-size:11px;color:var(--ink3);width:100px;flex-shrink:0}
-
-/* FILTROS */
 .filtros{display:flex;gap:8px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--border)}
 .filtro-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--ink3);font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
 .filtro-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
-
-/* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:200}
 .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
 .modal-title{font-size:18px;font-weight:800;margin-bottom:18px;color:var(--ink)}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-
-/* WATERMARK */
+/* AVISO DESCUENTO AUTOMÁTICO */
+.aviso-descuento{background:rgba(255,157,226,0.08);border:1px solid rgba(255,157,226,0.25);border-radius:8px;padding:10px 14px;font-size:11px;color:#ff9de2;margin:0 18px 12px;display:flex;align-items:center;gap:8px;line-height:1.4}
+.aviso-descuento.sv{background:rgba(0,207,170,0.08);border-color:rgba(0,207,170,0.25);color:#00cfaa}
+/* TAG auto en tabla */
+.tag-auto{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.5px;background:rgba(255,157,226,0.15);color:#ff9de2;margin-left:4px;vertical-align:middle}
+.tag-auto.sv{background:rgba(0,207,170,0.15);color:#00cfaa}
 .watermark{position:fixed;bottom:12px;right:16px;z-index:9999;pointer-events:none;user-select:none;opacity:0.35;display:flex;align-items:center;gap:5px;background:rgba(124,92,252,0.1);padding:5px 10px;border-radius:20px;border:1px solid rgba(124,92,252,0.2)}
 .watermark span{font-size:10px;font-weight:700;color:var(--purple3);letter-spacing:1px;text-transform:uppercase}
-
 @media(max-width:600px){
   .metrics{grid-template-columns:1fr 1fr}
   .form-grid{grid-template-columns:1fr}
@@ -127,8 +104,6 @@ tr:hover td{background:rgba(124,92,252,0.04)}
   table{font-size:11px}
   th,td{padding:8px 10px}
 }
-
-/* LOGIN */
 .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
 .login-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
 .login-box h2{font-size:22px;font-weight:800;margin-bottom:6px}
@@ -155,27 +130,15 @@ tr:hover td{background:rgba(124,92,252,0.04)}
     <button class="btn" onclick="pinActual='';actualizarDots();document.getElementById('login-screen').style.display='flex';" style="border-color:rgba(255,77,109,0.4);color:var(--red)">🔒 Salir</button>
   </div>
 </div>
-
 <div class="wrap">
-  <!-- MÉTRICAS -->
   <div class="metrics" id="metrics"></div>
-
-  <!-- GRÁFICO POR FUENTE -->
   <div class="card" id="grafico-card">
     <div class="card-header"><span class="card-title">Gasto por fuente</span><span id="grafico-moneda-toggle" style="font-size:11px;color:var(--ink3);cursor:pointer">Ver en USD</span></div>
     <div class="bar-wrap" id="grafico"></div>
   </div>
-
-  <!-- ACCIONES -->
   <div class="card" id="acciones-card"></div>
-
-  <!-- SUPERVIELLE -->
   <div class="card" id="supervielle-card"></div>
-
-  <!-- AHORROS -->
   <div class="card" id="ahorros-card"></div>
-
-  <!-- TABLA -->
   <div class="card">
     <div class="card-header"><span class="card-title">Movimientos</span></div>
     <div class="filtros" id="filtros"></div>
@@ -185,10 +148,7 @@ tr:hover td{background:rgba(124,92,252,0.04)}
     </table>
   </div>
 </div>
-
-<!-- MODAL -->
 <div id="modal-container"></div>
-
 <div class="watermark"><span>👑</span><span>Nexo Sistemas</span></div>
 
 <script>
@@ -198,12 +158,10 @@ const FUENTES = ['Lemon Card','NBCH','Galicia','Supervielle','Nickcel','Sueldo',
 const CATEGORIAS = ['Vivienda','Comida','Transporte','Salud','Trabajo','Tecnología','Ropa','Entretenimiento','Servicios','Inversión','Otro'];
 const FUENTE_CLASS = {'Acciones':'f-acciones','Lemon Card':'f-lemon','NBCH':'f-nbch','Galicia':'f-galicia','Supervielle':'f-supervielle','Nickcel':'f-nickcel','Sueldo':'f-sueldo','Capital Inversión':'f-capital','DolarApp':'f-dolarapp','Ahorros':'f-ahorros','Otro':'f-otro'};
 const FUENTE_COLOR = {'Acciones':'#f59e0b','Lemon Card':'#ffd100','NBCH':'#38bdf8','Galicia':'#ff4d4d','Supervielle':'#00cfaa','Nickcel':'#a07aff','Sueldo':'#00e5a0','Capital Inversión':'#ffa500','DolarApp':'#00c8ff','Ahorros':'#ff9de2','Otro':'#a09ab8'};
-
 const fmtARS = n => '$' + Math.round(n||0).toLocaleString('es-AR');
 const fmtUSD = n => 'U$S ' + (n||0).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
 const hoy = () => new Date().toISOString().split('T')[0];
 const fd = s => { if(!s) return '—'; const [y,m,d] = s.split('-'); return `${d}/${m}/${y}`; };
-
 const DEF = { gastos: [], ahorros: [], supervielle: [], acciones: [], nextIdAhorro: 1, nextIdSupervielle: 1, nextIdAccion: 1, nextId: 1 };
 
 function loadData() {
@@ -230,6 +188,73 @@ let filtroMoneda = 'Todos';
 let graficoMoneda = 'ARS';
 let modal = null;
 
+// =============================================
+// LÓGICA CENTRAL: descuento automático
+// Cuando se guarda un gasto con fuente Ahorros
+// o Supervielle, se crea el retiro automáticamente
+// y se guarda el vínculo en el gasto (gastoRefId).
+// Cuando se elimina el gasto, se elimina el retiro.
+// =============================================
+function registrarGasto(fecha, desc, fuente, cat, moneda, monto, notas) {
+  const id = data.nextId++;
+  const gasto = { id, fecha, descripcion: desc, fuente, categoria: cat, moneda, monto, notas };
+
+  if (fuente === 'Ahorros') {
+    const saldo = getSaldoAhorros(moneda);
+    if (monto > saldo) {
+      return { ok: false, msg: `⚠️ Saldo insuficiente en Ahorros (${moneda}). Disponible: ${moneda==='ARS'?fmtARS(saldo):fmtUSD(saldo)}` };
+    }
+    const refId = data.nextIdAhorro++;
+    data.ahorros.unshift({
+      id: refId,
+      fecha,
+      tipo: 'retiro',
+      descripcion: `Gasto: ${desc}`,
+      moneda,
+      monto,
+      autoRef: true  // marca que fue generado automáticamente
+    });
+    gasto.ahorroRefId = refId;  // vínculo
+  }
+
+  if (fuente === 'Supervielle') {
+    const saldo = getSaldoSupervielle(moneda);
+    if (monto > saldo) {
+      return { ok: false, msg: `⚠️ Saldo insuficiente en Supervielle (${moneda}). Disponible: ${moneda==='ARS'?fmtARS(saldo):fmtUSD(saldo)}` };
+    }
+    const refId = data.nextIdSupervielle++;
+    data.supervielle.unshift({
+      id: refId,
+      fecha,
+      tipo: 'egreso',
+      descripcion: `Gasto: ${desc}`,
+      moneda,
+      monto,
+      autoRef: true
+    });
+    gasto.supervilleRefId = refId;  // vínculo
+  }
+
+  data.gastos.unshift(gasto);
+  save(data);
+  return { ok: true };
+}
+
+function eliminarGasto(id) {
+  const g = data.gastos.find(x => x.id === id);
+  if (!g) return;
+  // Si tiene retiro automático vinculado en Ahorros, lo elimina
+  if (g.ahorroRefId != null) {
+    data.ahorros = data.ahorros.filter(a => a.id !== g.ahorroRefId);
+  }
+  // Si tiene egreso automático vinculado en Supervielle, lo elimina
+  if (g.supervilleRefId != null) {
+    data.supervielle = data.supervielle.filter(s => s.id !== g.supervilleRefId);
+  }
+  data.gastos = data.gastos.filter(x => x.id !== id);
+  save(data);
+}
+
 function render() {
   renderMetrics();
   renderAccionesCard();
@@ -249,7 +274,6 @@ function getGastosFiltrados() {
     return true;
   });
 }
-
 function getTotalAcciones(moneda) {
   return data.acciones.filter(a=>a.moneda===moneda).reduce((s,a)=>s+a.capitalInvertido,0);
 }
@@ -295,7 +319,6 @@ function renderAccionesCard() {
 function getSaldoSupervielle(moneda) {
   return data.supervielle.filter(s=>s.moneda===moneda).reduce((sum,s)=>sum+(s.tipo==='ingreso'?s.monto:-s.monto),0);
 }
-
 function renderSupervielleCard() {
   const saldoARS = getSaldoSupervielle('ARS');
   const saldoUSD = getSaldoSupervielle('USD');
@@ -323,11 +346,11 @@ function renderSupervielleCard() {
         ${movs.length===0?`<tr><td colspan="6" class="empty">Sin movimientos en Supervielle</td></tr>`:''}
         ${movs.map(s=>`<tr>
           <td style="color:var(--ink3);font-family:var(--mono);font-size:11px">${fd(s.fecha)}</td>
-          <td><strong>${s.descripcion}</strong></td>
+          <td><strong>${s.descripcion}</strong>${s.autoRef?`<span class="tag-auto sv">AUTO</span>`:''}</td>
           <td><span class="badge" style="background:${s.tipo==='ingreso'?'var(--greenl)':'var(--redl)'};color:${s.tipo==='ingreso'?'var(--green)':'var(--red)'}">${s.tipo==='ingreso'?'↑ Ingreso':'↓ Egreso'}</span></td>
           <td><span class="badge ${s.moneda==='ARS'?'badge-ars':'badge-usd'}">${s.moneda}</span></td>
           <td style="font-family:var(--mono);font-weight:500;color:${s.tipo==='ingreso'?'#00cfaa':'var(--red)'};">${s.tipo==='ingreso'?'+':'-'}${s.moneda==='ARS'?fmtARS(s.monto):fmtUSD(s.monto)}</td>
-          <td><button class="btn danger" data-del-supervielle="${s.id}" style="font-size:10px;padding:2px 8px">✕</button></td>
+          <td>${s.autoRef?`<span style="font-size:10px;color:var(--ink3);padding:2px 8px">vinculado</span>`:`<button class="btn danger" data-del-supervielle="${s.id}" style="font-size:10px;padding:2px 8px">✕</button>`}</td>
         </tr>`).join('')}
       </tbody>
     </table>
@@ -337,7 +360,6 @@ function renderSupervielleCard() {
 function getSaldoAhorros(moneda) {
   return data.ahorros.filter(a=>a.moneda===moneda).reduce((s,a)=>s+(a.tipo==='deposito'?a.monto:-a.monto),0);
 }
-
 function renderAhorrosCard() {
   const saldoARS = getSaldoAhorros('ARS');
   const saldoUSD = getSaldoAhorros('USD');
@@ -365,11 +387,11 @@ function renderAhorrosCard() {
         ${movs.length===0?`<tr><td colspan="6" class="empty">Sin movimientos de ahorro</td></tr>`:''}
         ${movs.map(a=>`<tr>
           <td style="color:var(--ink3);font-family:var(--mono);font-size:11px">${fd(a.fecha)}</td>
-          <td><strong>${a.descripcion}</strong></td>
+          <td><strong>${a.descripcion}</strong>${a.autoRef?`<span class="tag-auto">AUTO</span>`:''}</td>
           <td><span class="badge" style="background:${a.tipo==='deposito'?'var(--greenl)':'var(--redl)'};color:${a.tipo==='deposito'?'var(--green)':'var(--red)'}">${a.tipo==='deposito'?'↑ Depósito':'↓ Retiro'}</span></td>
           <td><span class="badge ${a.moneda==='ARS'?'badge-ars':'badge-usd'}">${a.moneda}</span></td>
           <td style="font-family:var(--mono);font-weight:500;color:${a.tipo==='deposito'?'var(--green)':'var(--red)'};">${a.tipo==='deposito'?'+':'-'}${a.moneda==='ARS'?fmtARS(a.monto):fmtUSD(a.monto)}</td>
-          <td><button class="btn danger" data-del-ahorro="${a.id}" style="font-size:10px;padding:2px 8px">✕</button></td>
+          <td>${a.autoRef?`<span style="font-size:10px;color:var(--ink3);padding:2px 8px">vinculado</span>`:`<button class="btn danger" data-del-ahorro="${a.id}" style="font-size:10px;padding:2px 8px">✕</button>`}</td>
         </tr>`).join('')}
       </tbody>
     </table>
@@ -383,7 +405,6 @@ function renderMetrics() {
   const mes = new Date().toISOString().substring(0,7);
   const totalMesARS = gastos.filter(g=>g.moneda==='ARS'&&g.fecha.startsWith(mes)).reduce((s,g)=>s+g.monto,0);
   const totalMesUSD = gastos.filter(g=>g.moneda==='USD'&&g.fecha.startsWith(mes)).reduce((s,g)=>s+g.monto,0);
-
   document.getElementById('metrics').innerHTML = `
     <div class="metric m-total">
       <div class="metric-label">Total ARS</div>
@@ -431,14 +452,12 @@ function renderMetrics() {
 function renderGrafico() {
   const toggle = document.getElementById('grafico-moneda-toggle');
   if(toggle) toggle.textContent = graficoMoneda === 'ARS' ? 'Ver en USD' : 'Ver en ARS';
-
   const gastos = data.gastos.filter(g => g.moneda === graficoMoneda);
   const porFuente = {};
   FUENTES.forEach(f => porFuente[f] = 0);
   gastos.forEach(g => { if(porFuente[g.fuente] !== undefined) porFuente[g.fuente] += g.monto; });
   const max = Math.max(...Object.values(porFuente), 1);
   const fmt = graficoMoneda === 'ARS' ? fmtARS : fmtUSD;
-
   document.getElementById('grafico').innerHTML = FUENTES.map(f => {
     const val = porFuente[f];
     const pct = Math.round((val/max)*100);
@@ -466,19 +485,41 @@ function renderTabla() {
   const gastos = getGastosFiltrados().slice().sort((a,b)=>b.fecha.localeCompare(a.fecha));
   document.getElementById('tabla-body').innerHTML = gastos.length === 0
     ? `<tr><td colspan="7" class="empty">Sin movimientos registrados</td></tr>`
-    : gastos.map(g => `<tr>
-        <td style="color:var(--ink3);font-family:var(--mono);font-size:11px">${fd(g.fecha)}</td>
-        <td><strong>${g.descripcion}</strong>${g.notas?`<br><span style="font-size:11px;color:var(--ink3)">${g.notas}</span>`:''}</td>
-        <td><span class="fuente-tag ${FUENTE_CLASS[g.fuente]}">${g.fuente}</span></td>
-        <td style="color:var(--ink3);font-size:11px">${g.categoria}</td>
-        <td><span class="badge ${g.moneda==='ARS'?'badge-ars':'badge-usd'}">${g.moneda}</span></td>
-        <td style="font-family:var(--mono);font-weight:500;color:${g.moneda==='ARS'?'var(--gold)':'var(--green)'}">${g.moneda==='ARS'?fmtARS(g.monto):fmtUSD(g.monto)}</td>
-        <td><button class="btn danger" data-del="${g.id}" style="font-size:10px;padding:2px 8px">✕</button></td>
-      </tr>`).join('');
+    : gastos.map(g => {
+        const tieneRef = g.ahorroRefId != null || g.supervilleRefId != null;
+        const tagCls = g.supervilleRefId != null ? 'tag-auto sv' : 'tag-auto';
+        const cuentaNombre = g.supervilleRefId != null ? 'Supervielle' : 'Ahorros';
+        return `<tr>
+          <td style="color:var(--ink3);font-family:var(--mono);font-size:11px">${fd(g.fecha)}</td>
+          <td>
+            <strong>${g.descripcion}</strong>
+            ${tieneRef ? `<span class="${tagCls}" title="Descontado automáticamente de ${cuentaNombre}">↙ ${cuentaNombre}</span>` : ''}
+            ${g.notas?`<br><span style="font-size:11px;color:var(--ink3)">${g.notas}</span>`:''}
+          </td>
+          <td><span class="fuente-tag ${FUENTE_CLASS[g.fuente]}">${g.fuente}</span></td>
+          <td style="color:var(--ink3);font-size:11px">${g.categoria}</td>
+          <td><span class="badge ${g.moneda==='ARS'?'badge-ars':'badge-usd'}">${g.moneda}</span></td>
+          <td style="font-family:var(--mono);font-weight:500;color:${g.moneda==='ARS'?'var(--gold)':'var(--green)'}">${g.moneda==='ARS'?fmtARS(g.monto):fmtUSD(g.monto)}</td>
+          <td><button class="btn danger" data-del="${g.id}" style="font-size:10px;padding:2px 8px">✕</button></td>
+        </tr>`;
+      }).join('');
+}
+
+function getAvisoDescuento(fuente, moneda) {
+  if (fuente === 'Ahorros') {
+    const saldo = getSaldoAhorros(moneda);
+    return `<div class="aviso-descuento">💡 Al guardar, se descontará automáticamente de tus Ahorros (${moneda}). Saldo actual: <strong>${moneda==='ARS'?fmtARS(saldo):fmtUSD(saldo)}</strong></div>`;
+  }
+  if (fuente === 'Supervielle') {
+    const saldo = getSaldoSupervielle(moneda);
+    return `<div class="aviso-descuento sv">💡 Al guardar, se descontará automáticamente de Supervielle (${moneda}). Saldo actual: <strong>${moneda==='ARS'?fmtARS(saldo):fmtUSD(saldo)}</strong></div>`;
+  }
+  return '';
 }
 
 function renderModal() {
   if(!modal) { document.getElementById('modal-container').innerHTML = ''; return; }
+
   if(modal.type === 'nueva-accion') {
     document.getElementById('modal-container').innerHTML = `
       <div class="modal-bg" id="modal-overlay">
@@ -516,9 +557,9 @@ function renderModal() {
           </div>
         </div>
       </div>`;
-    bindEvents();
-    return;
+    bindEvents(); return;
   }
+
   if(modal.type === 'nuevo-supervielle') {
     document.getElementById('modal-container').innerHTML = `
       <div class="modal-bg" id="modal-overlay">
@@ -559,9 +600,9 @@ function renderModal() {
           </div>
         </div>
       </div>`;
-    bindEvents();
-    return;
+    bindEvents(); return;
   }
+
   if(modal.type === 'nuevo-ahorro') {
     document.getElementById('modal-container').innerHTML = `
       <div class="modal-bg" id="modal-overlay">
@@ -602,10 +643,13 @@ function renderModal() {
           </div>
         </div>
       </div>`;
-    bindEvents();
-    return;
+    bindEvents(); return;
   }
+
   if(modal.type === 'nuevo-gasto') {
+    const fuenteActual = modal.fuente || 'Lemon Card';
+    const monedaActual = modal.moneda || 'ARS';
+    const aviso = getAvisoDescuento(fuenteActual, monedaActual);
     document.getElementById('modal-container').innerHTML = `
       <div class="modal-bg" id="modal-overlay">
         <div class="modal" onclick="event.stopPropagation()">
@@ -618,8 +662,8 @@ function renderModal() {
             <div class="form-row">
               <label class="form-label">Moneda *</label>
               <select class="inp" id="g-moneda">
-                <option value="ARS">ARS — Pesos</option>
-                <option value="USD">USD — Dólares</option>
+                <option value="ARS" ${monedaActual==='ARS'?'selected':''}>ARS — Pesos</option>
+                <option value="USD" ${monedaActual==='USD'?'selected':''}>USD — Dólares</option>
               </select>
             </div>
             <div class="form-row full">
@@ -629,7 +673,7 @@ function renderModal() {
             <div class="form-row">
               <label class="form-label">Fuente *</label>
               <select class="inp" id="g-fuente">
-                ${FUENTES.map(f=>`<option value="${f}">${f}</option>`).join('')}
+                ${FUENTES.map(f=>`<option value="${f}" ${f===fuenteActual?'selected':''}>${f}</option>`).join('')}
               </select>
             </div>
             <div class="form-row">
@@ -647,6 +691,7 @@ function renderModal() {
               <input class="inp" id="g-notas" placeholder="Opcional...">
             </div>
           </div>
+          <div id="aviso-descuento-wrap">${aviso}</div>
           <div id="g-error" style="color:var(--red);font-size:12px;margin:0 18px 8px;display:none"></div>
           <div class="form-actions" style="padding:0 18px 4px">
             <button class="btn" id="modal-cancel">Cancelar</button>
@@ -660,15 +705,24 @@ function renderModal() {
 
 function bindEvents() {
   const q = id => document.getElementById(id);
-
   const overlay = q('modal-overlay');
   if(overlay) overlay.onclick = () => { modal = null; render(); };
-
   const ngb = q('nuevo-gasto-btn');
-  if(ngb) ngb.onclick = () => { modal = { type: 'nuevo-gasto' }; render(); };
-
+  if(ngb) ngb.onclick = () => { modal = { type: 'nuevo-gasto', fuente: 'Lemon Card', moneda: 'ARS' }; render(); };
   const mc = q('modal-cancel');
   if(mc) mc.onclick = () => { modal = null; render(); };
+
+  // Actualizar aviso al cambiar fuente o moneda en modal gasto
+  const gf = q('g-fuente');
+  const gmon = q('g-moneda');
+  function actualizarAviso() {
+    const wrap = q('aviso-descuento-wrap');
+    if(!wrap || !gf || !gmon) return;
+    wrap.innerHTML = getAvisoDescuento(gf.value, gmon.value);
+    if(modal) { modal.fuente = gf.value; modal.moneda = gmon.value; }
+  }
+  if(gf) gf.onchange = actualizarAviso;
+  if(gmon) gmon.onchange = actualizarAviso;
 
   const msg = q('modal-save-gasto');
   if(msg) msg.onclick = () => {
@@ -682,33 +736,26 @@ function bindEvents() {
     const errDiv = q('g-error');
     if(!desc) { if(errDiv){ errDiv.textContent='⚠️ Ingresá una descripción.'; errDiv.style.display='block'; } return; }
     if(!monto || monto <= 0) { if(errDiv){ errDiv.textContent='⚠️ Ingresá un monto válido.'; errDiv.style.display='block'; } return; }
-    data.gastos.unshift({ id: data.nextId++, fecha, descripcion: desc, fuente, categoria: cat, moneda, monto, notas });
-    save(data);
+    const res = registrarGasto(fecha, desc, fuente, cat, moneda, monto, notas);
+    if(!res.ok) { if(errDiv){ errDiv.textContent=res.msg; errDiv.style.display='block'; } return; }
     modal = null;
     render();
   };
 
-  // Enter en monto
   const gm = q('g-monto');
   if(gm) gm.onkeydown = e => { if(e.key === 'Enter') q('modal-save-gasto')?.click(); };
 
-  // Filtros
   document.querySelectorAll('[data-filtro-fuente]').forEach(b => {
     b.onclick = () => { filtroFuente = b.dataset.filtroFuente; render(); };
   });
   document.querySelectorAll('[data-filtro-moneda]').forEach(b => {
     b.onclick = () => { filtroMoneda = b.dataset.filtroMoneda; render(); };
   });
-
-  // Toggle gráfico
   const gt = q('grafico-moneda-toggle');
   if(gt) gt.onclick = () => { graficoMoneda = graficoMoneda === 'ARS' ? 'USD' : 'ARS'; render(); };
 
-  // Nuevo accion btn
   const nac = document.getElementById('nuevo-accion-btn');
   if(nac) nac.onclick = () => { modal = { type: 'nueva-accion' }; render(); };
-
-  // Guardar accion
   const msac = document.getElementById('modal-save-accion');
   if(msac) msac.onclick = () => {
     const fecha = document.getElementById('ac-fecha')?.value || hoy();
@@ -720,26 +767,18 @@ function bindEvents() {
     if(!ticker) { if(errDiv){ errDiv.textContent='⚠️ Ingresá el ticker.'; errDiv.style.display='block'; } return; }
     if(!capital || capital <= 0) { if(errDiv){ errDiv.textContent='⚠️ Ingresá el capital invertido.'; errDiv.style.display='block'; } return; }
     data.acciones.unshift({ id: data.nextIdAccion++, fecha, ticker, capitalInvertido: capital, moneda, descripcion: desc });
-    save(data);
-    modal = null;
-    render();
+    save(data); modal = null; render();
   };
-
-  // Eliminar accion
   document.querySelectorAll('[data-del-accion]').forEach(b => {
     b.onclick = () => {
       if(!confirm('¿Eliminar esta posición?')) return;
       data.acciones = data.acciones.filter(a => a.id !== Number(b.dataset.delAccion));
-      save(data);
-      render();
+      save(data); render();
     };
   });
 
-  // Nuevo supervielle btn
   const nsv = document.getElementById('nuevo-supervielle-btn');
   if(nsv) nsv.onclick = () => { modal = { type: 'nuevo-supervielle' }; render(); };
-
-  // Guardar supervielle
   const mssv = document.getElementById('modal-save-supervielle');
   if(mssv) mssv.onclick = () => {
     const fecha = document.getElementById('sv-fecha')?.value || hoy();
@@ -755,26 +794,18 @@ function bindEvents() {
       if(monto > saldo) { if(errDiv){ errDiv.textContent=`⚠️ Saldo insuficiente en ${moneda}. Disponible: ${moneda==='ARS'?fmtARS(saldo):fmtUSD(saldo)}`; errDiv.style.display='block'; } return; }
     }
     data.supervielle.unshift({ id: data.nextIdSupervielle++, fecha, tipo, descripcion: desc, moneda, monto });
-    save(data);
-    modal = null;
-    render();
+    save(data); modal = null; render();
   };
-
-  // Eliminar supervielle
   document.querySelectorAll('[data-del-supervielle]').forEach(b => {
     b.onclick = () => {
       if(!confirm('¿Eliminar este movimiento?')) return;
       data.supervielle = data.supervielle.filter(s => s.id !== Number(b.dataset.delSupervielle));
-      save(data);
-      render();
+      save(data); render();
     };
   });
 
-  // Nuevo ahorro btn
   const nab = document.getElementById('nuevo-ahorro-btn');
   if(nab) nab.onclick = () => { modal = { type: 'nuevo-ahorro' }; render(); };
-
-  // Guardar ahorro
   const msa = document.getElementById('modal-save-ahorro');
   if(msa) msa.onclick = () => {
     const fecha = document.getElementById('a-fecha')?.value || hoy();
@@ -790,27 +821,27 @@ function bindEvents() {
       if(monto > saldo) { if(errDiv){ errDiv.textContent=`⚠️ No tenés suficiente saldo en ${moneda}. Saldo actual: ${moneda==='ARS'?fmtARS(saldo):fmtUSD(saldo)}`; errDiv.style.display='block'; } return; }
     }
     data.ahorros.unshift({ id: data.nextIdAhorro++, fecha, tipo, descripcion: desc, moneda, monto });
-    save(data);
-    modal = null;
-    render();
+    save(data); modal = null; render();
   };
-
-  // Eliminar ahorro
   document.querySelectorAll('[data-del-ahorro]').forEach(b => {
     b.onclick = () => {
       if(!confirm('¿Eliminar este movimiento?')) return;
       data.ahorros = data.ahorros.filter(a => a.id !== Number(b.dataset.delAhorro));
-      save(data);
-      render();
+      save(data); render();
     };
   });
 
-  // Eliminar gasto
+  // Eliminar gasto — ahora usa la función que limpia el retiro vinculado
   document.querySelectorAll('[data-del]').forEach(b => {
     b.onclick = () => {
-      if(!confirm('¿Eliminar este gasto?')) return;
-      data.gastos = data.gastos.filter(g => g.id !== Number(b.dataset.del));
-      save(data);
+      const g = data.gastos.find(x => x.id === Number(b.dataset.del));
+      if(!g) return;
+      const tieneRef = g.ahorroRefId != null || g.supervilleRefId != null;
+      const msg = tieneRef
+        ? `¿Eliminar este gasto? También se eliminará el retiro automático vinculado en ${g.ahorroRefId!=null?'Ahorros':'Supervielle'}.`
+        : '¿Eliminar este gasto?';
+      if(!confirm(msg)) return;
+      eliminarGasto(g.id);
       render();
     };
   });
@@ -847,11 +878,9 @@ render();
     <div class="pin-error" id="pin-error"></div>
   </div>
 </div>
-
 <script>
 const PIN_CORRECTO = '5044';
 let pinActual = '';
-
 function pinPress(n) {
   if(pinActual.length >= 4) return;
   pinActual += n;
@@ -874,13 +903,11 @@ function pinPress(n) {
     }, 100);
   }
 }
-
 function pinBorrar() {
   pinActual = pinActual.slice(0, -1);
   actualizarDots();
   document.getElementById('pin-error').textContent = '';
 }
-
 function actualizarDots() {
   const dots = document.querySelectorAll('.pin-dot');
   dots.forEach((d, i) => {
@@ -888,8 +915,6 @@ function actualizarDots() {
     d.classList.remove('error');
   });
 }
-
-// Teclado físico
 document.addEventListener('keydown', e => {
   if(document.getElementById('login-screen').style.display === 'none') return;
   if(e.key >= '0' && e.key <= '9') pinPress(e.key);
