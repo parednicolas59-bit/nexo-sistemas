@@ -121,8 +121,50 @@ select option{background:var(--bg3)}
 @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{display:none}.kpi-grid{grid-template-columns:1fr 1fr}.grid-2,.grid-75{grid-template-columns:1fr}}
 </style>
 </head>
+<style>
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:modalIn .3s ease}
+.login-logo{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:28px}
+.login-logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#00d4ff22,#00d4ff44);border:1px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 18px rgba(0,212,255,.3)}
+.login-title{font-size:18px;font-weight:800;color:var(--text)}
+.login-title span{color:var(--cyan)}
+.login-sub{text-align:center;font-size:12px;color:var(--text2);margin-bottom:28px}
+.login-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.login-field label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.login-field input{padding:11px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);background:var(--bg3);outline:none;transition:border-color .15s}
+.login-field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.1)}
+.login-btn{width:100%;padding:12px;border-radius:10px;background:var(--cyan);color:#0c0e14;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;border:none;cursor:pointer;margin-top:8px;transition:all .15s}
+.login-btn:hover{background:#33dcff;box-shadow:0 0 20px rgba(0,212,255,.4)}
+.login-error{background:var(--red-dim);border:1px solid rgba(255,77,106,.3);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);text-align:center;display:none;margin-bottom:12px}
+.login-demo-info{margin-top:20px;background:var(--bg3);border-radius:10px;padding:12px 14px;font-size:11.5px;color:var(--text2);border:1px solid var(--border)}
+.login-demo-info strong{color:var(--text)}
+</style>
+
+<div id="login-screen" class="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">✚</div>
+      <div class="login-title">Lab <span>San Juan</span></div>
+    </div>
+    <div class="login-sub">Ingresá tus credenciales para acceder al sistema</div>
+    <div class="login-error" id="login-error">Usuario o contraseña incorrectos</div>
+    <div class="login-field">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="Ej: admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Ingresar →</button>
+    <div class="login-demo-info">
+      🔐 <strong>Demo:</strong> usuario <strong>sanjuan</strong> · contraseña <strong>lab2025</strong>
+    </div>
+  </div>
+</div>
+
 <body>
-<div class="shell">
+<div class="shell" id="app-shell" style="display:none">
 <div class="topbar">
   <div class="logo">
     <div class="logo-icon">✚</div>
@@ -520,7 +562,25 @@ document.querySelectorAll('.modal-bg').forEach(bg=>{bg.addEventListener('click',
 function setTab(el){el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
 function toast(msg,bg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'#1a1d2b';t.style.color=color||'#e8eaf2';t.style.border='1px solid rgba(255,255,255,.1)';t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 function verResultado(){document.getElementById('resultado-vacio').style.display='none';document.getElementById('resultado-contenido').style.display='block';const rb=document.getElementById('res-btns');if(rb)rb.style.display='flex';document.getElementById('res-sub').textContent='Orden #1042 — García, María Eugenia — 19/05/2025';}
+function doLogin(){
+  const user=document.getElementById('login-user').value.trim().toLowerCase();
+  const pass=document.getElementById('login-pass').value;
+  const err=document.getElementById('login-error');
+  if(user==='sanjuan'&&pass==='lab2025'){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app-shell').style.display='grid';
+    initCharts();
+  } else {
+    err.style.display='block';
+    document.getElementById('login-pass').value='';
+    document.getElementById('login-pass').focus();
+    setTimeout(()=>err.style.display='none',3000);
+  }
+}
+document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pass').focus();});
 document.querySelectorAll('input[type="date"]').forEach(i=>i.value=new Date().toISOString().split('T')[0]);
+function initCharts(){
 
 const CD={plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4a5070',font:{family:'Sora',size:11}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4a5070',font:{family:'Sora',size:11}}}}};
 
@@ -530,7 +590,7 @@ new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['
 
 new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[48000,62000,55000,71000,83000],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#00e5a0',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#4a5070',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:10},callback:v=>'$'+v/1000+'k'}}}}});
 
-new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[68000,74000,81000,87000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[8000,5000,12000,7000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'$'+v/1000+'k'}}}}});
+new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[68000,74000,81000,87000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[8000,5000,12000,7000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'$'+v/1000+'k'}}}}});}
 </script>
 </body>
 </html>
