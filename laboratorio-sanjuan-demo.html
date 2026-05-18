@@ -426,9 +426,9 @@ _Lab. San Juan — (362) 4XX-XXXX_</div>
     <button class="btn btn-cyan">+ Registrar cobro</button>
   </div>
   <div class="kpi-grid">
-    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">$48.5k</div><div class="kpi-label">Cobrado hoy</div></div>
-    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">$12k</div><div class="kpi-label">Pendiente</div></div>
-    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">📅</div><div class="kpi-val">$310k</div><div class="kpi-label">Mes actual</div></div>
+    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">₲ 485.000</div><div class="kpi-label">Cobrado hoy</div></div>
+    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">₲ 120.000</div><div class="kpi-label">Pendiente</div></div>
+    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">📅</div><div class="kpi-val">₲ 3.100.000</div><div class="kpi-label">Mes actual</div></div>
     <div class="kpi red"><div class="kpi-glow"></div><div class="kpi-ico">📈</div><div class="kpi-val">+18%</div><div class="kpi-label">vs mes anterior</div></div>
   </div>
   <div class="grid-75">
@@ -439,8 +439,8 @@ _Lab. San Juan — (362) 4XX-XXXX_</div>
     <div class="card">
       <div class="card-title"><span>⏳ Cobros pendientes</span></div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>López, Carlos</strong><span style="font-weight:800;color:var(--amber)">$4.500</span></div><div style="font-size:11px;color:var(--text2)">Glucosa · Colesterol · Triglicéridos</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de López registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
-        <div style="background:var(--red-dim);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,77,106,.2)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>Ramírez, Ana</strong><span style="font-weight:800;color:var(--red)">$7.500</span></div><div style="font-size:11px;color:var(--text2)">Análisis completo — Urgente</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de Ramírez registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
+        <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>López, Carlos</strong><span style="font-weight:800;color:var(--amber)">₲ 45.000</span></div><div style="font-size:11px;color:var(--text2)">Glucosa · Colesterol · Triglicéridos</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de López registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
+        <div style="background:var(--red-dim);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,77,106,.2)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>Ramírez, Ana</strong><span style="font-weight:800;color:var(--red)">₲ 75.000</span></div><div style="font-size:11px;color:var(--text2)">Análisis completo — Urgente</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de Ramírez registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
       </div>
     </div>
   </div>
@@ -588,9 +588,9 @@ new Chart(document.getElementById('chart-semana'),{type:'bar',data:{labels:['Lun
 
 new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['Listos','En proceso','Urgentes','Entregados'],datasets:[{data:[7,4,1,0],backgroundColor:['#00e5a0','#ffb347','#ff4d6a','#00d4ff'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
 
-new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[48000,62000,55000,71000,83000],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#00e5a0',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#4a5070',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:10},callback:v=>'$'+v/1000+'k'}}}}});
+new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[480000,620000,550000,710000,830000],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#00e5a0',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#4a5070',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:10},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});
 
-new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[68000,74000,81000,87000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[8000,5000,12000,7000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'$'+v/1000+'k'}}}}});}
+new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[680000,740000,810000,870000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[80000,50000,120000,70000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});}
 </script>
 </body>
 </html>
