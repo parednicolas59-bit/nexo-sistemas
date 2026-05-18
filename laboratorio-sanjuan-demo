@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratorio San Juan — Sistema de Gestión</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0c0e14;--bg2:#13151f;--bg3:#1a1d2b;--bg4:#21253a;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--green:#00e5a0;--green-dim:rgba(0,229,160,.12);--red:#ff4d6a;--red-dim:rgba(255,77,106,.12);--amber:#ffb347;--amber-dim:rgba(255,179,71,.12);--text:#e8eaf2;--text2:#7b82a0;--text3:#4a5070;--radius:12px;--shadow:0 4px 32px rgba(0,0,0,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;overflow:hidden}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:10px}
+.shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100vh}
+.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:relative;z-index:10}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.3}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#00d4ff22,#00d4ff44);border:1px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 12px rgba(0,212,255,.25)}
+.logo-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.logo-name span{color:var(--cyan)}
+.demo-pill{background:var(--amber-dim);border:1px solid rgba(255,179,71,.3);color:var(--amber);border-radius:20px;font-size:10px;font-weight:700;padding:3px 10px;letter-spacing:.5px;text-transform:uppercase;animation:pulse-amber 2s infinite}
+@keyframes pulse-amber{0%,100%{box-shadow:0 0 0 0 rgba(255,179,71,.4)}50%{box-shadow:0 0 0 4px rgba(255,179,71,0)}}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.status-dot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green)}
+.status-dot::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:6px 12px;cursor:pointer}
+.avatar{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--cyan),#0088cc);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+.user-chip span{font-size:12px;font-weight:600;color:var(--text)}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:16px 10px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.nav-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:8px 14px 4px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:9px;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Sora',sans-serif;font-size:12.5px;font-weight:500;color:var(--text2);transition:all .15s;position:relative}
+.nav-btn:hover{background:var(--bg3);color:var(--text)}
+.nav-btn.active{background:var(--cyan-dim);color:var(--cyan);font-weight:600}
+.nav-btn.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--cyan);border-radius:0 3px 3px 0;box-shadow:0 0 8px var(--cyan)}
+.nav-ico{font-size:15px;min-width:18px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:1px 7px}
+.nav-sep{height:1px;background:var(--border);margin:8px 4px}
+.main{overflow-y:auto;background:var(--bg)}
+.screen{display:none;padding:22px;min-height:calc(100vh - 56px)}
+.screen.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.page-title{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.page-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.cyan::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.kpi.green::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.kpi.amber::before{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.kpi.red::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.kpi-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.07;filter:blur(20px)}
+.kpi.cyan .kpi-glow{background:var(--cyan)}.kpi.green .kpi-glow{background:var(--green)}.kpi.amber .kpi-glow{background:var(--amber)}.kpi.red .kpi-glow{background:var(--red)}
+.kpi-ico{font-size:20px;margin-bottom:10px}
+.kpi-val{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1}
+.kpi.cyan .kpi-val{color:var(--cyan)}.kpi.green .kpi-val{color:var(--green)}.kpi.amber .kpi-val{color:var(--amber)}.kpi.red .kpi-val{color:var(--red)}
+.kpi-label{font-size:11px;color:var(--text2);margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.kpi-delta{font-size:11px;color:var(--green);margin-top:4px;font-weight:600}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-75{display:grid;grid-template-columns:7fr 5fr;gap:16px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead tr{border-bottom:1px solid var(--border2)}
+th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg3)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge.listo{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,229,160,.2)}
+.badge.pendiente{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(255,179,71,.2)}
+.badge.urgente{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,.2);animation:pulse-red 2s infinite}
+@keyframes pulse-red{0%,100%{box-shadow:none}50%{box-shadow:0 0 10px rgba(255,77,106,.3)}}
+.badge.entregado{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+.btn{padding:8px 16px;border-radius:8px;font-family:'Sora',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-cyan{background:var(--cyan);color:#0c0e14}.btn-cyan:hover{background:#33dcff;box-shadow:0 0 16px rgba(0,212,255,.4)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.btn-green{background:var(--green);color:#0c0e14}.btn-green:hover{background:#33eab4}
+.btn-wpp{background:#25d366;color:#fff}.btn-wpp:hover{background:#1db954;box-shadow:0 0 16px rgba(37,211,102,.4)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-icon{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 9px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s}
+.btn-icon:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{padding:9px 12px;border:1px solid var(--border2);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);background:var(--bg3);transition:border-color .15s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.1)}
+textarea{resize:vertical;min-height:70px}
+select option{background:var(--bg3)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;max-width:580px;width:95%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:modalIn .2s ease}
+@keyframes modalIn{from{transform:translateY(12px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:20px}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.res-section{margin-bottom:20px}
+.res-section-title{font-size:11px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,255,.15)}
+.res-row{display:grid;grid-template-columns:1fr 100px 130px 60px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.res-row:last-child{border-bottom:none}
+.res-param{color:var(--text);font-size:12.5px}
+.res-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+.res-val.H{color:var(--red);font-weight:700}.res-val.L{color:var(--amber);font-weight:700}.res-val.N{color:var(--green)}
+.res-ref{font-size:10.5px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.res-flag{font-size:11px;font-weight:800}.res-flag.H{color:var(--red)}.res-flag.L{color:var(--amber)}.res-flag.N{color:var(--text3)}
+.wpp-bubble{background:var(--bg3);border:1px solid rgba(37,211,102,.2);border-radius:12px 12px 12px 0;padding:14px 16px;font-size:12.5px;line-height:1.7;color:var(--text);white-space:pre-line;border-left:3px solid #25d366}
+.wpp-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.wpp-avatar{width:36px;height:36px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+#toast{position:fixed;bottom:24px;right:24px;padding:13px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;display:none;animation:toastIn .3s ease}
+@keyframes toastIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.tabs{display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:18px;width:fit-content}
+.tab{padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s}
+.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.3)}
+.act-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chart-box{position:relative;height:200px}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{display:none}.kpi-grid{grid-template-columns:1fr 1fr}.grid-2,.grid-75{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">✚</div>
+    <div><div class="logo-name">Lab <span>San Juan</span></div></div>
+    <span class="demo-pill">Demo 7 días</span>
+  </div>
+  <div class="topbar-right">
+    <div class="status-dot">Sistema activo</div>
+    <div class="user-chip"><div class="avatar">SJ</div><span>Administrador</span></div>
+  </div>
+</div>
+
+<div class="sidebar">
+  <div class="nav-section">Principal</div>
+  <button class="nav-btn active" onclick="go('dashboard',this)"><span class="nav-ico">📊</span> Dashboard</button>
+  <button class="nav-btn" onclick="go('pacientes',this)"><span class="nav-ico">👥</span> Pacientes</button>
+  <button class="nav-btn" onclick="go('ordenes',this)"><span class="nav-ico">🧾</span> Órdenes <span class="nav-badge">4</span></button>
+  <button class="nav-btn" onclick="go('resultados',this)"><span class="nav-ico">🔬</span> Resultados</button>
+  <div class="nav-sep"></div>
+  <div class="nav-section">Comunicación</div>
+  <button class="nav-btn" onclick="go('whatsapp',this)"><span class="nav-ico">💬</span> WhatsApp</button>
+  <div class="nav-sep"></div>
+  <div class="nav-section">Finanzas</div>
+  <button class="nav-btn" onclick="go('cobros',this)"><span class="nav-ico">💰</span> Cobros</button>
+  <div class="nav-sep"></div>
+  <button class="nav-btn" onclick="go('config',this)"><span class="nav-ico">⚙️</span> Configuración</button>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div id="screen-dashboard" class="screen active">
+  <div class="page-header">
+    <div><div class="page-title">Buenas tardes 👋</div><div class="page-sub">Lunes 19 de mayo, 2025 — Laboratorio San Juan</div></div>
+    <button class="btn btn-cyan" onclick="openModal('modal-nueva-orden')">+ Nueva orden</button>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">🧾</div><div class="kpi-val">12</div><div class="kpi-label">Órdenes hoy</div><div class="kpi-delta">↑ 3 más que ayer</div></div>
+    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">7</div><div class="kpi-label">Resultados listos</div><div class="kpi-delta">58% completado</div></div>
+    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">4</div><div class="kpi-label">En proceso</div><div class="kpi-delta" style="color:var(--amber)">33% del total</div></div>
+    <div class="kpi red"><div class="kpi-glow"></div><div class="kpi-ico">🚨</div><div class="kpi-val">1</div><div class="kpi-label">Urgentes</div><div class="kpi-delta" style="color:var(--red)">Requiere atención</div></div>
+  </div>
+  <div class="grid-75" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title"><span>📈 Órdenes — últimos 7 días</span><span style="font-size:11px;color:var(--text2);font-weight:500">May 2025</span></div>
+      <div class="chart-box"><canvas id="chart-semana"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🍩 Estado actual</span></div>
+      <div style="position:relative;height:160px;display:flex;align-items:center;justify-content:center">
+        <canvas id="chart-dona"></canvas>
+        <div style="position:absolute;text-align:center"><div style="font-size:22px;font-weight:800;color:var(--cyan)">12</div><div style="font-size:10px;color:var(--text2);font-weight:600">TOTAL</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span><span style="color:var(--text2)">Listos</span><strong style="margin-left:auto;color:var(--green)">7</strong></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span><span style="color:var(--text2)">En proceso</span><strong style="margin-left:auto;color:var(--amber)">4</strong></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span><span style="color:var(--text2)">Urgentes</span><strong style="margin-left:auto;color:var(--red)">1</strong></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--cyan);display:inline-block"></span><span style="color:var(--text2)">Entregados</span><strong style="margin-left:auto;color:var(--cyan)">0</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>🔬 Órdenes recientes</span><button class="btn btn-ghost btn-sm" onclick="go('ordenes',document.querySelectorAll('.nav-btn')[2])">Ver todas</button></div>
+      <table>
+        <thead><tr><th>Paciente</th><th>Análisis</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><div style="font-weight:600">García, María</div><div style="font-size:10.5px;color:var(--text3)">DNI 28.441.220</div></td><td style="color:var(--text2)">Hemograma · Glucosa</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn-icon" onclick="go('resultados',document.querySelectorAll('.nav-btn')[3]);verResultado()">👁</button></td></tr>
+          <tr><td><div style="font-weight:600">López, Carlos</div><div style="font-size:10.5px;color:var(--text3)">DNI 31.220.445</div></td><td style="color:var(--text2)">Glucosa · Colesterol</td><td><span class="badge pendiente">⏳ En proceso</span></td><td><button class="btn-icon">👁</button></td></tr>
+          <tr><td><div style="font-weight:600">Ramírez, Ana</div><div style="font-size:10.5px;color:var(--text3)">DNI 25.118.330</div></td><td style="color:var(--text2)">Análisis completo</td><td><span class="badge urgente">🚨 Urgente</span></td><td><button class="btn-icon">👁</button></td></tr>
+          <tr><td><div style="font-weight:600">Torres, Juan</div><div style="font-size:10.5px;color:var(--text3)">DNI 40.220.118</div></td><td style="color:var(--text2)">Orina completo</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn-icon" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="flex:1">
+        <div class="card-title"><span>💬 WhatsApp — hoy</span></div>
+        <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>García, María</strong> — Resultado enviado ✅</div><div style="font-size:11px;color:var(--text3)">10:32</div></div>
+        <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>Torres, Juan</strong> — Resultado enviado ✅</div><div style="font-size:11px;color:var(--text3)">11:05</div></div>
+        <div class="act-item"><div class="act-dot" style="background:var(--amber)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>López, Carlos</strong> — Recordatorio retiro ⏰</div><div style="font-size:11px;color:var(--text3)">09:15</div></div>
+        <div class="act-item"><div class="act-dot" style="background:var(--cyan)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>Ramírez, Ana</strong> — Cobro pendiente 💰</div><div style="font-size:11px;color:var(--text3)">08:50</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>💰 Ingresos del mes</span></div>
+        <div class="chart-box" style="height:120px"><canvas id="chart-ingresos"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PACIENTES -->
+<div id="screen-pacientes" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">👥 Pacientes</div><div class="page-sub">Base de pacientes registrados</div></div>
+    <button class="btn btn-cyan" onclick="openModal('modal-nuevo-paciente')">+ Nuevo paciente</button>
+  </div>
+  <div class="card">
+    <div style="display:flex;gap:10px;margin-bottom:16px"><input placeholder="🔍  Buscar por nombre o DNI..." style="flex:1"><button class="btn btn-ghost">Filtrar</button></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Paciente</th><th>DNI</th><th>WhatsApp</th><th>Última visita</th><th>Órdenes</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><strong>García, María Eugenia</strong></td><td style="font-family:'JetBrains Mono'">28.441.220</td><td>3704-441220</td><td>Hoy</td><td><span class="badge listo">3</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-historial')">Historial</button></td></tr>
+          <tr><td><strong>López, Carlos Alberto</strong></td><td style="font-family:'JetBrains Mono'">31.220.445</td><td>3704-220445</td><td>Hoy</td><td><span class="badge listo">1</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+          <tr><td><strong>Ramírez, Ana Paula</strong></td><td style="font-family:'JetBrains Mono'">25.118.330</td><td>3704-118330</td><td>Hoy</td><td><span class="badge listo">5</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+          <tr><td><strong>Torres, Juan Manuel</strong></td><td style="font-family:'JetBrains Mono'">40.220.118</td><td>3704-220118</td><td>Hoy</td><td><span class="badge listo">2</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+          <tr><td><strong>Medina, Sofía</strong></td><td style="font-family:'JetBrains Mono'">35.660.229</td><td>3704-660229</td><td>12/05/2025</td><td><span class="badge listo">1</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+          <tr><td><strong>Fernández, Roberto</strong></td><td style="font-family:'JetBrains Mono'">22.118.440</td><td>3704-118440</td><td>08/05/2025</td><td><span class="badge listo">4</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ORDENES -->
+<div id="screen-ordenes" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">🧾 Órdenes</div><div class="page-sub">Gestión de órdenes de análisis</div></div>
+    <button class="btn btn-cyan" onclick="openModal('modal-nueva-orden')">+ Nueva orden</button>
+  </div>
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" onclick="setTab(this)">Todas (12)</div>
+      <div class="tab" onclick="setTab(this)">Hoy</div>
+      <div class="tab" onclick="setTab(this)">En proceso</div>
+      <div class="tab" onclick="setTab(this)">Listos</div>
+      <div class="tab" onclick="setTab(this)">Entregados</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Paciente</th><th>Análisis</th><th>Médico</th><th>Fecha</th><th>Estado</th><th>Resultado</th><th>WPP</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1042</td><td><strong>García, María</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Glucosa · Colesterol</td><td style="color:var(--text2)">Dr. Pérez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm" onclick="go('resultados',document.querySelectorAll('.nav-btn')[3]);verResultado()">Ver</button></td><td><button class="btn btn-wpp btn-sm" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
+          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1043</td><td><strong>López, Carlos</strong></td><td style="color:var(--text2);font-size:12px">Glucosa · Colesterol · Triglicéridos</td><td style="color:var(--text2)">Dra. Sosa</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge pendiente">⏳ En proceso</span></td><td><button class="btn btn-ghost btn-sm" style="opacity:.3" disabled>Pendiente</button></td><td style="color:var(--text3)">—</td></tr>
+          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--red)">#1044</td><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Orina · VSG · PCR</td><td style="color:var(--text2)">Dr. Álvarez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge urgente">🚨 Urgente</span></td><td><button class="btn btn-ghost btn-sm" style="opacity:.3" disabled>Pendiente</button></td><td style="color:var(--text3)">—</td></tr>
+          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1041</td><td><strong>Torres, Juan</strong></td><td style="color:var(--text2);font-size:12px">Orina · Urea · Creatinina</td><td style="color:var(--text2)">Dr. Pérez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm">Ver</button></td><td><button class="btn btn-wpp btn-sm" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
+          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1040</td><td><strong>Medina, Sofía</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Glucosa</td><td style="color:var(--text2)">Dra. Sosa</td><td style="color:var(--text2)">12/05/2025</td><td><span class="badge entregado">📤 Entregado</span></td><td><button class="btn btn-ghost btn-sm">Ver</button></td><td><span style="font-size:11px;color:var(--green);font-weight:600">✓ Enviado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTADOS -->
+<div id="screen-resultados" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">🔬 Resultado de análisis</div><div class="page-sub" id="res-sub">Seleccioná una orden para ver el resultado</div></div>
+    <div id="res-btns" style="display:none;gap:10px">
+      <button class="btn btn-ghost">🖨 Imprimir</button>
+      <button class="btn btn-wpp" onclick="openModal('modal-wpp-enviar')">📲 Enviar por WPP</button>
+    </div>
+  </div>
+  <div id="resultado-vacio" style="text-align:center;padding:80px 20px;color:var(--text3)">
+    <div style="font-size:52px;margin-bottom:16px;filter:grayscale(1)">🔬</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text2)">Ninguna orden seleccionada</div>
+    <div style="font-size:13px">Entrá a Órdenes y clickeá "Ver" en cualquier orden lista</div>
+  </div>
+  <div id="resultado-contenido" style="display:none">
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-title"><span>👤 Datos del paciente</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">
+          <div style="color:var(--text3)">Paciente</div><div><strong>García, María Eugenia</strong></div>
+          <div style="color:var(--text3)">DNI</div><div style="font-family:'JetBrains Mono'">28.441.220</div>
+          <div style="color:var(--text3)">Fecha nac.</div><div>14/03/1985 (40 años)</div>
+          <div style="color:var(--text3)">Orden</div><div style="font-weight:800;color:var(--cyan)">#1042</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>📋 Datos de la orden</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">
+          <div style="color:var(--text3)">Médico</div><div>Dr. Pérez, Carlos</div>
+          <div style="color:var(--text3)">Fecha muestra</div><div>19/05/2025 — 08:30 hs</div>
+          <div style="color:var(--text3)">Muestra</div><div>Sangre venosa</div>
+          <div style="color:var(--text3)">Estado</div><div><span class="badge listo">✓ Listo</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="res-section">
+        <div class="res-section-title">🩸 Hemograma completo</div>
+        <div style="display:grid;grid-template-columns:1fr 100px 130px 60px;gap:8px;padding:4px 0 8px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px"><div>Parámetro</div><div>Resultado</div><div>Referencia</div><div>Flag</div></div>
+        <div class="res-row"><div class="res-param">Glóbulos Rojos</div><div class="res-val N">4.82</div><div class="res-ref">4.20 – 5.40 mill/mm³</div><div class="res-flag N">N</div></div>
+        <div class="res-row"><div class="res-param">Hemoglobina</div><div class="res-val L">10.8</div><div class="res-ref">12.0 – 16.0 g/dL</div><div class="res-flag L">↓ L</div></div>
+        <div class="res-row"><div class="res-param">Hematocrito</div><div class="res-val L">33.2</div><div class="res-ref">37.0 – 47.0 %</div><div class="res-flag L">↓ L</div></div>
+        <div class="res-row"><div class="res-param">VCM</div><div class="res-val N">74.5</div><div class="res-ref">80.0 – 100.0 fL</div><div class="res-flag N">N</div></div>
+        <div class="res-row"><div class="res-param">Leucocitos</div><div class="res-val N">6800</div><div class="res-ref">4000 – 11000 /mm³</div><div class="res-flag N">N</div></div>
+        <div class="res-row"><div class="res-param">Plaquetas</div><div class="res-val N">220000</div><div class="res-ref">150000 – 400000 /mm³</div><div class="res-flag N">N</div></div>
+      </div>
+      <div class="res-section">
+        <div class="res-section-title">⚗️ Bioquímica</div>
+        <div class="res-row"><div class="res-param">Glucosa en ayunas</div><div class="res-val H">118</div><div class="res-ref">70 – 100 mg/dL</div><div class="res-flag H">↑ H</div></div>
+        <div class="res-row"><div class="res-param">Colesterol total</div><div class="res-val H">215</div><div class="res-ref">&lt; 200 mg/dL</div><div class="res-flag H">↑ H</div></div>
+        <div class="res-row"><div class="res-param">Triglicéridos</div><div class="res-val N">142</div><div class="res-ref">&lt; 150 mg/dL</div><div class="res-flag N">N</div></div>
+      </div>
+      <div style="background:var(--red-dim);border:1px solid rgba(255,77,106,.2);border-left:3px solid var(--red);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text)">⚠️ <strong style="color:var(--red)">Valores alterados:</strong> Hemoglobina y Hematocrito bajo el rango normal. Glucosa y Colesterol levemente elevados. Consulte con su médico.</div>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP -->
+<div id="screen-whatsapp" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">💬 Centro de mensajes</div><div class="page-sub">Envíos automáticos y manuales por WhatsApp</div></div>
+  </div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">📤</div><div class="kpi-val">4</div><div class="kpi-label">Enviados hoy</div></div>
+    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">100%</div><div class="kpi-label">Tasa de entrega</div></div>
+    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">0</div><div class="kpi-label">Pendientes</div></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-title"><span>⚡ Automatizaciones activas</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">✅ Resultado listo</div><div style="font-size:11px;color:var(--text2);margin-top:3px">Se envía al cargar el resultado en el sistema</div></div><div style="background:var(--green-dim);border:1px solid rgba(0,229,160,.3);color:var(--green);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ON</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">⏰ Recordatorio retiro</div><div style="font-size:11px;color:var(--text2);margin-top:3px">24hs después si no fue retirado</div></div><div style="background:var(--amber-dim);border:1px solid rgba(255,179,71,.3);color:var(--amber);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ON</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">💰 Cobro pendiente</div><div style="font-size:11px;color:var(--text2);margin-top:3px">Aviso automático al registrar sin cobrar</div></div><div style="background:var(--cyan-dim);border:1px solid rgba(0,212,255,.3);color:var(--cyan);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ON</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>👁 Vista previa del mensaje</span></div>
+      <div class="wpp-row">
+        <div class="wpp-avatar">🔬</div>
+        <div class="wpp-bubble">*Laboratorio San Juan* ✚
+
+Hola *María* 👋
+
+Sus resultados ya están disponibles ✅
+
+📋 *Orden #1042*
+🧪 Hemograma · Glucosa · Colesterol
+📅 19/05/2025
+
+⚠️ Algunos valores requieren seguimiento médico.
+
+_Lab. San Juan — (362) 4XX-XXXX_</div>
+      </div>
+      <button class="btn btn-wpp" style="width:100%;justify-content:center;margin-top:8px" onclick="openModal('modal-wpp-enviar')">📲 Simular envío</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📊 Historial de mensajes — hoy</span></div>
+    <table>
+      <thead><tr><th>Paciente</th><th>Tipo</th><th>Hora</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>García, María</strong></td><td style="color:var(--text2)">Resultado listo</td><td style="font-family:'JetBrains Mono'">10:32</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+        <tr><td><strong>Torres, Juan</strong></td><td style="color:var(--text2)">Resultado listo</td><td style="font-family:'JetBrains Mono'">11:05</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+        <tr><td><strong>López, Carlos</strong></td><td style="color:var(--text2)">Recordatorio retiro</td><td style="font-family:'JetBrains Mono'">09:15</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+        <tr><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2)">Cobro pendiente</td><td style="font-family:'JetBrains Mono'">08:50</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- COBROS -->
+<div id="screen-cobros" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">💰 Cobros</div><div class="page-sub">Control financiero del laboratorio</div></div>
+    <button class="btn btn-cyan">+ Registrar cobro</button>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">$48.5k</div><div class="kpi-label">Cobrado hoy</div></div>
+    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">$12k</div><div class="kpi-label">Pendiente</div></div>
+    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">📅</div><div class="kpi-val">$310k</div><div class="kpi-label">Mes actual</div></div>
+    <div class="kpi red"><div class="kpi-glow"></div><div class="kpi-ico">📈</div><div class="kpi-val">+18%</div><div class="kpi-label">vs mes anterior</div></div>
+  </div>
+  <div class="grid-75">
+    <div class="card">
+      <div class="card-title"><span>📊 Ingresos — últimas 4 semanas</span></div>
+      <div class="chart-box" style="height:220px"><canvas id="chart-cobros"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>⏳ Cobros pendientes</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>López, Carlos</strong><span style="font-weight:800;color:var(--amber)">$4.500</span></div><div style="font-size:11px;color:var(--text2)">Glucosa · Colesterol · Triglicéridos</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de López registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
+        <div style="background:var(--red-dim);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,77,106,.2)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>Ramírez, Ana</strong><span style="font-weight:800;color:var(--red)">$7.500</span></div><div style="font-size:11px;color:var(--text2)">Análisis completo — Urgente</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de Ramírez registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="screen-config" class="screen">
+  <div class="page-header"><div><div class="page-title">⚙️ Configuración</div><div class="page-sub">Datos del laboratorio y mensajes automáticos</div></div></div>
+  <div style="max-width:640px;display:flex;flex-direction:column;gap:16px">
+    <div class="card">
+      <div class="card-title"><span>🏥 Datos del laboratorio</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Nombre</label><input value="Laboratorio San Juan"></div>
+        <div class="form-group"><label>Teléfono / WhatsApp</label><input value="362 4XX-XXXX"></div>
+        <div class="form-group full"><label>Dirección</label><input value="Av. San Martín 1200, Chaco"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>💬 Mensajes automáticos WhatsApp</span></div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><label>Resultado listo</label><textarea>Hola {nombre} 👋 Sus resultados de {analisis} ya están listos ✅ — Laboratorio San Juan</textarea></div>
+        <div class="form-group"><label>Recordatorio retiro</label><textarea>Hola {nombre}, le recordamos que tiene resultados disponibles para retirar. — Lab. San Juan</textarea></div>
+        <div class="form-group"><label>Cobro pendiente</label><textarea>Hola {nombre}, tiene un saldo pendiente de ${monto} por los análisis del {fecha}. — Lab. San Juan</textarea></div>
+      </div>
+      <button class="btn btn-cyan" style="margin-top:16px" onclick="toast('✅ Configuración guardada')">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- MODALES -->
+<div class="modal-bg" id="modal-nueva-orden">
+  <div class="modal">
+    <div class="modal-title">🧾 Nueva orden de análisis</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Paciente</label><input placeholder="Nombre o DNI..."></div>
+      <div class="form-group"><label>Médico solicitante</label><input placeholder="Dr. Pérez"></div>
+      <div class="form-group full"><label>Análisis solicitados</label><input placeholder="Hemograma, Glucosa, Colesterol..."></div>
+      <div class="form-group"><label>Fecha</label><input type="date"></div>
+      <div class="form-group"><label>Prioridad</label><select><option>Normal</option><option>Urgente</option></select></div>
+      <div class="form-group"><label>Monto</label><input type="number" placeholder="$0"></div>
+      <div class="form-group"><label>Estado cobro</label><select><option>Cobrado</option><option>Pendiente</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-nueva-orden')">Cancelar</button>
+      <button class="btn btn-cyan" onclick="closeModal('modal-nueva-orden');toast('✅ Orden #1045 registrada')">Registrar orden</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-nuevo-paciente">
+  <div class="modal">
+    <div class="modal-title">👤 Nuevo paciente</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Nombre y apellido</label><input placeholder="García, María Eugenia"></div>
+      <div class="form-group"><label>DNI</label><input type="number" placeholder="28441220"></div>
+      <div class="form-group"><label>Teléfono / WhatsApp</label><input placeholder="3704441220" type="tel"></div>
+      <div class="form-group"><label>Fecha de nacimiento</label><input type="date"></div>
+      <div class="form-group"><label>Sexo</label><select><option>Femenino</option><option>Masculino</option><option>Otro</option></select></div>
+      <div class="form-group"><label>Obra social</label><input placeholder="OSDE, IOSE, Particular..."></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-nuevo-paciente')">Cancelar</button>
+      <button class="btn btn-cyan" onclick="closeModal('modal-nuevo-paciente');toast('✅ Paciente registrado')">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-wpp-enviar">
+  <div class="modal">
+    <div class="modal-title">📲 Enviar resultado por WhatsApp</div>
+    <div class="wpp-row">
+      <div class="wpp-avatar">🔬</div>
+      <div class="wpp-bubble">*Laboratorio San Juan* ✚
+
+Hola *María* 👋
+
+Sus resultados ya están disponibles ✅
+
+📋 *Orden #1042* — Hemograma · Glucosa · Colesterol
+📅 19/05/2025
+
+⚠️ Algunos valores requieren seguimiento médico.
+
+_Lab. San Juan_</div>
+    </div>
+    <div style="margin-top:12px;background:var(--bg3);border-radius:9px;padding:12px;font-size:12.5px;border:1px solid var(--border)"><span style="color:var(--text2)">Destino:</span> <strong>García, María Eugenia</strong> — <span style="font-family:'JetBrains Mono';color:var(--cyan)">+54 9 3704 441220</span></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-wpp-enviar')">Cancelar</button>
+      <button class="btn btn-wpp" onclick="closeModal('modal-wpp-enviar');toast('📲 Resultado enviado a García, María','#25d366','#fff')">📲 Confirmar envío</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-historial">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-title">📋 Historial — García, María Eugenia</div>
+    <table>
+      <thead><tr><th>Orden</th><th>Fecha</th><th>Análisis</th><th>Estado</th><th>WPP</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'JetBrains Mono';color:var(--cyan)">#1042</td><td>19/05/2025</td><td>Hemograma · Glucosa · Colesterol</td><td><span class="badge listo">Listo</span></td><td><span style="color:var(--green);font-size:12px;font-weight:700">✓ Enviado</span></td></tr>
+        <tr><td style="font-family:'JetBrains Mono';color:var(--cyan)">#0998</td><td>12/02/2025</td><td>Hemograma completo</td><td><span class="badge entregado">Entregado</span></td><td><span style="color:var(--green);font-size:12px;font-weight:700">✓ Enviado</span></td></tr>
+        <tr><td style="font-family:'JetBrains Mono';color:var(--cyan)">#0871</td><td>03/10/2024</td><td>Glucosa · TSH · T4</td><td><span class="badge entregado">Entregado</span></td><td><span style="color:var(--green);font-size:12px;font-weight:700">✓ Enviado</span></td></tr>
+      </tbody>
+    </table>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-historial')">Cerrar</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+function go(id,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(bg=>{bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');});});
+function setTab(el){el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function toast(msg,bg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'#1a1d2b';t.style.color=color||'#e8eaf2';t.style.border='1px solid rgba(255,255,255,.1)';t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+function verResultado(){document.getElementById('resultado-vacio').style.display='none';document.getElementById('resultado-contenido').style.display='block';const rb=document.getElementById('res-btns');if(rb)rb.style.display='flex';document.getElementById('res-sub').textContent='Orden #1042 — García, María Eugenia — 19/05/2025';}
+document.querySelectorAll('input[type="date"]').forEach(i=>i.value=new Date().toISOString().split('T')[0]);
+
+const CD={plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4a5070',font:{family:'Sora',size:11}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4a5070',font:{family:'Sora',size:11}}}}};
+
+new Chart(document.getElementById('chart-semana'),{type:'bar',data:{labels:['Lun','Mar','Mié','Jue','Vie','Sáb','Hoy'],datasets:[{data:[8,11,9,14,10,6,12],backgroundColor:['rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.85)'],borderColor:'rgba(0,212,255,.5)',borderWidth:1,borderRadius:6}]},options:{...CD,responsive:true,maintainAspectRatio:false}});
+
+new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['Listos','En proceso','Urgentes','Entregados'],datasets:[{data:[7,4,1,0],backgroundColor:['#00e5a0','#ffb347','#ff4d6a','#00d4ff'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
+
+new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[48000,62000,55000,71000,83000],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#00e5a0',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#4a5070',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:10},callback:v=>'$'+v/1000+'k'}}}}});
+
+new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[68000,74000,81000,87000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[8000,5000,12000,7000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'$'+v/1000+'k'}}}}});
+</script>
+</body>
+</html>
