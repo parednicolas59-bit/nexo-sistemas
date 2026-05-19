@@ -190,6 +190,12 @@ select option{background:var(--bg3)}
   <div class="nav-section">Finanzas</div>
   <button class="nav-btn" onclick="go('cobros',this)"><span class="nav-ico">💰</span> Cobros</button>
   <div class="nav-sep"></div>
+  <div class="nav-section">Pacientes</div>
+  <button class="nav-btn" onclick="go('turnos',this)"><span class="nav-ico">📅</span> Turnos</button>
+  <button class="nav-btn" onclick="go('presupuesto',this)"><span class="nav-ico">🧮</span> Presupuesto</button>
+  <div class="nav-sep"></div>
+  <div class="nav-section">Info</div>
+  <button class="nav-btn" onclick="go('institucional',this)"><span class="nav-ico">🏥</span> Institucional</button>
   <button class="nav-btn" onclick="go('config',this)"><span class="nav-ico">⚙️</span> Configuración</button>
 </div>
 
@@ -313,7 +319,7 @@ select option{background:var(--bg3)}
   <div class="page-header">
     <div><div class="page-title">🔬 Resultado de análisis</div><div class="page-sub" id="res-sub">Seleccioná una orden para ver el resultado</div></div>
     <div id="res-btns" style="display:none;gap:10px">
-      <button class="btn btn-ghost">🖨 Imprimir</button>
+      <button class="btn btn-ghost" onclick="imprimirResultado()">🖨 Imprimir</button>
       <button class="btn btn-wpp" onclick="openModal('modal-wpp-enviar')">📲 Enviar por WPP</button>
     </div>
   </div>
@@ -473,7 +479,143 @@ _Lab. San Juan — (362) 4XX-XXXX_</div>
 </div>
 </div>
 
-<!-- MODALES -->
+<!-- TURNOS -->
+<div id="screen-turnos" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">📅 Turnos</div><div class="page-sub">Pedido y gestión de turnos de análisis</div></div>
+    <button class="btn btn-cyan" onclick="openModal('modal-nuevo-turno')">+ Solicitar turno</button>
+  </div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">📅</div><div class="kpi-val">8</div><div class="kpi-label">Turnos hoy</div></div>
+    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">3</div><div class="kpi-label">Pendientes confirmar</div></div>
+    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">5</div><div class="kpi-label">Confirmados</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span>📋 Turnos del día — 19/05/2025</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Hora</th><th>Paciente</th><th>Análisis</th><th>Teléfono</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">07:00</td><td><strong>García, María</strong></td><td style="color:var(--text2)">Hemograma · Glucosa (ayunas)</td><td style="color:var(--text2)">3704-441220</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
+          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">07:30</td><td><strong>López, Carlos</strong></td><td style="color:var(--text2)">Colesterol · Triglicéridos</td><td style="color:var(--text2)">3704-220445</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
+          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">08:00</td><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2)">Análisis completo</td><td style="color:var(--text2)">3704-118330</td><td><span class="badge pendiente">⏳ Pendiente</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✅ Turno confirmado')">Confirmar</button></td></tr>
+          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">09:00</td><td><strong>Torres, Juan</strong></td><td style="color:var(--text2)">Orina completo</td><td style="color:var(--text2)">3704-220118</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
+          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">10:30</td><td><strong>Medina, Sofía</strong></td><td style="color:var(--text2)">TSH · T4 · T3</td><td style="color:var(--text2)">3704-660229</td><td><span class="badge pendiente">⏳ Pendiente</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✅ Turno confirmado')">Confirmar</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card" style="border-color:rgba(37,211,102,.2)">
+    <div style="font-size:13px;font-weight:700;color:#25d366;margin-bottom:12px">💬 Mensaje automático de recordatorio</div>
+    <div class="wpp-bubble">*Laboratorio San Juan* ✚
+
+Hola *María* 👋 Le recordamos su turno para mañana:
+
+📅 *Fecha:* Martes 20/05/2025
+⏰ *Hora:* 07:00 hs
+🧪 *Análisis:* Hemograma · Glucosa
+
+⚠️ Concurrir en *ayunas de 8 horas*. Agua permitida.
+
+_Lab. San Juan — cualquier consulta respondemos este WhatsApp_</div>
+  </div>
+</div>
+
+<!-- PRESUPUESTO -->
+<div id="screen-presupuesto" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">🧮 Generador de presupuesto</div><div class="page-sub">Seleccioná los análisis y obtené el precio al instante</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px">
+    <div class="card">
+      <div class="card-title"><span>🔍 Buscá y seleccioná los análisis</span></div>
+      <input type="text" id="busq-analisis" placeholder="Buscar análisis... (ej: hemograma, glucosa, orina)" style="width:100%;margin-bottom:14px" oninput="filtrarAnalisis(this.value)">
+      <div id="lista-analisis" style="display:flex;flex-direction:column;gap:5px;max-height:420px;overflow-y:auto;padding-right:4px"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card">
+        <div class="card-title"><span>🧾 Tu presupuesto</span></div>
+        <div id="presupuesto-items" style="min-height:60px;display:flex;flex-direction:column;gap:5px">
+          <div style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0">Seleccioná análisis de la lista →</div>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+          <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--cyan)"><span>TOTAL</span><span id="grand-total">₲ 0</span></div>
+        </div>
+        <button class="btn btn-wpp" style="width:100%;justify-content:center;margin-top:12px" onclick="toast('📲 Presupuesto enviado por WhatsApp','#25d366','#fff')">📲 Enviar por WhatsApp</button>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="imprimirPresupuesto()">🖨 Imprimir</button>
+      </div>
+      <div class="card" style="background:rgba(0,229,160,.06);border-color:rgba(0,229,160,.2)">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">💡 Info</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Precios orientativos en guaraníes. Pueden variar por convenio u obra social. Análisis con ayunas: concurrir entre 6:00 y 9:00 hs.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTITUCIONAL -->
+<div id="screen-institucional" class="screen">
+  <div class="page-header">
+    <div><div class="page-title">🏥 Laboratorio San Juan</div><div class="page-sub">Información institucional, horarios y preparaciones</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div class="card" style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border-color:rgba(0,212,255,.2)">
+      <div style="font-size:32px;margin-bottom:10px">✚</div>
+      <div style="font-size:18px;font-weight:800;color:var(--cyan);margin-bottom:8px">Laboratorio San Juan</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">Laboratorio de análisis clínicos de alta complejidad. Equipamiento de última generación y personal altamente calificado para garantizar resultados precisos y confiables.</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span>📍</span><span style="color:var(--text2)">Asunción, Paraguay</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span>📞</span><span style="color:var(--text2)">(021) 4XX-XXXX</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span>💬</span><span style="color:var(--text2)">WhatsApp: 0981-XXXXXX</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🕐 Horarios de atención</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--bg3);border-radius:9px;padding:12px 14px;display:flex;justify-content:space-between"><div><div style="font-weight:700">Lunes a Viernes</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Días hábiles</div></div><div style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">06:00 – 12:00</div></div>
+        <div style="background:var(--bg3);border-radius:9px;padding:12px 14px;display:flex;justify-content:space-between"><div><div style="font-weight:700">Sábados</div></div><div style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">06:00 – 10:00</div></div>
+        <div style="background:var(--red-dim);border:1px solid rgba(255,77,106,.2);border-radius:9px;padding:12px 14px;display:flex;justify-content:space-between"><div><div style="font-weight:700">Domingos y feriados</div></div><div style="color:var(--red);font-weight:700">Cerrado</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span>🏆 ¿Por qué elegirnos?</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">🔬</div><div style="font-weight:700;font-size:13px;margin-bottom:4px">Equipamiento moderno</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Tecnología de última generación para resultados precisos</div></div>
+      <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">⚡</div><div style="font-weight:700;font-size:13px;margin-bottom:4px">Resultados rápidos</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Mayoría de resultados disponibles el mismo día</div></div>
+      <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">📲</div><div style="font-weight:700;font-size:13px;margin-bottom:4px">Envío por WhatsApp</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Resultados al celular apenas estén listos, sin filas</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📋 Preparaciones para análisis frecuentes</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--cyan)"><div style="font-weight:700;font-size:13px;color:var(--cyan);margin-bottom:6px">🩸 Hemograma / Glucosa / Colesterol</div><div style="font-size:12px;color:var(--text2);line-height:1.6">Ayunas de <strong style="color:var(--text)">8 horas mínimo</strong>. Agua permitida. No actividad física intensa 24hs antes. Concurrir entre 6:00 y 9:00 hs.</div></div>
+      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--green)"><div style="font-weight:700;font-size:13px;color:var(--green);margin-bottom:6px">💧 Orina completo</div><div style="font-size:12px;color:var(--text2);line-height:1.6">Primera orina de la mañana. Higiene genital previa. Recipiente estéril. Entregar en menos de 2 horas.</div></div>
+      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--amber)"><div style="font-weight:700;font-size:13px;color:var(--amber);margin-bottom:6px">🦋 TSH / T3 / T4 (Tiroides)</div><div style="font-size:12px;color:var(--text2);line-height:1.6">No requiere ayunas. Si toma medicación tiroidea, indicar al profesional. Extracción en cualquier horario.</div></div>
+      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--red)"><div style="font-weight:700;font-size:13px;color:var(--red);margin-bottom:6px">🧫 Cultivos bacteriológicos</div><div style="font-size:12px;color:var(--text2);line-height:1.6">No tomar antibióticos 48hs antes. Para urocultivo, primera orina. Recipiente estéril indicado por laboratorio.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FIN MAIN -->
+
+<div class="modal-bg" id="modal-nuevo-turno">
+  <div class="modal">
+    <div class="modal-title">📅 Solicitar turno</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Paciente</label><input placeholder="Nombre o DNI..."></div>
+      <div class="form-group"><label>Teléfono / WhatsApp</label><input placeholder="0981-XXXXXX" type="tel"></div>
+      <div class="form-group full"><label>Análisis solicitados</label><input placeholder="Hemograma, Glucosa, Colesterol..."></div>
+      <div class="form-group"><label>Fecha deseada</label><input type="date"></div>
+      <div class="form-group"><label>Hora preferida</label><select><option>06:00</option><option>06:30</option><option>07:00</option><option>07:30</option><option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option><option>10:00</option><option>10:30</option><option>11:00</option></select></div>
+      <div class="form-group"><label>Requiere ayunas</label><select><option>Sí</option><option>No</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-nuevo-turno')">Cancelar</button>
+      <button class="btn btn-cyan" onclick="closeModal('modal-nuevo-turno');toast('✅ Turno registrado — Confirmación enviada por WhatsApp')">Confirmar turno</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="modal-nueva-orden">
   <div class="modal">
     <div class="modal-title">🧾 Nueva orden de análisis</div>
@@ -590,7 +732,125 @@ new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['
 
 new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[480000,620000,550000,710000,830000],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#00e5a0',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#4a5070',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:10},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});
 
-new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[680000,740000,810000,870000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[80000,50000,120000,70000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});}
+new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[680000,740000,810000,870000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[80000,50000,120000,70000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});// ── PRESUPUESTO ─────────────────────────────────────
+const ANALISIS = [
+  {nombre:'Hemograma completo', precio:85000, cat:'Hematología'},
+  {nombre:'Glucosa en ayunas', precio:45000, cat:'Bioquímica'},
+  {nombre:'Colesterol total', precio:50000, cat:'Bioquímica'},
+  {nombre:'Triglicéridos', precio:55000, cat:'Bioquímica'},
+  {nombre:'HDL Colesterol', precio:55000, cat:'Bioquímica'},
+  {nombre:'LDL Colesterol', precio:55000, cat:'Bioquímica'},
+  {nombre:'Orina completo', precio:40000, cat:'Orina'},
+  {nombre:'Urocultivo', precio:85000, cat:'Orina'},
+  {nombre:'TSH (Tiroides)', precio:90000, cat:'Hormonas'},
+  {nombre:'T3 (Triyodotironina)', precio:80000, cat:'Hormonas'},
+  {nombre:'T4 Libre', precio:80000, cat:'Hormonas'},
+  {nombre:'Hemoglobina glicosilada HbA1c', precio:95000, cat:'Bioquímica'},
+  {nombre:'Urea', precio:45000, cat:'Bioquímica'},
+  {nombre:'Creatinina', precio:45000, cat:'Bioquímica'},
+  {nombre:'Ácido úrico', precio:45000, cat:'Bioquímica'},
+  {nombre:'TGO (AST)', precio:45000, cat:'Hepáticos'},
+  {nombre:'TGP (ALT)', precio:45000, cat:'Hepáticos'},
+  {nombre:'Fosfatasa alcalina', precio:50000, cat:'Hepáticos'},
+  {nombre:'Bilirrubina total', precio:50000, cat:'Hepáticos'},
+  {nombre:'Proteínas totales', precio:45000, cat:'Bioquímica'},
+  {nombre:'PCR (Proteína C Reactiva)', precio:70000, cat:'Inflamatorios'},
+  {nombre:'VSG (Eritrosedimentación)', precio:40000, cat:'Inflamatorios'},
+  {nombre:'ASTO cuantitativo', precio:65000, cat:'Inflamatorios'},
+  {nombre:'Factor reumatoide', precio:65000, cat:'Inflamatorios'},
+  {nombre:'PSA (Antígeno Prostático)', precio:110000, cat:'Oncología'},
+  {nombre:'HIV (SIDA)', precio:90000, cat:'Serología'},
+  {nombre:'VDRL (Sífilis)', precio:55000, cat:'Serología'},
+  {nombre:'Hepatitis B (Ag de superficie)', precio:95000, cat:'Serología'},
+  {nombre:'Hepatitis C (Anti HCV)', precio:95000, cat:'Serología'},
+  {nombre:'Toxoplasmosis IgG/IgM', precio:95000, cat:'Serología'},
+  {nombre:'Chagas (diagnóstico serológico)', precio:90000, cat:'Serología'},
+  {nombre:'Dengue (IgM)', precio:100000, cat:'Serología'},
+  {nombre:'Cultivo bacteriológico', precio:120000, cat:'Bacteriología'},
+  {nombre:'Antibiograma', precio:80000, cat:'Bacteriología'},
+  {nombre:'Espermograma', precio:150000, cat:'Andrología'},
+  {nombre:'Perfil lipídico completo', precio:180000, cat:'Paquetes'},
+  {nombre:'Perfil hepático completo', precio:200000, cat:'Paquetes'},
+  {nombre:'Control embarazo (1er trimestre)', precio:350000, cat:'Paquetes'},
+  {nombre:'Chequeo general adultos', precio:420000, cat:'Paquetes'},
+];
+
+let presupuestoSeleccionados = [];
+
+function fmt(n){return '₲ '+Math.round(n).toLocaleString('es-PY');}
+
+function filtrarAnalisis(q){
+  const lista = document.getElementById('lista-analisis');
+  if(!lista) return;
+  const txt = (q||'').toLowerCase();
+  const filtrados = txt ? ANALISIS.filter(a=>a.nombre.toLowerCase().includes(txt)||a.cat.toLowerCase().includes(txt)) : ANALISIS;
+  lista.innerHTML = filtrados.map(a=>{
+    const sel = presupuestoSeleccionados.find(s=>s.nombre===a.nombre);
+    return `<div onclick="toggleAnalisis('${a.nombre}',${a.precio})" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;border:1px solid ${sel?'var(--cyan)':'var(--border)'};background:${sel?'var(--cyan-dim)':'var(--bg3)'};transition:all .15s">
+      <div><div style="font-size:12.5px;font-weight:${sel?'700':'500'};color:${sel?'var(--cyan)':'var(--text)'}">${a.nombre}</div><div style="font-size:10.5px;color:var(--text3)">${a.cat}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--green)">${fmt(a.precio)}</span><span style="font-size:16px">${sel?'✓':''}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function toggleAnalisis(nombre, precio){
+  const idx = presupuestoSeleccionados.findIndex(s=>s.nombre===nombre);
+  if(idx>=0) presupuestoSeleccionados.splice(idx,1);
+  else presupuestoSeleccionados.push({nombre,precio});
+  filtrarAnalisis(document.getElementById('busq-analisis')?.value||'');
+  renderPresupuesto();
+}
+
+function renderPresupuesto(){
+  const container = document.getElementById('presupuesto-items');
+  const totalEl = document.getElementById('grand-total');
+  if(!container) return;
+  if(!presupuestoSeleccionados.length){
+    container.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0">Seleccioná análisis de la lista →</div>';
+    if(totalEl) totalEl.textContent='₲ 0';
+    return;
+  }
+  const total = presupuestoSeleccionados.reduce((s,a)=>s+a.precio,0);
+  container.innerHTML = presupuestoSeleccionados.map(a=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--text)">${a.nombre}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-weight:700;color:var(--green)">${fmt(a.precio)}</span>
+        <button onclick="toggleAnalisis('${a.nombre}',${a.precio})" style="background:transparent;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button>
+      </div>
+    </div>`).join('');
+  if(totalEl) totalEl.textContent = fmt(total);
+}
+
+function imprimirPresupuesto(){
+  const items = presupuestoSeleccionados.map(a=>`<tr><td style="padding:8px 12px">${a.nombre}</td><td style="padding:8px 12px;text-align:right;font-weight:600">₲ ${a.precio.toLocaleString('es-PY')}</td></tr>`).join('');
+  const total = presupuestoSeleccionados.reduce((s,a)=>s+a.precio,0);
+  const w = window.open('','_blank');
+  w.document.write(`<html><head><title>Presupuesto — Lab. San Juan</title><style>body{font-family:sans-serif;padding:30px;color:#1a2236}h2{color:#0a4fa3}table{width:100%;border-collapse:collapse;margin-top:16px}th{background:#0a4fa3;color:#fff;padding:10px 12px;text-align:left}tr:nth-child(even){background:#f4f6fa}td{padding:8px 12px;border-bottom:1px solid #eee}.total{font-size:18px;font-weight:800;color:#0a4fa3;text-align:right;margin-top:16px}.footer{font-size:11px;color:#888;margin-top:20px}</style></head><body><h2>✚ Laboratorio San Juan</h2><p style="color:#888">Presupuesto de análisis clínicos · ${new Date().toLocaleDateString('es-PY')}</p><table><thead><tr><th>Análisis</th><th style="text-align:right">Precio</th></tr></thead><tbody>${items}</tbody></table><div class="total">TOTAL: ₲ ${total.toLocaleString('es-PY')}</div><div class="footer">Precios orientativos. Pueden variar según convenio u obra social.<br>Asunción, Paraguay — (021) 4XX-XXXX</div></body></html>`);
+  w.document.close();
+  w.print();
+}
+
+// ── IMPRIMIR RESULTADO ──────────────────────────────
+function imprimirResultado(){
+  const w = window.open('','_blank');
+  w.document.write(`<html><head><title>Resultado #1042 — Lab. San Juan</title><style>body{font-family:sans-serif;padding:30px;color:#1a2236}h2{color:#0a4fa3}.header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #0a4fa3}.seccion{margin-bottom:20px}.sec-title{font-size:12px;font-weight:700;color:#0a4fa3;text-transform:uppercase;border-bottom:1px solid #e0e8f0;padding-bottom:6px;margin-bottom:10px}table{width:100%;border-collapse:collapse}th{background:#f4f6fa;padding:8px 12px;text-align:left;font-size:11px;color:#666;text-transform:uppercase}td{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:13px}.H{color:#e03e3e;font-weight:700}.L{color:#f59e0b;font-weight:700}.N{color:#00a870}.alerta{background:#fef9e7;border-left:3px solid #f59e0b;padding:10px 14px;font-size:12px;margin-top:16px}.footer{font-size:10px;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}</style></head><body>
+  <div class="header"><div><h2>✚ Laboratorio San Juan</h2><div style="font-size:12px;color:#666">Análisis Clínicos · Asunción, Paraguay</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:700;color:#0a4fa3">Orden #1042</div><div style="font-size:12px;color:#666">19/05/2025</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;font-size:13px"><div><b>Paciente:</b> García, María Eugenia<br><b>DNI:</b> 28.441.220<br><b>Fecha nac.:</b> 14/03/1985 (40 años)</div><div><b>Médico:</b> Dr. Pérez, Carlos<br><b>Muestra:</b> Sangre venosa — 08:30 hs<br><b>Estado:</b> ✓ Listo</div></div>
+  <div class="seccion"><div class="sec-title">Hemograma completo</div><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Referencia</th><th>Flag</th></tr></thead><tbody><tr><td>Glóbulos Rojos</td><td class="N">4.82</td><td>4.20 – 5.40 mill/mm³</td><td class="N">N</td></tr><tr><td>Hemoglobina</td><td class="L">10.8</td><td>12.0 – 16.0 g/dL</td><td class="L">↓ L</td></tr><tr><td>Hematocrito</td><td class="L">33.2</td><td>37.0 – 47.0 %</td><td class="L">↓ L</td></tr><tr><td>Leucocitos</td><td class="N">6800</td><td>4000 – 11000 /mm³</td><td class="N">N</td></tr><tr><td>Plaquetas</td><td class="N">220000</td><td>150000 – 400000 /mm³</td><td class="N">N</td></tr></tbody></table></div>
+  <div class="seccion"><div class="sec-title">Bioquímica</div><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Referencia</th><th>Flag</th></tr></thead><tbody><tr><td>Glucosa en ayunas</td><td class="H">118</td><td>70 – 100 mg/dL</td><td class="H">↑ H</td></tr><tr><td>Colesterol total</td><td class="H">215</td><td>&lt; 200 mg/dL</td><td class="H">↑ H</td></tr><tr><td>Triglicéridos</td><td class="N">142</td><td>&lt; 150 mg/dL</td><td class="N">N</td></tr></tbody></table></div>
+  <div class="alerta">⚠️ <b>Valores alterados:</b> Hemoglobina y Hematocrito por debajo del rango normal. Glucosa y Colesterol levemente elevados. Consulte con su médico.</div>
+  <div class="footer">Este resultado es válido únicamente con firma y sello del profesional responsable. Laboratorio San Juan — Asunción, Paraguay</div></body></html>`);
+  w.document.close();
+  w.print();
+}
+
+// Inicializar lista de análisis al ir a presupuesto
+const _origGo = go;
+window.go = function(id,btn){
+  _origGo(id,btn);
+  if(id==='presupuesto') setTimeout(()=>filtrarAnalisis(''),100);
+};
 </script>
 </body>
 </html>
