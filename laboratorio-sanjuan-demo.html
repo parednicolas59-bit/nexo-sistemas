@@ -842,13 +842,13 @@ function toast(msg,bg,color){const t=document.getElementById('toast');t.textCont
 function verResultado(){document.getElementById('resultado-vacio').style.display='none';document.getElementById('resultado-contenido').style.display='block';document.getElementById('res-btns').style.display='flex';document.getElementById('res-sub').textContent='Orden #1042 — García, María Eugenia — 19/05/2025';}
 document.querySelectorAll('input[type="date"]').forEach(i=>i.value=new Date().toISOString().split('T')[0]);
 
-// LOGIN
+// LOGIN ADMIN
 function doLogin(){
   const user=document.getElementById('login-user').value.trim().toLowerCase();
   const pass=document.getElementById('login-pass').value;
   const err=document.getElementById('login-error');
   if(user==='sanjuan'&&pass==='lab2025'){
-    document.getElementById('login-wrap').style.display='none';
+    document.getElementById('login-admin-wrap').style.display='none';
     document.getElementById('app-shell').style.display='grid';
     initCharts();
   } else {
