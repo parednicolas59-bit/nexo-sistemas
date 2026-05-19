@@ -826,6 +826,8 @@ _Lab. San Juan_</div></div>
 <div id="toast"></div>
 
 <script>
+window.onload = function() {
+
 // NAV
 function go(id,btn){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -834,13 +836,26 @@ function go(id,btn){
   if(btn)btn.classList.add('active');
   if(id==='presupuesto')setTimeout(()=>filtrarAnalisis(''),80);
 }
+window.go = go;
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
+window.openModal=openModal; window.closeModal=closeModal;
 document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
 function setTab(el){el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+window.setTab=setTab;
 function toast(msg,bg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'#1e3a5f';t.style.color=color||'#fff';t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+window.toast=toast;
 function verResultado(){document.getElementById('resultado-vacio').style.display='none';document.getElementById('resultado-contenido').style.display='block';document.getElementById('res-btns').style.display='flex';document.getElementById('res-sub').textContent='Orden #1042 — García, María Eugenia — 19/05/2025';}
+window.verResultado=verResultado;
 document.querySelectorAll('input[type="date"]').forEach(i=>i.value=new Date().toISOString().split('T')[0]);
+
+// ENTRADA
+function mostrarLoginAdmin(){document.getElementById('entrada-wrap').style.display='none';document.getElementById('login-admin-wrap').style.display='flex';}
+function mostrarLoginPaciente(){document.getElementById('entrada-wrap').style.display='none';document.getElementById('login-paciente-wrap').style.display='flex';}
+function volverEntrada(){['login-admin-wrap','login-paciente-wrap'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});document.getElementById('entrada-wrap').style.display='flex';}
+window.mostrarLoginAdmin=mostrarLoginAdmin;
+window.mostrarLoginPaciente=mostrarLoginPaciente;
+window.volverEntrada=volverEntrada;
 
 // LOGIN ADMIN
 function doLogin(){
@@ -858,6 +873,7 @@ function doLogin(){
     setTimeout(()=>err.style.display='none',3000);
   }
 }
+window.doLogin=doLogin;
 document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pass').focus();});
 
@@ -868,7 +884,7 @@ new Chart(document.getElementById('chart-semana'),{type:'bar',data:{labels:['Lun
 new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['Listos','En proceso','Urgentes','Entregados'],datasets:[{data:[7,4,1,0],backgroundColor:['#27ae60','#e67e22','#c0392b','#1e3a5f'],borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
 new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[480000,620000,550000,710000,830000],borderColor:'#27ae60',backgroundColor:'rgba(39,174,96,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#27ae60',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#8a9ab5',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{size:10},callback:v=>'₲'+v/1000+'k'}}}}});
 new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[680000,740000,810000,870000],backgroundColor:'rgba(39,174,96,.7)',borderRadius:5},{label:'Pendiente',data:[80000,50000,120000,70000],backgroundColor:'rgba(230,126,34,.5)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#4a5568',font:{family:'Open Sans',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{size:11},callback:v=>'₲'+v/1000+'k'}}}}});
-} // fin initCharts
+}
 
 // ── ENTRADA / LOGIN DOBLE ──────────────────────────
 function mostrarLoginAdmin(){document.getElementById('entrada-wrap').style.display='none';document.getElementById('login-admin-wrap').style.display='flex';}
@@ -1077,6 +1093,22 @@ function imprimirResultado(){
   <div class="footer">Resultado válido con firma y sello del profesional responsable. Laboratorio San Juan — Encarnación, Paraguay</div></body></html>`);
   w.document.close();w.print();
 }
+window.imprimirResultado=imprimirResultado;
+window.imprimirPresupuesto=imprimirPresupuesto;
+window.showPacTab=showPacTab;
+window.loginPaciente=loginPaciente;
+window.registrarPaciente=registrarPaciente;
+window.cerrarPortalPaciente=cerrarPortalPaciente;
+window.goPac=goPac;
+window.solicitarTurnoPaciente=solicitarTurnoPaciente;
+window.filtrarPac=filtrarPac;
+window.togglePac=togglePac;
+window.filtrarPrep=filtrarPrep;
+window.filtrarAnalisis=filtrarAnalisis;
+window.toggleA=toggleA;
+window.renderPres=renderPres;
+
+}; // fin window.onload
 </script>
 </body>
 </html>
