@@ -4,179 +4,423 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laboratorio San Juan — Sistema de Gestión</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-:root{--bg:#0c0e14;--bg2:#13151f;--bg3:#1a1d2b;--bg4:#21253a;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,.12);--green:#00e5a0;--green-dim:rgba(0,229,160,.12);--red:#ff4d6a;--red-dim:rgba(255,77,106,.12);--amber:#ffb347;--amber-dim:rgba(255,179,71,.12);--text:#e8eaf2;--text2:#7b82a0;--text3:#4a5070;--radius:12px;--shadow:0 4px 32px rgba(0,0,0,.45)}
+:root{
+  --azul:#1e3a5f;
+  --azul2:#2c5282;
+  --azul3:#3a6898;
+  --rojo:#c0392b;
+  --rojo2:#e74c3c;
+  --verde:#27ae60;
+  --verde2:#2ecc71;
+  --amber:#e67e22;
+  --bg:#f0f4f8;
+  --bg2:#ffffff;
+  --bg3:#f7f9fc;
+  --border:#dce3ed;
+  --border2:#c5d0de;
+  --text:#1a2535;
+  --text2:#4a5568;
+  --text3:#8a9ab5;
+  --shadow:0 2px 12px rgba(30,58,95,.10);
+  --shadow2:0 4px 24px rgba(30,58,95,.15);
+  --radius:10px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:14px;overflow:hidden}
-::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:10px}
-.shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100vh}
-.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:relative;z-index:10}
-.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.3}
-.logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#00d4ff22,#00d4ff44);border:1px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 12px rgba(0,212,255,.25)}
-.logo-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px}
-.logo-name span{color:var(--cyan)}
-.demo-pill{background:var(--amber-dim);border:1px solid rgba(255,179,71,.3);color:var(--amber);border-radius:20px;font-size:10px;font-weight:700;padding:3px 10px;letter-spacing:.5px;text-transform:uppercase;animation:pulse-amber 2s infinite}
-@keyframes pulse-amber{0%,100%{box-shadow:0 0 0 0 rgba(255,179,71,.4)}50%{box-shadow:0 0 0 4px rgba(255,179,71,0)}}
-.topbar-right{display:flex;align-items:center;gap:16px}
-.status-dot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green)}
-.status-dot::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
-.user-chip{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:6px 12px;cursor:pointer}
-.avatar{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--cyan),#0088cc);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
-.user-chip span{font-size:12px;font-weight:600;color:var(--text)}
-.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:16px 10px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
-.nav-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:8px 14px 4px}
-.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:9px;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Sora',sans-serif;font-size:12.5px;font-weight:500;color:var(--text2);transition:all .15s;position:relative}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Open Sans',sans-serif;font-size:14px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#f0f4f8}::-webkit-scrollbar-thumb{background:#c5d0de;border-radius:10px}
+
+/* LOGIN */
+.login-wrap{position:fixed;inset:0;background:var(--azul);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-wrap::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.login-card{background:#fff;border-radius:16px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative}
+.login-header{text-align:center;margin-bottom:32px}
+.login-cruz{width:56px;height:56px;background:var(--azul);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;color:#fff;font-weight:800;box-shadow:0 4px 16px rgba(30,58,95,.3)}
+.login-title{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--text3)}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.login-field input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Open Sans',sans-serif;font-size:13px;color:var(--text);background:#fff;outline:none;transition:all .15s}
+.login-field input:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(30,58,95,.1)}
+.login-btn{width:100%;padding:13px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:all .15s;letter-spacing:.3px}
+.login-btn:hover{background:var(--azul2);box-shadow:0 4px 16px rgba(30,58,95,.3)}
+.login-error{background:#fdf2f2;border:1px solid #f5c6c6;color:var(--rojo);border-radius:7px;padding:9px 12px;font-size:12px;text-align:center;display:none;margin-bottom:14px}
+.login-info{margin-top:20px;background:var(--bg3);border-radius:8px;padding:12px 14px;font-size:11.5px;color:var(--text3);border:1px solid var(--border);text-align:center}
+.login-info strong{color:var(--azul)}
+.login-demo-badge{display:inline-block;background:var(--amber);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+
+/* APP */
+.shell{display:grid;grid-template-columns:240px 1fr;grid-template-rows:64px 1fr;height:100vh;display:none}
+
+/* TOPBAR */
+.topbar{grid-column:1/-1;background:var(--azul);display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.topbar-logo{display:flex;align-items:center;gap:12px}
+.topbar-cruz{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff}
+.topbar-name{font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.2px}
+.topbar-name span{color:#7ec8e3}
+.demo-pill{background:var(--amber);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:3px 10px;text-transform:uppercase;letter-spacing:.5px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.status-live{display:flex;align-items:center;gap:6px;font-size:12px;color:#7ec8e3;font-weight:600}
+.status-live::before{content:'';width:7px;height:7px;background:#2ecc71;border-radius:50%;box-shadow:0 0 6px #2ecc71;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 12px;cursor:pointer}
+.user-av{width:26px;height:26px;background:var(--rojo);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff}
+.user-chip span{font-size:12px;font-weight:600;color:#fff}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:18px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:10px 14px 5px;margin-top:4px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:8px;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Open Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text2);transition:all .15s}
 .nav-btn:hover{background:var(--bg3);color:var(--text)}
-.nav-btn.active{background:var(--cyan-dim);color:var(--cyan);font-weight:600}
-.nav-btn.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--cyan);border-radius:0 3px 3px 0;box-shadow:0 0 8px var(--cyan)}
-.nav-ico{font-size:15px;min-width:18px;text-align:center}
-.nav-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:1px 7px}
+.nav-btn.active{background:#e8f0fb;color:var(--azul);font-weight:700;border-left:3px solid var(--azul)}
+.nav-ico{font-size:15px;min-width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--rojo);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:1px 7px}
 .nav-sep{height:1px;background:var(--border);margin:8px 4px}
+
+/* MAIN */
 .main{overflow-y:auto;background:var(--bg)}
-.screen{display:none;padding:22px;min-height:calc(100vh - 56px)}
-.screen.active{display:block;animation:fadeIn .25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-.page-title{font-size:20px;font-weight:800;letter-spacing:-.5px}
-.page-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.screen{display:none;padding:24px}
+.screen.active{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
+.page-title{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--azul);letter-spacing:-.3px}
+.page-sub{font-size:12px;color:var(--text3);margin-top:3px}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--azul);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+
+/* KPIs */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
-.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.kpi.cyan::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
-.kpi.green::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
-.kpi.amber::before{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
-.kpi.red::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
-.kpi-glow{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.07;filter:blur(20px)}
-.kpi.cyan .kpi-glow{background:var(--cyan)}.kpi.green .kpi-glow{background:var(--green)}.kpi.amber .kpi-glow{background:var(--amber)}.kpi.red .kpi-glow{background:var(--red)}
-.kpi-ico{font-size:20px;margin-bottom:10px}
-.kpi-val{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1}
-.kpi.cyan .kpi-val{color:var(--cyan)}.kpi.green .kpi-val{color:var(--green)}.kpi.amber .kpi-val{color:var(--amber)}.kpi.red .kpi-val{color:var(--red)}
-.kpi-label{font-size:11px;color:var(--text2);margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-.kpi-delta{font-size:11px;color:var(--green);margin-top:4px;font-weight:600}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid-75{display:grid;grid-template-columns:7fr 5fr;gap:16px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;border-top:3px solid transparent;transition:transform .2s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
+.kpi.azul{border-top-color:var(--azul)}.kpi.verde{border-top-color:var(--verde)}.kpi.amber{border-top-color:var(--amber)}.kpi.rojo{border-top-color:var(--rojo)}
+.kpi-ico{font-size:22px;margin-bottom:8px}
+.kpi-val{font-family:'Montserrat',sans-serif;font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1}
+.kpi.azul .kpi-val{color:var(--azul)}.kpi.verde .kpi-val{color:var(--verde)}.kpi.amber .kpi-val{color:var(--amber)}.kpi.rojo .kpi-val{color:var(--rojo)}
+.kpi-label{font-size:11px;color:var(--text3);margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kpi-delta{font-size:11px;color:var(--verde);margin-top:3px;font-weight:600}
+
+/* TABLE */
 .tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
-thead tr{border-bottom:1px solid var(--border2)}
-th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
-td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--bg3);border-bottom:2px solid var(--border)}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:var(--bg3)}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge.listo{background:var(--green-dim);color:var(--green);border:1px solid rgba(0,229,160,.2)}
-.badge.pendiente{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(255,179,71,.2)}
-.badge.urgente{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,106,.2);animation:pulse-red 2s infinite}
-@keyframes pulse-red{0%,100%{box-shadow:none}50%{box-shadow:0 0 10px rgba(255,77,106,.3)}}
-.badge.entregado{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
-.btn{padding:8px 16px;border-radius:8px;font-family:'Sora',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
-.btn-cyan{background:var(--cyan);color:#0c0e14}.btn-cyan:hover{background:#33dcff;box-shadow:0 0 16px rgba(0,212,255,.4)}
-.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
-.btn-green{background:var(--green);color:#0c0e14}.btn-green:hover{background:#33eab4}
-.btn-wpp{background:#25d366;color:#fff}.btn-wpp:hover{background:#1db954;box-shadow:0 0 16px rgba(37,211,102,.4)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge.listo{background:#e8f8f0;color:#1a7a45;border:1px solid #a8dfc0}
+.badge.pendiente{background:#fef6ec;color:#c87020;border:1px solid #f5d090}
+.badge.urgente{background:#fdecea;color:var(--rojo);border:1px solid #f5b0aa;animation:pulse-red 2s infinite}
+@keyframes pulse-red{0%,100%{box-shadow:none}50%{box-shadow:0 0 8px rgba(192,57,43,.25)}}
+.badge.entregado{background:#eaf0fb;color:var(--azul);border:1px solid #b0c8e8}
+
+/* BTNS */
+.btn{padding:8px 16px;border-radius:7px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;letter-spacing:.2px}
+.btn-azul{background:var(--azul);color:#fff}.btn-azul:hover{background:var(--azul2);box-shadow:0 3px 12px rgba(30,58,95,.3)}
+.btn-rojo{background:var(--rojo);color:#fff}.btn-rojo:hover{background:var(--rojo2)}
+.btn-verde{background:var(--verde);color:#fff}.btn-verde:hover{background:var(--verde2)}
+.btn-ghost{background:#fff;border:1.5px solid var(--border2);color:var(--text2)}.btn-ghost:hover{border-color:var(--azul);color:var(--azul);background:var(--bg3)}
+.btn-wpp{background:#25d366;color:#fff}.btn-wpp:hover{background:#1db954;box-shadow:0 3px 12px rgba(37,211,102,.3)}
 .btn-sm{padding:5px 10px;font-size:11px}
-.btn-icon{background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 9px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s}
-.btn-icon:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.btn-icon{background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:5px 9px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s}
+.btn-icon:hover{border-color:var(--azul);color:var(--azul);background:var(--bg3)}
+
+/* FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .form-group{display:flex;flex-direction:column;gap:5px}
 .form-group.full{grid-column:1/-1}
-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
-input,select,textarea{padding:9px 12px;border:1px solid var(--border2);border-radius:8px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);background:var(--bg3);transition:border-color .15s;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.1)}
+label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'Open Sans',sans-serif;font-size:13px;color:var(--text);background:#fff;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(30,58,95,.08)}
 textarea{resize:vertical;min-height:70px}
-select option{background:var(--bg3)}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,20,40,.5);backdrop-filter:blur(3px);z-index:1000;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;max-width:580px;width:95%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:modalIn .2s ease}
-@keyframes modalIn{from{transform:translateY(12px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
-.modal-title{font-size:17px;font-weight:800;margin-bottom:20px}
+.modal{background:#fff;border-radius:14px;padding:28px;max-width:560px;width:95%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(10,20,40,.2);animation:modalIn .2s ease}
+@keyframes modalIn{from{transform:translateY(10px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.modal-title{font-family:'Montserrat',sans-serif;font-size:17px;font-weight:800;color:var(--azul);margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border)}
 .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-.res-section{margin-bottom:20px}
-.res-section-title{font-size:11px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,255,.15)}
-.res-row{display:grid;grid-template-columns:1fr 100px 130px 60px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+
+/* RESULTADO */
+.res-section{margin-bottom:18px}
+.res-sec-title{font-size:11px;font-weight:700;color:var(--azul);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #e8f0fb}
+.res-row{display:grid;grid-template-columns:1fr 90px 130px 55px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
 .res-row:last-child{border-bottom:none}
 .res-param{color:var(--text);font-size:12.5px}
-.res-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
-.res-val.H{color:var(--red);font-weight:700}.res-val.L{color:var(--amber);font-weight:700}.res-val.N{color:var(--green)}
-.res-ref{font-size:10.5px;color:var(--text3);font-family:'JetBrains Mono',monospace}
-.res-flag{font-size:11px;font-weight:800}.res-flag.H{color:var(--red)}.res-flag.L{color:var(--amber)}.res-flag.N{color:var(--text3)}
-.wpp-bubble{background:var(--bg3);border:1px solid rgba(37,211,102,.2);border-radius:12px 12px 12px 0;padding:14px 16px;font-size:12.5px;line-height:1.7;color:var(--text);white-space:pre-line;border-left:3px solid #25d366}
-.wpp-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
-.wpp-avatar{width:36px;height:36px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-#toast{position:fixed;bottom:24px;right:24px;padding:13px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;display:none;animation:toastIn .3s ease}
-@keyframes toastIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
-.tabs{display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:18px;width:fit-content}
-.tab{padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s}
-.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 6px rgba(0,0,0,.3)}
-.act-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.act-item:last-child{border-bottom:none}
-.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.res-val{font-family:monospace;font-size:13px;font-weight:600}
+.res-val.H{color:var(--rojo);font-weight:700}.res-val.L{color:var(--amber);font-weight:700}.res-val.N{color:var(--verde)}
+.res-ref{font-size:10.5px;color:var(--text3);font-family:monospace}
+.res-flag{font-size:11px;font-weight:800}.res-flag.H{color:var(--rojo)}.res-flag.L{color:var(--amber)}.res-flag.N{color:var(--text3)}
+
+/* WPP BUBBLE */
+.wpp-wrap{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.wpp-av{width:36px;height:36px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.wpp-bubble{background:#dcf8c6;border-radius:0 12px 12px 12px;padding:12px 16px;font-size:12.5px;line-height:1.7;color:#1a2535;white-space:pre-line;flex:1;border:1px solid #b8e8a0}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px}
+.tab{padding:8px 18px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab.active{color:var(--azul);border-bottom-color:var(--azul)}
+.tab:hover{color:var(--text2)}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-75{display:grid;grid-template-columns:7fr 5fr;gap:16px}
 .chart-box{position:relative;height:200px}
+
+/* ALERTS */
+.alert{border-radius:8px;padding:12px 14px;font-size:12.5px;margin-bottom:12px}
+.alert-amber{background:#fef6ec;border-left:4px solid var(--amber);color:#7a4a10}
+.alert-rojo{background:#fdecea;border-left:4px solid var(--rojo);color:#7a1a10}
+.alert-verde{background:#e8f8f0;border-left:4px solid var(--verde);color:#0a5028}
+.alert-azul{background:#e8f0fb;border-left:4px solid var(--azul);color:#1e3a5f}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;padding:13px 20px;border-radius:9px;font-size:13px;font-weight:600;z-index:9999;display:none;animation:toastIn .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.15);max-width:320px}
+@keyframes toastIn{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+
 @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{display:none}.kpi-grid{grid-template-columns:1fr 1fr}.grid-2,.grid-75{grid-template-columns:1fr}}
+.pac-nav{padding:12px 18px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;border:none;background:none;font-family:'Open Sans',sans-serif;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.pac-nav:hover{color:var(--text);background:var(--bg3)}
+.pac-nav.active{color:var(--azul);border-bottom-color:var(--azul);font-weight:700}
+.pac-screen{display:none}.pac-screen.active{display:block;animation:fadeUp .2s ease}
 </style>
 </head>
-<style>
-.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
-.login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:modalIn .3s ease}
-.login-logo{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:28px}
-.login-logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#00d4ff22,#00d4ff44);border:1px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 18px rgba(0,212,255,.3)}
-.login-title{font-size:18px;font-weight:800;color:var(--text)}
-.login-title span{color:var(--cyan)}
-.login-sub{text-align:center;font-size:12px;color:var(--text2);margin-bottom:28px}
-.login-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
-.login-field label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
-.login-field input{padding:11px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Sora',sans-serif;font-size:13px;color:var(--text);background:var(--bg3);outline:none;transition:border-color .15s}
-.login-field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.1)}
-.login-btn{width:100%;padding:12px;border-radius:10px;background:var(--cyan);color:#0c0e14;font-family:'Sora',sans-serif;font-size:14px;font-weight:800;border:none;cursor:pointer;margin-top:8px;transition:all .15s}
-.login-btn:hover{background:#33dcff;box-shadow:0 0 20px rgba(0,212,255,.4)}
-.login-error{background:var(--red-dim);border:1px solid rgba(255,77,106,.3);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--red);text-align:center;display:none;margin-bottom:12px}
-.login-demo-info{margin-top:20px;background:var(--bg3);border-radius:10px;padding:12px 14px;font-size:11.5px;color:var(--text2);border:1px solid var(--border)}
-.login-demo-info strong{color:var(--text)}
-</style>
-
 <body>
-<div id="login-screen" class="login-screen">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="login-logo-icon">✚</div>
-      <div class="login-title">Lab <span>San Juan</span></div>
+
+<!-- PANTALLA INICIAL: ELEGIR TIPO DE ACCESO -->
+<div id="entrada-wrap" style="position:fixed;inset:0;background:var(--azul);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px">
+  <div style="width:100%;max-width:760px">
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="width:60px;height:60px;background:rgba(255,255,255,.15);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin:0 auto 14px">✚</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:6px">Laboratorio San Juan</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.6)">¿Cómo querés ingresar?</div>
     </div>
-    <div class="login-sub">Ingresá tus credenciales para acceder al sistema</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <!-- PACIENTE -->
+      <div style="background:#fff;border-radius:14px;padding:28px;cursor:pointer;transition:transform .15s;box-shadow:0 8px 32px rgba(0,0,0,.2)" onclick="mostrarLoginPaciente()" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="font-size:40px;margin-bottom:12px">👤</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:17px;font-weight:800;color:var(--azul);margin-bottom:6px">Soy paciente</div>
+        <div style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:16px">Pedí un turno, consultá precios, armá tu presupuesto y accedé a tus resultados.</div>
+        <div style="background:var(--azul);color:#fff;border-radius:8px;padding:10px;text-align:center;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px">Ingresar como paciente →</div>
+      </div>
+      <!-- LABORATORIO -->
+      <div style="background:#fff;border-radius:14px;padding:28px;cursor:pointer;transition:transform .15s;box-shadow:0 8px 32px rgba(0,0,0,.2)" onclick="mostrarLoginAdmin()" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="font-size:40px;margin-bottom:12px">🔬</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:17px;font-weight:800;color:var(--azul);margin-bottom:6px">Soy del laboratorio</div>
+        <div style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:16px">Accedé al sistema de gestión: órdenes, resultados, cobros y más.</div>
+        <div style="background:var(--rojo);color:#fff;border-radius:8px;padding:10px;text-align:center;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px">Acceso personal del laboratorio →</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:rgba(255,255,255,.4)">Demo 7 días — Laboratorio San Juan · Encarnación, Paraguay</div>
+  </div>
+</div>
+
+<!-- LOGIN ADMIN -->
+<div id="login-admin-wrap" style="position:fixed;inset:0;background:var(--azul);display:none;align-items:center;justify-content:center;z-index:9999">
+  <div class="login-card">
+    <div style="margin-bottom:8px"><button onclick="volverEntrada()" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px">← Volver</button></div>
+    <div class="login-header">
+      <div class="login-cruz">🔬</div>
+      <div class="login-title">Acceso del laboratorio</div>
+      <div class="login-sub">Solo personal autorizado</div>
+    </div>
     <div class="login-error" id="login-error">Usuario o contraseña incorrectos</div>
-    <div class="login-field">
-      <label>Usuario</label>
-      <input type="text" id="login-user" placeholder="Ej: admin" autocomplete="username">
+    <div class="login-field"><label>Usuario</label><input type="text" id="login-user" placeholder="Ingrese su usuario" autocomplete="username"></div>
+    <div class="login-field"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="login-btn" onclick="doLogin()">Ingresar al sistema →</button>
+    <div class="login-info"><div class="login-demo-badge">Demo</div><br>Usuario: <strong>sanjuan</strong> · Contraseña: <strong>lab2025</strong></div>
+  </div>
+</div>
+
+<!-- LOGIN PACIENTE -->
+<div id="login-paciente-wrap" style="position:fixed;inset:0;background:var(--azul);display:none;align-items:center;justify-content:center;z-index:9999;overflow-y:auto;padding:20px">
+  <div class="login-card" style="max-width:420px">
+    <div style="margin-bottom:8px"><button onclick="volverEntrada()" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px">← Volver</button></div>
+    <div class="login-header">
+      <div class="login-cruz">👤</div>
+      <div class="login-title">Portal del paciente</div>
+      <div class="login-sub">Ingresá con tu nombre y CI/DNI</div>
     </div>
-    <div class="login-field">
-      <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    <div id="pac-tabs" style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px">
+      <div id="tab-login-pac" style="flex:1;text-align:center;padding:8px;font-weight:700;font-size:13px;color:var(--azul);border-bottom:2px solid var(--azul);margin-bottom:-2px;cursor:pointer" onclick="showPacTab('login')">Ingresar</div>
+      <div id="tab-reg-pac" style="flex:1;text-align:center;padding:8px;font-weight:500;font-size:13px;color:var(--text3);cursor:pointer" onclick="showPacTab('registro')">Registrarme</div>
     </div>
-    <button class="login-btn" onclick="doLogin()">Ingresar →</button>
-    <div class="login-demo-info">
-      🔐 <strong>Demo:</strong> usuario <strong>sanjuan</strong> · contraseña <strong>lab2025</strong>
+    <!-- LOGIN PACIENTE -->
+    <div id="form-login-pac">
+      <div class="login-field"><label>Nombre y apellido</label><input type="text" id="pac-login-nombre" placeholder="Ej: García, María"></div>
+      <div class="login-field"><label>CI / DNI</label><input type="number" id="pac-login-dni" placeholder="Ej: 1234567"></div>
+      <button class="login-btn" onclick="loginPaciente()">Entrar a mi portal →</button>
+      <div class="login-info" style="margin-top:14px"><div class="login-demo-badge">Demo</div><br>Probá con nombre <strong>García, María</strong> y CI <strong>1234567</strong></div>
+    </div>
+    <!-- REGISTRO PACIENTE -->
+    <div id="form-reg-pac" style="display:none">
+      <div class="login-field"><label>Nombre y apellido</label><input type="text" id="pac-reg-nombre" placeholder="Ej: García, María Eugenia"></div>
+      <div class="login-field"><label>CI / DNI</label><input type="number" id="pac-reg-dni" placeholder="Número de cédula"></div>
+      <div class="login-field"><label>Teléfono / WhatsApp</label><input type="tel" id="pac-reg-tel" placeholder="0981-XXXXXX"></div>
+      <div class="login-field"><label>Fecha de nacimiento</label><input type="date" id="pac-reg-fecha"></div>
+      <button class="login-btn" style="background:var(--verde)" onclick="registrarPaciente()">Crear mi perfil →</button>
     </div>
   </div>
 </div>
 
-<div class="shell" id="app-shell" style="display:none">
+<!-- PORTAL PACIENTE -->
+<div id="portal-paciente" style="display:none;min-height:100vh;background:var(--bg)">
+  <!-- HEADER PACIENTE -->
+  <div style="background:var(--azul);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="background:rgba(255,255,255,.15);border-radius:9px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff">✚</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;color:#fff">Lab <span style="color:#7ec8e3">San Juan</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:13px;color:rgba(255,255,255,.8)">Hola, <strong id="pac-nombre-display" style="color:#fff"></strong></span>
+      <button onclick="cerrarPortalPaciente()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Open Sans',sans-serif">Salir</button>
+    </div>
+  </div>
+  <!-- NAV PACIENTE -->
+  <div style="background:#fff;border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto">
+    <button class="pac-nav active" onclick="goPac('pac-inicio',this)">🏠 Inicio</button>
+    <button class="pac-nav" onclick="goPac('pac-turnos',this)">📅 Pedir turno</button>
+    <button class="pac-nav" onclick="goPac('pac-presupuesto',this)">🧮 Presupuesto</button>
+    <button class="pac-nav" onclick="goPac('pac-preparaciones',this)">📋 Preparaciones</button>
+    <button class="pac-nav" onclick="goPac('pac-resultados',this)">🔬 Mis resultados</button>
+    <button class="pac-nav" onclick="goPac('pac-perfil',this)">👤 Mi perfil</button>
+  </div>
+  <!-- CONTENIDO PACIENTE -->
+  <div style="padding:24px;max-width:960px;margin:0 auto">
+
+    <!-- INICIO PACIENTE -->
+    <div id="pac-inicio" class="pac-screen active">
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:4px">Bienvenida, <span id="pac-bienvenida-nombre"></span> 👋</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">¿Qué necesitás hoy?</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+        <div onclick="goPac('pac-turnos',document.querySelectorAll('.pac-nav')[1])" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;text-align:center;transition:all .15s;box-shadow:var(--shadow)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:32px;margin-bottom:8px">📅</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--azul);margin-bottom:4px">Pedir turno</div>
+          <div style="font-size:11.5px;color:var(--text3)">Reservá tu turno online</div>
+        </div>
+        <div onclick="goPac('pac-presupuesto',document.querySelectorAll('.pac-nav')[2])" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;text-align:center;transition:all .15s;box-shadow:var(--shadow)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:32px;margin-bottom:8px">🧮</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--azul);margin-bottom:4px">Ver precios</div>
+          <div style="font-size:11.5px;color:var(--text3)">Consultá precios y armá tu presupuesto</div>
+        </div>
+        <div onclick="goPac('pac-preparaciones',document.querySelectorAll('.pac-nav')[3])" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;text-align:center;transition:all .15s;box-shadow:var(--shadow)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:32px;margin-bottom:8px">📋</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--azul);margin-bottom:4px">Preparaciones</div>
+          <div style="font-size:11.5px;color:var(--text3)">Cómo prepararte para cada análisis</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span>📍 Información del laboratorio</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px">
+          <div><div style="font-weight:700;color:var(--azul);margin-bottom:8px">🕐 Horarios</div><div style="color:var(--text2);line-height:2">Lun a Vie: <strong>06:00 – 12:00</strong><br>Sábados: <strong>06:00 – 10:00</strong><br>Dom y feriados: <strong style="color:var(--rojo)">Cerrado</strong></div></div>
+          <div><div style="font-weight:700;color:var(--azul);margin-bottom:8px">📞 Contacto</div><div style="color:var(--text2);line-height:2">Tel: (021) 4XX-XXXX<br>WhatsApp: 0981-XXXXXX<br>Encarnación, Paraguay</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TURNO PACIENTE -->
+    <div id="pac-turnos" class="pac-screen">
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:16px">📅 Pedir turno</div>
+      <div class="card" style="max-width:560px">
+        <div class="card-title"><span>Completá los datos para tu turno</span></div>
+        <div class="form-grid">
+          <div class="form-group full"><label>Análisis que necesitás</label><input type="text" id="pac-turno-analisis" placeholder="Ej: Hemograma, Glucosa, Orina..."></div>
+          <div class="form-group"><label>Fecha preferida</label><input type="date" id="pac-turno-fecha"></div>
+          <div class="form-group"><label>Hora preferida</label><select id="pac-turno-hora"><option>06:00</option><option>06:30</option><option>07:00</option><option>07:30</option><option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option><option>10:00</option><option>10:30</option><option>11:00</option></select></div>
+          <div class="form-group full"><label>Médico que lo solicitó (opcional)</label><input type="text" placeholder="Ej: Dr. Pérez"></div>
+        </div>
+        <div class="alert alert-azul" style="margin-top:12px">⚠️ <strong>Recordá:</strong> Si tu análisis requiere ayunas, no ingerir alimentos las 8 horas previas. Solo podés tomar agua.</div>
+        <button class="btn btn-azul" style="margin-top:14px;width:100%;justify-content:center" onclick="solicitarTurnoPaciente()">Solicitar turno →</button>
+      </div>
+    </div>
+
+    <!-- PRESUPUESTO PACIENTE -->
+    <div id="pac-presupuesto" class="pac-screen">
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:16px">🧮 Precios y presupuesto</div>
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px">
+        <div class="card">
+          <input type="text" id="pac-busq" placeholder="🔍  Buscar análisis..." style="width:100%;margin-bottom:14px" oninput="filtrarPac(this.value)">
+          <div id="pac-lista" style="display:flex;flex-direction:column;gap:4px;max-height:480px;overflow-y:auto"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="card">
+            <div class="card-title"><span>Tu presupuesto</span></div>
+            <div id="pac-pres-items" style="min-height:50px;display:flex;flex-direction:column;gap:4px"><div style="text-align:center;color:var(--text3);font-size:12px;padding:16px 0">Seleccioná análisis →</div></div>
+            <div style="border-top:2px solid var(--border);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--azul)"><span>TOTAL</span><span id="pac-total">₲ 0</span></div>
+            <button class="btn btn-wpp" style="width:100%;justify-content:center;margin-top:10px" onclick="toast('📲 Presupuesto enviado por WhatsApp','#25d366','#fff')">📲 Enviar por WhatsApp</button>
+            <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:6px" onclick="imprimirPresupuesto()">🖨 Imprimir</button>
+          </div>
+          <div class="alert alert-azul" style="font-size:11.5px">Precios en guaraníes. Pueden variar por convenio u obra social.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREPARACIONES PACIENTE -->
+    <div id="pac-preparaciones" class="pac-screen">
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:8px">📋 Preparaciones para análisis</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:16px">Buscá cualquier análisis para saber cómo prepararte</div>
+      <div class="card" style="margin-bottom:16px">
+        <input type="text" id="prep-busq" placeholder="🔍  Buscar análisis... (ej: glucosa, orina, tiroides)" style="width:100%" oninput="filtrarPrep(this.value)">
+      </div>
+      <div id="prep-lista" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+
+    <!-- RESULTADOS PACIENTE -->
+    <div id="pac-resultados" class="pac-screen">
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:16px">🔬 Mis resultados</div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><span>Historial de análisis</span></div>
+        <table><thead><tr><th>Orden</th><th>Fecha</th><th>Análisis</th><th>Estado</th><th></th></tr></thead><tbody>
+          <tr><td style="font-family:monospace;color:var(--azul);font-weight:700">#1042</td><td>19/05/2025</td><td>Hemograma · Glucosa · Colesterol</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm" onclick="verResultado();goPac('pac-resultados-ver',null)">Ver resultado</button></td></tr>
+          <tr><td style="font-family:monospace;color:var(--azul);font-weight:700">#0998</td><td>12/02/2025</td><td>Hemograma completo</td><td><span class="badge entregado">📤 Entregado</span></td><td><button class="btn btn-ghost btn-sm">Ver resultado</button></td></tr>
+          <tr><td style="font-family:monospace;color:var(--azul);font-weight:700">#0871</td><td>03/10/2024</td><td>Glucosa · TSH · T4</td><td><span class="badge entregado">📤 Entregado</span></td><td><button class="btn btn-ghost btn-sm">Ver resultado</button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- PERFIL PACIENTE -->
+    <div id="pac-perfil" class="pac-screen">
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:16px">👤 Mi perfil</div>
+      <div class="card" style="max-width:500px">
+        <div class="card-title"><span>Datos personales</span></div>
+        <div style="display:grid;gap:12px">
+          <div class="form-group"><label>Nombre y apellido</label><input id="pac-perfil-nombre" value="García, María Eugenia"></div>
+          <div class="form-group"><label>CI / DNI</label><input value="1234567" readonly style="background:var(--bg3);color:var(--text3)"></div>
+          <div class="form-group"><label>Teléfono / WhatsApp</label><input id="pac-perfil-tel" value="0981-441220"></div>
+          <div class="form-group"><label>Fecha de nacimiento</label><input type="date" id="pac-perfil-fecha" value="1985-03-14"></div>
+        </div>
+        <button class="btn btn-azul" style="margin-top:14px" onclick="toast('✅ Perfil actualizado')">Guardar cambios</button>
+      </div>
+    </div>
+
+  </div><!-- /contenido paciente -->
+</div><!-- /portal-paciente -->
+
+<!-- APP -->
+<div class="shell" id="app-shell">
+
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo">
-    <div class="logo-icon">✚</div>
-    <div><div class="logo-name">Lab <span>San Juan</span></div></div>
+  <div class="topbar-logo">
+    <div class="topbar-cruz">✚</div>
+    <div class="topbar-name">Lab <span>San Juan</span></div>
     <span class="demo-pill">Demo 7 días</span>
   </div>
   <div class="topbar-right">
-    <div class="status-dot">Sistema activo</div>
-    <div class="user-chip"><div class="avatar">SJ</div><span>Administrador</span></div>
+    <div class="status-live">Sistema activo</div>
+    <div class="user-chip"><div class="user-av">SJ</div><span>Administrador</span></div>
   </div>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
   <div class="nav-section">Principal</div>
   <button class="nav-btn active" onclick="go('dashboard',this)"><span class="nav-ico">📊</span> Dashboard</button>
@@ -184,78 +428,77 @@ select option{background:var(--bg3)}
   <button class="nav-btn" onclick="go('ordenes',this)"><span class="nav-ico">🧾</span> Órdenes <span class="nav-badge">4</span></button>
   <button class="nav-btn" onclick="go('resultados',this)"><span class="nav-ico">🔬</span> Resultados</button>
   <div class="nav-sep"></div>
+  <div class="nav-section">Pacientes</div>
+  <button class="nav-btn" onclick="go('turnos',this)"><span class="nav-ico">📅</span> Turnos</button>
+  <button class="nav-btn" onclick="go('presupuesto',this)"><span class="nav-ico">🧮</span> Presupuesto</button>
+  <div class="nav-sep"></div>
   <div class="nav-section">Comunicación</div>
   <button class="nav-btn" onclick="go('whatsapp',this)"><span class="nav-ico">💬</span> WhatsApp</button>
   <div class="nav-sep"></div>
   <div class="nav-section">Finanzas</div>
   <button class="nav-btn" onclick="go('cobros',this)"><span class="nav-ico">💰</span> Cobros</button>
   <div class="nav-sep"></div>
-  <div class="nav-section">Pacientes</div>
-  <button class="nav-btn" onclick="go('turnos',this)"><span class="nav-ico">📅</span> Turnos</button>
-  <button class="nav-btn" onclick="go('presupuesto',this)"><span class="nav-ico">🧮</span> Presupuesto</button>
-  <div class="nav-sep"></div>
-  <div class="nav-section">Info</div>
   <button class="nav-btn" onclick="go('institucional',this)"><span class="nav-ico">🏥</span> Institucional</button>
   <button class="nav-btn" onclick="go('config',this)"><span class="nav-ico">⚙️</span> Configuración</button>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
 <!-- DASHBOARD -->
 <div id="screen-dashboard" class="screen active">
-  <div class="page-header">
-    <div><div class="page-title">Buenas tardes 👋</div><div class="page-sub">Lunes 19 de mayo, 2025 — Laboratorio San Juan</div></div>
-    <button class="btn btn-cyan" onclick="openModal('modal-nueva-orden')">+ Nueva orden</button>
+  <div class="page-hdr">
+    <div><div class="page-title">Buenas tardes 👋</div><div class="page-sub">Martes 19 de mayo, 2025 — Laboratorio San Juan</div></div>
+    <button class="btn btn-azul" onclick="openModal('modal-nueva-orden')">+ Nueva orden</button>
   </div>
   <div class="kpi-grid">
-    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">🧾</div><div class="kpi-val">12</div><div class="kpi-label">Órdenes hoy</div><div class="kpi-delta">↑ 3 más que ayer</div></div>
-    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">7</div><div class="kpi-label">Resultados listos</div><div class="kpi-delta">58% completado</div></div>
-    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">4</div><div class="kpi-label">En proceso</div><div class="kpi-delta" style="color:var(--amber)">33% del total</div></div>
-    <div class="kpi red"><div class="kpi-glow"></div><div class="kpi-ico">🚨</div><div class="kpi-val">1</div><div class="kpi-label">Urgentes</div><div class="kpi-delta" style="color:var(--red)">Requiere atención</div></div>
+    <div class="kpi azul"><div class="kpi-ico">🧾</div><div class="kpi-val">12</div><div class="kpi-label">Órdenes hoy</div><div class="kpi-delta">↑ 3 más que ayer</div></div>
+    <div class="kpi verde"><div class="kpi-ico">✅</div><div class="kpi-val">7</div><div class="kpi-label">Resultados listos</div><div class="kpi-delta">58% completado</div></div>
+    <div class="kpi amber"><div class="kpi-ico">⏳</div><div class="kpi-val">4</div><div class="kpi-label">En proceso</div><div class="kpi-delta" style="color:var(--amber)">33% del total</div></div>
+    <div class="kpi rojo"><div class="kpi-ico">🚨</div><div class="kpi-val">1</div><div class="kpi-label">Urgentes</div><div class="kpi-delta" style="color:var(--rojo)">Requiere atención</div></div>
   </div>
   <div class="grid-75" style="margin-bottom:16px">
     <div class="card">
-      <div class="card-title"><span>📈 Órdenes — últimos 7 días</span><span style="font-size:11px;color:var(--text2);font-weight:500">May 2025</span></div>
+      <div class="card-title"><span>📈 Órdenes — últimos 7 días</span><span style="font-size:11px;color:var(--text3);font-weight:500">Mayo 2025</span></div>
       <div class="chart-box"><canvas id="chart-semana"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title"><span>🍩 Estado actual</span></div>
-      <div style="position:relative;height:160px;display:flex;align-items:center;justify-content:center">
+      <div class="card-title"><span>Estado actual</span></div>
+      <div style="position:relative;height:155px;display:flex;align-items:center;justify-content:center">
         <canvas id="chart-dona"></canvas>
-        <div style="position:absolute;text-align:center"><div style="font-size:22px;font-weight:800;color:var(--cyan)">12</div><div style="font-size:10px;color:var(--text2);font-weight:600">TOTAL</div></div>
+        <div style="position:absolute;text-align:center"><div style="font-family:'Montserrat',sans-serif;font-size:22px;font-weight:800;color:var(--azul)">12</div><div style="font-size:10px;color:var(--text3);font-weight:700">TOTAL</div></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span><span style="color:var(--text2)">Listos</span><strong style="margin-left:auto;color:var(--green)">7</strong></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--verde);display:inline-block"></span><span style="color:var(--text2)">Listos</span><strong style="margin-left:auto;color:var(--verde)">7</strong></div>
         <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span><span style="color:var(--text2)">En proceso</span><strong style="margin-left:auto;color:var(--amber)">4</strong></div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span><span style="color:var(--text2)">Urgentes</span><strong style="margin-left:auto;color:var(--red)">1</strong></div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--cyan);display:inline-block"></span><span style="color:var(--text2)">Entregados</span><strong style="margin-left:auto;color:var(--cyan)">0</strong></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--rojo);display:inline-block"></span><span style="color:var(--text2)">Urgentes</span><strong style="margin-left:auto;color:var(--rojo)">1</strong></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:8px;height:8px;border-radius:50%;background:var(--azul);display:inline-block"></span><span style="color:var(--text2)">Entregados</span><strong style="margin-left:auto;color:var(--azul)">0</strong></div>
       </div>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
       <div class="card-title"><span>🔬 Órdenes recientes</span><button class="btn btn-ghost btn-sm" onclick="go('ordenes',document.querySelectorAll('.nav-btn')[2])">Ver todas</button></div>
-      <table>
-        <thead><tr><th>Paciente</th><th>Análisis</th><th>Estado</th><th></th></tr></thead>
-        <tbody>
-          <tr><td><div style="font-weight:600">García, María</div><div style="font-size:10.5px;color:var(--text3)">DNI 28.441.220</div></td><td style="color:var(--text2)">Hemograma · Glucosa</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn-icon" onclick="go('resultados',document.querySelectorAll('.nav-btn')[3]);verResultado()">👁</button></td></tr>
-          <tr><td><div style="font-weight:600">López, Carlos</div><div style="font-size:10.5px;color:var(--text3)">DNI 31.220.445</div></td><td style="color:var(--text2)">Glucosa · Colesterol</td><td><span class="badge pendiente">⏳ En proceso</span></td><td><button class="btn-icon">👁</button></td></tr>
-          <tr><td><div style="font-weight:600">Ramírez, Ana</div><div style="font-size:10.5px;color:var(--text3)">DNI 25.118.330</div></td><td style="color:var(--text2)">Análisis completo</td><td><span class="badge urgente">🚨 Urgente</span></td><td><button class="btn-icon">👁</button></td></tr>
-          <tr><td><div style="font-weight:600">Torres, Juan</div><div style="font-size:10.5px;color:var(--text3)">DNI 40.220.118</div></td><td style="color:var(--text2)">Orina completo</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn-icon" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
-        </tbody>
-      </table>
+      <table><thead><tr><th>Paciente</th><th>Análisis</th><th>Estado</th><th></th></tr></thead><tbody>
+        <tr><td><div style="font-weight:600">García, María</div><div style="font-size:11px;color:var(--text3)">DNI 28.441.220</div></td><td style="color:var(--text2)">Hemograma · Glucosa</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn-icon" onclick="go('resultados',document.querySelectorAll('.nav-btn')[3]);verResultado()">👁</button></td></tr>
+        <tr><td><div style="font-weight:600">López, Carlos</div><div style="font-size:11px;color:var(--text3)">DNI 31.220.445</div></td><td style="color:var(--text2)">Glucosa · Colesterol</td><td><span class="badge pendiente">⏳ En proceso</span></td><td><button class="btn-icon">👁</button></td></tr>
+        <tr><td><div style="font-weight:600">Ramírez, Ana</div><div style="font-size:11px;color:var(--text3)">DNI 25.118.330</div></td><td style="color:var(--text2)">Análisis completo</td><td><span class="badge urgente">🚨 Urgente</span></td><td><button class="btn-icon">👁</button></td></tr>
+        <tr><td><div style="font-weight:600">Torres, Juan</div><div style="font-size:11px;color:var(--text3)">DNI 40.220.118</div></td><td style="color:var(--text2)">Orina completo</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn-icon" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
+      </tbody></table>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card" style="flex:1">
         <div class="card-title"><span>💬 WhatsApp — hoy</span></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>García, María</strong> — Resultado enviado ✅</div><div style="font-size:11px;color:var(--text3)">10:32</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>Torres, Juan</strong> — Resultado enviado ✅</div><div style="font-size:11px;color:var(--text3)">11:05</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--amber)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>López, Carlos</strong> — Recordatorio retiro ⏰</div><div style="font-size:11px;color:var(--text3)">09:15</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--cyan)"></div><div style="flex:1;font-size:12px;color:var(--text)"><strong>Ramírez, Ana</strong> — Cobro pendiente 💰</div><div style="font-size:11px;color:var(--text3)">08:50</div></div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:8px;height:8px;border-radius:50%;background:var(--verde);flex-shrink:0"></div><div style="flex:1;font-size:12px"><strong>García, María</strong> — Resultado enviado ✅</div><div style="font-size:11px;color:var(--text3)">10:32</div></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:8px;height:8px;border-radius:50%;background:var(--verde);flex-shrink:0"></div><div style="flex:1;font-size:12px"><strong>Torres, Juan</strong> — Resultado enviado ✅</div><div style="font-size:11px;color:var(--text3)">11:05</div></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1;font-size:12px"><strong>López, Carlos</strong> — Recordatorio retiro ⏰</div><div style="font-size:11px;color:var(--text3)">09:15</div></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0"><div style="width:8px;height:8px;border-radius:50%;background:var(--azul);flex-shrink:0"></div><div style="flex:1;font-size:12px"><strong>Ramírez, Ana</strong> — Cobro pendiente 💰</div><div style="font-size:11px;color:var(--text3)">08:50</div></div>
+        </div>
       </div>
       <div class="card">
         <div class="card-title"><span>💰 Ingresos del mes</span></div>
-        <div class="chart-box" style="height:120px"><canvas id="chart-ingresos"></canvas></div>
+        <div class="chart-box" style="height:110px"><canvas id="chart-ingresos"></canvas></div>
       </div>
     </div>
   </div>
@@ -263,138 +506,143 @@ select option{background:var(--bg3)}
 
 <!-- PACIENTES -->
 <div id="screen-pacientes" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">👥 Pacientes</div><div class="page-sub">Base de pacientes registrados</div></div>
-    <button class="btn btn-cyan" onclick="openModal('modal-nuevo-paciente')">+ Nuevo paciente</button>
-  </div>
+  <div class="page-hdr"><div><div class="page-title">👥 Pacientes</div><div class="page-sub">Base de pacientes registrados</div></div><button class="btn btn-azul" onclick="openModal('modal-nuevo-paciente')">+ Nuevo paciente</button></div>
   <div class="card">
     <div style="display:flex;gap:10px;margin-bottom:16px"><input placeholder="🔍  Buscar por nombre o DNI..." style="flex:1"><button class="btn btn-ghost">Filtrar</button></div>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Paciente</th><th>DNI</th><th>WhatsApp</th><th>Última visita</th><th>Órdenes</th><th></th></tr></thead>
-        <tbody>
-          <tr><td><strong>García, María Eugenia</strong></td><td style="font-family:'JetBrains Mono'">28.441.220</td><td>3704-441220</td><td>Hoy</td><td><span class="badge listo">3</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-historial')">Historial</button></td></tr>
-          <tr><td><strong>López, Carlos Alberto</strong></td><td style="font-family:'JetBrains Mono'">31.220.445</td><td>3704-220445</td><td>Hoy</td><td><span class="badge listo">1</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
-          <tr><td><strong>Ramírez, Ana Paula</strong></td><td style="font-family:'JetBrains Mono'">25.118.330</td><td>3704-118330</td><td>Hoy</td><td><span class="badge listo">5</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
-          <tr><td><strong>Torres, Juan Manuel</strong></td><td style="font-family:'JetBrains Mono'">40.220.118</td><td>3704-220118</td><td>Hoy</td><td><span class="badge listo">2</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
-          <tr><td><strong>Medina, Sofía</strong></td><td style="font-family:'JetBrains Mono'">35.660.229</td><td>3704-660229</td><td>12/05/2025</td><td><span class="badge listo">1</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
-          <tr><td><strong>Fernández, Roberto</strong></td><td style="font-family:'JetBrains Mono'">22.118.440</td><td>3704-118440</td><td>08/05/2025</td><td><span class="badge listo">4</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>DNI/CI</th><th>WhatsApp</th><th>Última visita</th><th>Órdenes</th><th></th></tr></thead><tbody>
+      <tr><td><strong>García, María Eugenia</strong></td><td style="font-family:monospace">28.441.220</td><td>3704-441220</td><td>Hoy</td><td><span class="badge listo">3</span></td><td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-historial')">Historial</button></td></tr>
+      <tr><td><strong>López, Carlos Alberto</strong></td><td style="font-family:monospace">31.220.445</td><td>3704-220445</td><td>Hoy</td><td><span class="badge listo">1</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+      <tr><td><strong>Ramírez, Ana Paula</strong></td><td style="font-family:monospace">25.118.330</td><td>3704-118330</td><td>Hoy</td><td><span class="badge listo">5</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+      <tr><td><strong>Torres, Juan Manuel</strong></td><td style="font-family:monospace">40.220.118</td><td>3704-220118</td><td>Hoy</td><td><span class="badge listo">2</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+      <tr><td><strong>Medina, Sofía</strong></td><td style="font-family:monospace">35.660.229</td><td>3704-660229</td><td>12/05/2025</td><td><span class="badge listo">1</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+      <tr><td><strong>Fernández, Roberto</strong></td><td style="font-family:monospace">22.118.440</td><td>3704-118440</td><td>08/05/2025</td><td><span class="badge listo">4</span></td><td><button class="btn btn-ghost btn-sm">Historial</button></td></tr>
+    </tbody></table></div>
   </div>
 </div>
 
 <!-- ORDENES -->
 <div id="screen-ordenes" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">🧾 Órdenes</div><div class="page-sub">Gestión de órdenes de análisis</div></div>
-    <button class="btn btn-cyan" onclick="openModal('modal-nueva-orden')">+ Nueva orden</button>
-  </div>
+  <div class="page-hdr"><div><div class="page-title">🧾 Órdenes</div><div class="page-sub">Gestión de órdenes de análisis</div></div><button class="btn btn-azul" onclick="openModal('modal-nueva-orden')">+ Nueva orden</button></div>
   <div class="card">
-    <div class="tabs">
-      <div class="tab active" onclick="setTab(this)">Todas (12)</div>
-      <div class="tab" onclick="setTab(this)">Hoy</div>
-      <div class="tab" onclick="setTab(this)">En proceso</div>
-      <div class="tab" onclick="setTab(this)">Listos</div>
-      <div class="tab" onclick="setTab(this)">Entregados</div>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>#</th><th>Paciente</th><th>Análisis</th><th>Médico</th><th>Fecha</th><th>Estado</th><th>Resultado</th><th>WPP</th></tr></thead>
-        <tbody>
-          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1042</td><td><strong>García, María</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Glucosa · Colesterol</td><td style="color:var(--text2)">Dr. Pérez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm" onclick="go('resultados',document.querySelectorAll('.nav-btn')[3]);verResultado()">Ver</button></td><td><button class="btn btn-wpp btn-sm" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
-          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1043</td><td><strong>López, Carlos</strong></td><td style="color:var(--text2);font-size:12px">Glucosa · Colesterol · Triglicéridos</td><td style="color:var(--text2)">Dra. Sosa</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge pendiente">⏳ En proceso</span></td><td><button class="btn btn-ghost btn-sm" style="opacity:.3" disabled>Pendiente</button></td><td style="color:var(--text3)">—</td></tr>
-          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--red)">#1044</td><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Orina · VSG · PCR</td><td style="color:var(--text2)">Dr. Álvarez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge urgente">🚨 Urgente</span></td><td><button class="btn btn-ghost btn-sm" style="opacity:.3" disabled>Pendiente</button></td><td style="color:var(--text3)">—</td></tr>
-          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1041</td><td><strong>Torres, Juan</strong></td><td style="color:var(--text2);font-size:12px">Orina · Urea · Creatinina</td><td style="color:var(--text2)">Dr. Pérez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm">Ver</button></td><td><button class="btn btn-wpp btn-sm" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
-          <tr><td style="font-family:'JetBrains Mono';font-weight:700;color:var(--cyan)">#1040</td><td><strong>Medina, Sofía</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Glucosa</td><td style="color:var(--text2)">Dra. Sosa</td><td style="color:var(--text2)">12/05/2025</td><td><span class="badge entregado">📤 Entregado</span></td><td><button class="btn btn-ghost btn-sm">Ver</button></td><td><span style="font-size:11px;color:var(--green);font-weight:600">✓ Enviado</span></td></tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="tabs"><div class="tab active" onclick="setTab(this)">Todas (12)</div><div class="tab" onclick="setTab(this)">Hoy</div><div class="tab" onclick="setTab(this)">En proceso</div><div class="tab" onclick="setTab(this)">Listos</div><div class="tab" onclick="setTab(this)">Entregados</div></div>
+    <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Paciente</th><th>Análisis</th><th>Médico</th><th>Fecha</th><th>Estado</th><th>Resultado</th><th>WPP</th></tr></thead><tbody>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">#1042</td><td><strong>García, María</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Glucosa · Colesterol</td><td style="color:var(--text2)">Dr. Pérez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm" onclick="go('resultados',document.querySelectorAll('.nav-btn')[3]);verResultado()">Ver</button></td><td><button class="btn btn-wpp btn-sm" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">#1043</td><td><strong>López, Carlos</strong></td><td style="color:var(--text2);font-size:12px">Glucosa · Colesterol · Triglicéridos</td><td style="color:var(--text2)">Dra. Sosa</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge pendiente">⏳ En proceso</span></td><td><button class="btn btn-ghost btn-sm" style="opacity:.4" disabled>Pendiente</button></td><td style="color:var(--text3)">—</td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--rojo)">#1044</td><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Orina · VSG · PCR</td><td style="color:var(--text2)">Dr. Álvarez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge urgente">🚨 Urgente</span></td><td><button class="btn btn-ghost btn-sm" style="opacity:.4" disabled>Pendiente</button></td><td style="color:var(--text3)">—</td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">#1041</td><td><strong>Torres, Juan</strong></td><td style="color:var(--text2);font-size:12px">Orina · Urea · Creatinina</td><td style="color:var(--text2)">Dr. Pérez</td><td style="color:var(--text2)">19/05/2025</td><td><span class="badge listo">✓ Listo</span></td><td><button class="btn btn-ghost btn-sm">Ver</button></td><td><button class="btn btn-wpp btn-sm" onclick="openModal('modal-wpp-enviar')">📲</button></td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">#1040</td><td><strong>Medina, Sofía</strong></td><td style="color:var(--text2);font-size:12px">Hemograma · Glucosa</td><td style="color:var(--text2)">Dra. Sosa</td><td style="color:var(--text2)">12/05/2025</td><td><span class="badge entregado">📤 Entregado</span></td><td><button class="btn btn-ghost btn-sm">Ver</button></td><td><span style="font-size:11px;color:var(--verde);font-weight:700">✓ Enviado</span></td></tr>
+    </tbody></table></div>
   </div>
 </div>
 
 <!-- RESULTADOS -->
 <div id="screen-resultados" class="screen">
-  <div class="page-header">
+  <div class="page-hdr">
     <div><div class="page-title">🔬 Resultado de análisis</div><div class="page-sub" id="res-sub">Seleccioná una orden para ver el resultado</div></div>
-    <div id="res-btns" style="display:none;gap:10px">
-      <button class="btn btn-ghost" onclick="imprimirResultado()">🖨 Imprimir</button>
-      <button class="btn btn-wpp" onclick="openModal('modal-wpp-enviar')">📲 Enviar por WPP</button>
-    </div>
+    <div id="res-btns" style="display:none;gap:10px"><button class="btn btn-ghost" onclick="imprimirResultado()">🖨 Imprimir</button><button class="btn btn-wpp" onclick="openModal('modal-wpp-enviar')">📲 Enviar por WPP</button></div>
   </div>
-  <div id="resultado-vacio" style="text-align:center;padding:80px 20px;color:var(--text3)">
-    <div style="font-size:52px;margin-bottom:16px;filter:grayscale(1)">🔬</div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text2)">Ninguna orden seleccionada</div>
-    <div style="font-size:13px">Entrá a Órdenes y clickeá "Ver" en cualquier orden lista</div>
-  </div>
+  <div id="resultado-vacio" style="text-align:center;padding:80px 20px;color:var(--text3)"><div style="font-size:50px;margin-bottom:16px">🔬</div><div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text2)">Ninguna orden seleccionada</div><div style="font-size:13px">Ir a Órdenes y clickeá "Ver" en una orden lista</div></div>
   <div id="resultado-contenido" style="display:none">
     <div class="grid-2" style="margin-bottom:16px">
-      <div class="card">
-        <div class="card-title"><span>👤 Datos del paciente</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">
-          <div style="color:var(--text3)">Paciente</div><div><strong>García, María Eugenia</strong></div>
-          <div style="color:var(--text3)">DNI</div><div style="font-family:'JetBrains Mono'">28.441.220</div>
-          <div style="color:var(--text3)">Fecha nac.</div><div>14/03/1985 (40 años)</div>
-          <div style="color:var(--text3)">Orden</div><div style="font-weight:800;color:var(--cyan)">#1042</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span>📋 Datos de la orden</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px">
-          <div style="color:var(--text3)">Médico</div><div>Dr. Pérez, Carlos</div>
-          <div style="color:var(--text3)">Fecha muestra</div><div>19/05/2025 — 08:30 hs</div>
-          <div style="color:var(--text3)">Muestra</div><div>Sangre venosa</div>
-          <div style="color:var(--text3)">Estado</div><div><span class="badge listo">✓ Listo</span></div>
-        </div>
-      </div>
+      <div class="card"><div class="card-title"><span>👤 Datos del paciente</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px"><div style="color:var(--text3)">Paciente</div><div><strong>García, María Eugenia</strong></div><div style="color:var(--text3)">DNI/CI</div><div style="font-family:monospace">28.441.220</div><div style="color:var(--text3)">Fecha nac.</div><div>14/03/1985 (40 años)</div><div style="color:var(--text3)">Orden</div><div style="font-weight:800;color:var(--azul)">#1042</div></div></div>
+      <div class="card"><div class="card-title"><span>📋 Datos de la orden</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px"><div style="color:var(--text3)">Médico</div><div>Dr. Pérez, Carlos</div><div style="color:var(--text3)">Fecha muestra</div><div>19/05/2025 — 08:30 hs</div><div style="color:var(--text3)">Muestra</div><div>Sangre venosa</div><div style="color:var(--text3)">Estado</div><div><span class="badge listo">✓ Listo</span></div></div></div>
     </div>
     <div class="card">
-      <div class="res-section">
-        <div class="res-section-title">🩸 Hemograma completo</div>
-        <div style="display:grid;grid-template-columns:1fr 100px 130px 60px;gap:8px;padding:4px 0 8px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px"><div>Parámetro</div><div>Resultado</div><div>Referencia</div><div>Flag</div></div>
+      <div class="res-section"><div class="res-sec-title">🩸 Hemograma completo</div><div style="display:grid;grid-template-columns:1fr 90px 130px 55px;gap:8px;padding:4px 0 8px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px"><div>Parámetro</div><div>Resultado</div><div>Referencia</div><div>Flag</div></div>
         <div class="res-row"><div class="res-param">Glóbulos Rojos</div><div class="res-val N">4.82</div><div class="res-ref">4.20 – 5.40 mill/mm³</div><div class="res-flag N">N</div></div>
         <div class="res-row"><div class="res-param">Hemoglobina</div><div class="res-val L">10.8</div><div class="res-ref">12.0 – 16.0 g/dL</div><div class="res-flag L">↓ L</div></div>
         <div class="res-row"><div class="res-param">Hematocrito</div><div class="res-val L">33.2</div><div class="res-ref">37.0 – 47.0 %</div><div class="res-flag L">↓ L</div></div>
-        <div class="res-row"><div class="res-param">VCM</div><div class="res-val N">74.5</div><div class="res-ref">80.0 – 100.0 fL</div><div class="res-flag N">N</div></div>
         <div class="res-row"><div class="res-param">Leucocitos</div><div class="res-val N">6800</div><div class="res-ref">4000 – 11000 /mm³</div><div class="res-flag N">N</div></div>
         <div class="res-row"><div class="res-param">Plaquetas</div><div class="res-val N">220000</div><div class="res-ref">150000 – 400000 /mm³</div><div class="res-flag N">N</div></div>
       </div>
-      <div class="res-section">
-        <div class="res-section-title">⚗️ Bioquímica</div>
+      <div class="res-section"><div class="res-sec-title">⚗️ Bioquímica</div>
         <div class="res-row"><div class="res-param">Glucosa en ayunas</div><div class="res-val H">118</div><div class="res-ref">70 – 100 mg/dL</div><div class="res-flag H">↑ H</div></div>
         <div class="res-row"><div class="res-param">Colesterol total</div><div class="res-val H">215</div><div class="res-ref">&lt; 200 mg/dL</div><div class="res-flag H">↑ H</div></div>
         <div class="res-row"><div class="res-param">Triglicéridos</div><div class="res-val N">142</div><div class="res-ref">&lt; 150 mg/dL</div><div class="res-flag N">N</div></div>
       </div>
-      <div style="background:var(--red-dim);border:1px solid rgba(255,77,106,.2);border-left:3px solid var(--red);border-radius:9px;padding:12px 14px;font-size:12px;color:var(--text)">⚠️ <strong style="color:var(--red)">Valores alterados:</strong> Hemoglobina y Hematocrito bajo el rango normal. Glucosa y Colesterol levemente elevados. Consulte con su médico.</div>
+      <div class="alert alert-amber">⚠️ <strong>Valores alterados:</strong> Hemoglobina y Hematocrito por debajo del rango normal. Glucosa y Colesterol levemente elevados. Se recomienda seguimiento médico.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TURNOS -->
+<div id="screen-turnos" class="screen">
+  <div class="page-hdr"><div><div class="page-title">📅 Turnos</div><div class="page-sub">Gestión de turnos de análisis</div></div><button class="btn btn-azul" onclick="openModal('modal-nuevo-turno')">+ Solicitar turno</button></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi azul"><div class="kpi-ico">📅</div><div class="kpi-val">8</div><div class="kpi-label">Turnos hoy</div></div>
+    <div class="kpi amber"><div class="kpi-ico">⏳</div><div class="kpi-val">3</div><div class="kpi-label">Pendientes confirmar</div></div>
+    <div class="kpi verde"><div class="kpi-ico">✅</div><div class="kpi-val">5</div><div class="kpi-label">Confirmados</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span>📋 Turnos del día — 19/05/2025</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Hora</th><th>Paciente</th><th>Análisis</th><th>Teléfono</th><th>Estado</th><th></th></tr></thead><tbody>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">07:00</td><td><strong>García, María</strong></td><td style="color:var(--text2)">Hemograma · Glucosa (ayunas)</td><td style="color:var(--text2)">3704-441220</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">07:30</td><td><strong>López, Carlos</strong></td><td style="color:var(--text2)">Colesterol · Triglicéridos</td><td style="color:var(--text2)">3704-220445</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">08:00</td><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2)">Análisis completo</td><td style="color:var(--text2)">3704-118330</td><td><span class="badge pendiente">⏳ Pendiente</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✅ Turno confirmado')">Confirmar</button></td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">09:00</td><td><strong>Torres, Juan</strong></td><td style="color:var(--text2)">Orina completo</td><td style="color:var(--text2)">3704-220118</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
+      <tr><td style="font-family:monospace;font-weight:700;color:var(--azul)">10:30</td><td><strong>Medina, Sofía</strong></td><td style="color:var(--text2)">TSH · T4 · T3</td><td style="color:var(--text2)">3704-660229</td><td><span class="badge pendiente">⏳ Pendiente</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✅ Turno confirmado')">Confirmar</button></td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="card" style="border-left:4px solid #25d366">
+    <div class="card-title"><span>💬 Mensaje automático de recordatorio</span></div>
+    <div class="wpp-wrap"><div class="wpp-av">🔬</div><div class="wpp-bubble">*Laboratorio San Juan* ✚
+
+Hola *María* 👋 Le recordamos su turno para mañana:
+
+📅 *Fecha:* Martes 20/05/2025
+⏰ *Hora:* 07:00 hs
+🧪 *Análisis:* Hemograma · Glucosa
+
+⚠️ Concurrir en *ayunas de 8 horas*. Agua permitida.
+
+_Lab. San Juan_</div></div>
+  </div>
+</div>
+
+<!-- PRESUPUESTO -->
+<div id="screen-presupuesto" class="screen">
+  <div class="page-hdr"><div><div class="page-title">🧮 Generador de presupuesto</div><div class="page-sub">Seleccioná los análisis y obtené el precio al instante</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px">
+    <div class="card">
+      <div class="card-title"><span>🔍 Buscá y seleccioná los análisis</span></div>
+      <input type="text" id="busq-analisis" placeholder="Buscar análisis... (ej: hemograma, glucosa, orina)" style="width:100%;margin-bottom:14px" oninput="filtrarAnalisis(this.value)">
+      <div id="lista-analisis" style="display:flex;flex-direction:column;gap:5px;max-height:440px;overflow-y:auto;padding-right:4px"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card">
+        <div class="card-title"><span>🧾 Tu presupuesto</span></div>
+        <div id="presupuesto-items" style="min-height:60px;display:flex;flex-direction:column;gap:4px"><div style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0">Seleccioná análisis de la lista →</div></div>
+        <div style="border-top:2px solid var(--border);margin-top:12px;padding-top:12px">
+          <div style="display:flex;justify-content:space-between;font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;color:var(--azul)"><span>TOTAL</span><span id="grand-total">₲ 0</span></div>
+        </div>
+        <button class="btn btn-wpp" style="width:100%;justify-content:center;margin-top:12px" onclick="toast('📲 Presupuesto enviado por WhatsApp','#25d366','#fff')">📲 Enviar por WhatsApp</button>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="imprimirPresupuesto()">🖨 Imprimir presupuesto</button>
+      </div>
+      <div class="alert alert-azul"><strong>💡 Info:</strong> Precios en guaraníes. Pueden variar por convenio u obra social. Análisis con ayunas: concurrir entre 6:00 y 9:00 hs.</div>
     </div>
   </div>
 </div>
 
 <!-- WHATSAPP -->
 <div id="screen-whatsapp" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">💬 Centro de mensajes</div><div class="page-sub">Envíos automáticos y manuales por WhatsApp</div></div>
-  </div>
+  <div class="page-hdr"><div><div class="page-title">💬 Centro de mensajes</div><div class="page-sub">Envíos automáticos y manuales por WhatsApp</div></div></div>
   <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
-    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">📤</div><div class="kpi-val">4</div><div class="kpi-label">Enviados hoy</div></div>
-    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">100%</div><div class="kpi-label">Tasa de entrega</div></div>
-    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">0</div><div class="kpi-label">Pendientes</div></div>
+    <div class="kpi verde"><div class="kpi-ico">📤</div><div class="kpi-val">4</div><div class="kpi-label">Enviados hoy</div></div>
+    <div class="kpi azul"><div class="kpi-ico">✅</div><div class="kpi-val">100%</div><div class="kpi-label">Tasa de entrega</div></div>
+    <div class="kpi amber"><div class="kpi-ico">⏳</div><div class="kpi-val">0</div><div class="kpi-label">Pendientes</div></div>
   </div>
   <div class="grid-2" style="margin-bottom:16px">
     <div class="card">
       <div class="card-title"><span>⚡ Automatizaciones activas</span></div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">✅ Resultado listo</div><div style="font-size:11px;color:var(--text2);margin-top:3px">Se envía al cargar el resultado en el sistema</div></div><div style="background:var(--green-dim);border:1px solid rgba(0,229,160,.3);color:var(--green);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ON</div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">⏰ Recordatorio retiro</div><div style="font-size:11px;color:var(--text2);margin-top:3px">24hs después si no fue retirado</div></div><div style="background:var(--amber-dim);border:1px solid rgba(255,179,71,.3);color:var(--amber);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ON</div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">💰 Cobro pendiente</div><div style="font-size:11px;color:var(--text2);margin-top:3px">Aviso automático al registrar sin cobrar</div></div><div style="background:var(--cyan-dim);border:1px solid rgba(0,212,255,.3);color:var(--cyan);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ON</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:9px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">✅ Resultado listo</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Se envía automáticamente al cargar el resultado</div></div><div style="background:#e8f8f0;border:1px solid #a8dfc0;color:var(--verde);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ACTIVO</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:9px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">⏰ Recordatorio retiro</div><div style="font-size:11px;color:var(--text3);margin-top:2px">24hs después si no fue retirado</div></div><div style="background:#fef6ec;border:1px solid #f5d090;color:var(--amber);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ACTIVO</div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:9px;padding:12px 14px;border:1px solid var(--border)"><div><div style="font-weight:700;font-size:13px">💰 Cobro pendiente</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Aviso automático al registrar sin cobrar</div></div><div style="background:#e8f0fb;border:1px solid #b0c8e8;color:var(--azul);border-radius:20px;font-size:10px;font-weight:800;padding:3px 10px">ACTIVO</div></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title"><span>👁 Vista previa del mensaje</span></div>
-      <div class="wpp-row">
-        <div class="wpp-avatar">🔬</div>
-        <div class="wpp-bubble">*Laboratorio San Juan* ✚
+      <div class="wpp-wrap"><div class="wpp-av">🔬</div><div class="wpp-bubble">*Laboratorio San Juan* ✚
 
 Hola *María* 👋
 
@@ -406,147 +654,37 @@ Sus resultados ya están disponibles ✅
 
 ⚠️ Algunos valores requieren seguimiento médico.
 
-_Lab. San Juan — (362) 4XX-XXXX_</div>
-      </div>
+_Lab. San Juan_</div></div>
       <button class="btn btn-wpp" style="width:100%;justify-content:center;margin-top:8px" onclick="openModal('modal-wpp-enviar')">📲 Simular envío</button>
     </div>
   </div>
   <div class="card">
     <div class="card-title"><span>📊 Historial de mensajes — hoy</span></div>
-    <table>
-      <thead><tr><th>Paciente</th><th>Tipo</th><th>Hora</th><th>Estado</th></tr></thead>
-      <tbody>
-        <tr><td><strong>García, María</strong></td><td style="color:var(--text2)">Resultado listo</td><td style="font-family:'JetBrains Mono'">10:32</td><td><span class="badge listo">✓ Enviado</span></td></tr>
-        <tr><td><strong>Torres, Juan</strong></td><td style="color:var(--text2)">Resultado listo</td><td style="font-family:'JetBrains Mono'">11:05</td><td><span class="badge listo">✓ Enviado</span></td></tr>
-        <tr><td><strong>López, Carlos</strong></td><td style="color:var(--text2)">Recordatorio retiro</td><td style="font-family:'JetBrains Mono'">09:15</td><td><span class="badge listo">✓ Enviado</span></td></tr>
-        <tr><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2)">Cobro pendiente</td><td style="font-family:'JetBrains Mono'">08:50</td><td><span class="badge listo">✓ Enviado</span></td></tr>
-      </tbody>
-    </table>
+    <table><thead><tr><th>Paciente</th><th>Tipo</th><th>Hora</th><th>Estado</th></tr></thead><tbody>
+      <tr><td><strong>García, María</strong></td><td style="color:var(--text2)">Resultado listo</td><td style="font-family:monospace">10:32</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+      <tr><td><strong>Torres, Juan</strong></td><td style="color:var(--text2)">Resultado listo</td><td style="font-family:monospace">11:05</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+      <tr><td><strong>López, Carlos</strong></td><td style="color:var(--text2)">Recordatorio retiro</td><td style="font-family:monospace">09:15</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+      <tr><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2)">Cobro pendiente</td><td style="font-family:monospace">08:50</td><td><span class="badge listo">✓ Enviado</span></td></tr>
+    </tbody></table>
   </div>
 </div>
 
 <!-- COBROS -->
 <div id="screen-cobros" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">💰 Cobros</div><div class="page-sub">Control financiero del laboratorio</div></div>
-    <button class="btn btn-cyan">+ Registrar cobro</button>
-  </div>
+  <div class="page-hdr"><div><div class="page-title">💰 Cobros</div><div class="page-sub">Control financiero del laboratorio</div></div><button class="btn btn-azul">+ Registrar cobro</button></div>
   <div class="kpi-grid">
-    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">₲ 485.000</div><div class="kpi-label">Cobrado hoy</div></div>
-    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">₲ 120.000</div><div class="kpi-label">Pendiente</div></div>
-    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">📅</div><div class="kpi-val">₲ 3.100.000</div><div class="kpi-label">Mes actual</div></div>
-    <div class="kpi red"><div class="kpi-glow"></div><div class="kpi-ico">📈</div><div class="kpi-val">+18%</div><div class="kpi-label">vs mes anterior</div></div>
+    <div class="kpi verde"><div class="kpi-ico">✅</div><div class="kpi-val">₲485k</div><div class="kpi-label">Cobrado hoy</div></div>
+    <div class="kpi amber"><div class="kpi-ico">⏳</div><div class="kpi-val">₲120k</div><div class="kpi-label">Pendiente</div></div>
+    <div class="kpi azul"><div class="kpi-ico">📅</div><div class="kpi-val">₲3.1M</div><div class="kpi-label">Mes actual</div></div>
+    <div class="kpi rojo"><div class="kpi-ico">📈</div><div class="kpi-val">+18%</div><div class="kpi-label">vs mes anterior</div></div>
   </div>
   <div class="grid-75">
-    <div class="card">
-      <div class="card-title"><span>📊 Ingresos — últimas 4 semanas</span></div>
-      <div class="chart-box" style="height:220px"><canvas id="chart-cobros"></canvas></div>
-    </div>
+    <div class="card"><div class="card-title"><span>📊 Ingresos — últimas 4 semanas</span></div><div class="chart-box" style="height:200px"><canvas id="chart-cobros"></canvas></div></div>
     <div class="card">
       <div class="card-title"><span>⏳ Cobros pendientes</span></div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>López, Carlos</strong><span style="font-weight:800;color:var(--amber)">₲ 45.000</span></div><div style="font-size:11px;color:var(--text2)">Glucosa · Colesterol · Triglicéridos</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de López registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
-        <div style="background:var(--red-dim);border-radius:10px;padding:12px 14px;border:1px solid rgba(255,77,106,.2)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>Ramírez, Ana</strong><span style="font-weight:800;color:var(--red)">₲ 75.000</span></div><div style="font-size:11px;color:var(--text2)">Análisis completo — Urgente</div><div style="margin-top:10px"><button class="btn btn-green btn-sm" style="width:100%;justify-content:center" onclick="toast('✅ Cobro de Ramírez registrado','#00e5a0','#0c0e14')">Marcar cobrado</button></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CONFIG -->
-<div id="screen-config" class="screen">
-  <div class="page-header"><div><div class="page-title">⚙️ Configuración</div><div class="page-sub">Datos del laboratorio y mensajes automáticos</div></div></div>
-  <div style="max-width:640px;display:flex;flex-direction:column;gap:16px">
-    <div class="card">
-      <div class="card-title"><span>🏥 Datos del laboratorio</span></div>
-      <div class="form-grid">
-        <div class="form-group"><label>Nombre</label><input value="Laboratorio San Juan"></div>
-        <div class="form-group"><label>Teléfono / WhatsApp</label><input value="362 4XX-XXXX"></div>
-        <div class="form-group full"><label>Dirección</label><input value="Av. San Martín 1200, Chaco"></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title"><span>💬 Mensajes automáticos WhatsApp</span></div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="form-group"><label>Resultado listo</label><textarea>Hola {nombre} 👋 Sus resultados de {analisis} ya están listos ✅ — Laboratorio San Juan</textarea></div>
-        <div class="form-group"><label>Recordatorio retiro</label><textarea>Hola {nombre}, le recordamos que tiene resultados disponibles para retirar. — Lab. San Juan</textarea></div>
-        <div class="form-group"><label>Cobro pendiente</label><textarea>Hola {nombre}, tiene un saldo pendiente de ${monto} por los análisis del {fecha}. — Lab. San Juan</textarea></div>
-      </div>
-      <button class="btn btn-cyan" style="margin-top:16px" onclick="toast('✅ Configuración guardada')">Guardar cambios</button>
-    </div>
-  </div>
-</div>
-
-</div>
-</div>
-
-<!-- TURNOS -->
-<div id="screen-turnos" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">📅 Turnos</div><div class="page-sub">Pedido y gestión de turnos de análisis</div></div>
-    <button class="btn btn-cyan" onclick="openModal('modal-nuevo-turno')">+ Solicitar turno</button>
-  </div>
-  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
-    <div class="kpi cyan"><div class="kpi-glow"></div><div class="kpi-ico">📅</div><div class="kpi-val">8</div><div class="kpi-label">Turnos hoy</div></div>
-    <div class="kpi amber"><div class="kpi-glow"></div><div class="kpi-ico">⏳</div><div class="kpi-val">3</div><div class="kpi-label">Pendientes confirmar</div></div>
-    <div class="kpi green"><div class="kpi-glow"></div><div class="kpi-ico">✅</div><div class="kpi-val">5</div><div class="kpi-label">Confirmados</div></div>
-  </div>
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title"><span>📋 Turnos del día — 19/05/2025</span></div>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr><th>Hora</th><th>Paciente</th><th>Análisis</th><th>Teléfono</th><th>Estado</th><th></th></tr></thead>
-        <tbody>
-          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">07:00</td><td><strong>García, María</strong></td><td style="color:var(--text2)">Hemograma · Glucosa (ayunas)</td><td style="color:var(--text2)">3704-441220</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
-          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">07:30</td><td><strong>López, Carlos</strong></td><td style="color:var(--text2)">Colesterol · Triglicéridos</td><td style="color:var(--text2)">3704-220445</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
-          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">08:00</td><td><strong>Ramírez, Ana</strong></td><td style="color:var(--text2)">Análisis completo</td><td style="color:var(--text2)">3704-118330</td><td><span class="badge pendiente">⏳ Pendiente</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✅ Turno confirmado')">Confirmar</button></td></tr>
-          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">09:00</td><td><strong>Torres, Juan</strong></td><td style="color:var(--text2)">Orina completo</td><td style="color:var(--text2)">3704-220118</td><td><span class="badge listo">✓ Confirmado</span></td><td><button class="btn btn-wpp btn-sm" onclick="toast('📲 Recordatorio enviado','#25d366','#fff')">📲 Recordar</button></td></tr>
-          <tr><td style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">10:30</td><td><strong>Medina, Sofía</strong></td><td style="color:var(--text2)">TSH · T4 · T3</td><td style="color:var(--text2)">3704-660229</td><td><span class="badge pendiente">⏳ Pendiente</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('✅ Turno confirmado')">Confirmar</button></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="card" style="border-color:rgba(37,211,102,.2)">
-    <div style="font-size:13px;font-weight:700;color:#25d366;margin-bottom:12px">💬 Mensaje automático de recordatorio</div>
-    <div class="wpp-bubble">*Laboratorio San Juan* ✚
-
-Hola *María* 👋 Le recordamos su turno para mañana:
-
-📅 *Fecha:* Martes 20/05/2025
-⏰ *Hora:* 07:00 hs
-🧪 *Análisis:* Hemograma · Glucosa
-
-⚠️ Concurrir en *ayunas de 8 horas*. Agua permitida.
-
-_Lab. San Juan — cualquier consulta respondemos este WhatsApp_</div>
-  </div>
-</div>
-
-<!-- PRESUPUESTO -->
-<div id="screen-presupuesto" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">🧮 Generador de presupuesto</div><div class="page-sub">Seleccioná los análisis y obtené el precio al instante</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px">
-    <div class="card">
-      <div class="card-title"><span>🔍 Buscá y seleccioná los análisis</span></div>
-      <input type="text" id="busq-analisis" placeholder="Buscar análisis... (ej: hemograma, glucosa, orina)" style="width:100%;margin-bottom:14px" oninput="filtrarAnalisis(this.value)">
-      <div id="lista-analisis" style="display:flex;flex-direction:column;gap:5px;max-height:420px;overflow-y:auto;padding-right:4px"></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div class="card">
-        <div class="card-title"><span>🧾 Tu presupuesto</span></div>
-        <div id="presupuesto-items" style="min-height:60px;display:flex;flex-direction:column;gap:5px">
-          <div style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0">Seleccioná análisis de la lista →</div>
-        </div>
-        <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
-          <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--cyan)"><span>TOTAL</span><span id="grand-total">₲ 0</span></div>
-        </div>
-        <button class="btn btn-wpp" style="width:100%;justify-content:center;margin-top:12px" onclick="toast('📲 Presupuesto enviado por WhatsApp','#25d366','#fff')">📲 Enviar por WhatsApp</button>
-        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="imprimirPresupuesto()">🖨 Imprimir</button>
-      </div>
-      <div class="card" style="background:rgba(0,229,160,.06);border-color:rgba(0,229,160,.2)">
-        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">💡 Info</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.6">Precios orientativos en guaraníes. Pueden variar por convenio u obra social. Análisis con ayunas: concurrir entre 6:00 y 9:00 hs.</div>
+        <div style="background:var(--bg3);border-radius:9px;padding:12px 14px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><strong>López, Carlos</strong><span style="font-weight:800;color:var(--amber)">₲ 45.000</span></div><div style="font-size:11px;color:var(--text2)">Glucosa · Colesterol · Triglicéridos</div><button class="btn btn-verde btn-sm" style="width:100%;justify-content:center;margin-top:8px" onclick="toast('✅ Cobro registrado','#27ae60','#fff')">Marcar cobrado</button></div>
+        <div style="background:#fdecea;border-radius:9px;padding:12px 14px;border:1px solid #f5b0aa"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><strong>Ramírez, Ana</strong><span style="font-weight:800;color:var(--rojo)">₲ 75.000</span></div><div style="font-size:11px;color:var(--text2)">Análisis completo — Urgente</div><button class="btn btn-verde btn-sm" style="width:100%;justify-content:center;margin-top:8px" onclick="toast('✅ Cobro registrado','#27ae60','#fff')">Marcar cobrado</button></div>
       </div>
     </div>
   </div>
@@ -554,50 +692,59 @@ _Lab. San Juan — cualquier consulta respondemos este WhatsApp_</div>
 
 <!-- INSTITUCIONAL -->
 <div id="screen-institucional" class="screen">
-  <div class="page-header">
-    <div><div class="page-title">🏥 Laboratorio San Juan</div><div class="page-sub">Información institucional, horarios y preparaciones</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-    <div class="card" style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border-color:rgba(0,212,255,.2)">
-      <div style="font-size:32px;margin-bottom:10px">✚</div>
-      <div style="font-size:18px;font-weight:800;color:var(--cyan);margin-bottom:8px">Laboratorio San Juan</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">Laboratorio de análisis clínicos de alta complejidad. Equipamiento de última generación y personal altamente calificado para garantizar resultados precisos y confiables.</div>
+  <div class="page-hdr"><div><div class="page-title">🏥 Laboratorio San Juan</div><div class="page-sub">Información institucional, horarios y preparaciones</div></div></div>
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card" style="background:var(--azul);color:#fff;border:none">
+      <div style="font-size:32px;margin-bottom:12px">✚</div>
+      <div style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px">Laboratorio San Juan</div>
+      <div style="font-size:13px;opacity:.8;line-height:1.7;margin-bottom:16px">Laboratorio de análisis clínicos de alta complejidad. Equipamiento moderno y personal altamente calificado para garantizar resultados precisos y confiables para el cuidado de su salud.</div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span>📍</span><span style="color:var(--text2)">Asunción, Paraguay</span></div>
-        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span>📞</span><span style="color:var(--text2)">(021) 4XX-XXXX</span></div>
-        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px"><span>💬</span><span style="color:var(--text2)">WhatsApp: 0981-XXXXXX</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;opacity:.85"><span>📍</span><span>Encarnación, Paraguay</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;opacity:.85"><span>📞</span><span>(021) 4XX-XXXX</span></div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;opacity:.85"><span>💬</span><span>WhatsApp: 0981-XXXXXX</span></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title"><span>🕐 Horarios de atención</span></div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="background:var(--bg3);border-radius:9px;padding:12px 14px;display:flex;justify-content:space-between"><div><div style="font-weight:700">Lunes a Viernes</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Días hábiles</div></div><div style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">06:00 – 12:00</div></div>
-        <div style="background:var(--bg3);border-radius:9px;padding:12px 14px;display:flex;justify-content:space-between"><div><div style="font-weight:700">Sábados</div></div><div style="font-family:'JetBrains Mono';color:var(--cyan);font-weight:700">06:00 – 10:00</div></div>
-        <div style="background:var(--red-dim);border:1px solid rgba(255,77,106,.2);border-radius:9px;padding:12px 14px;display:flex;justify-content:space-between"><div><div style="font-weight:700">Domingos y feriados</div></div><div style="color:var(--red);font-weight:700">Cerrado</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)"><div><div style="font-weight:700">Lunes a Viernes</div><div style="font-size:11px;color:var(--text3)">Días hábiles</div></div><div style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--azul)">06:00 – 12:00</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)"><div><div style="font-weight:700">Sábados</div></div><div style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--azul)">06:00 – 10:00</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#fdecea;border-radius:8px;border:1px solid #f5b0aa"><div><div style="font-weight:700">Domingos y feriados</div></div><div style="font-weight:700;color:var(--rojo)">Cerrado</div></div>
       </div>
     </div>
   </div>
   <div class="card" style="margin-bottom:16px">
     <div class="card-title"><span>🏆 ¿Por qué elegirnos?</span></div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-      <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">🔬</div><div style="font-weight:700;font-size:13px;margin-bottom:4px">Equipamiento moderno</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Tecnología de última generación para resultados precisos</div></div>
-      <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">⚡</div><div style="font-weight:700;font-size:13px;margin-bottom:4px">Resultados rápidos</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Mayoría de resultados disponibles el mismo día</div></div>
-      <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center"><div style="font-size:28px;margin-bottom:8px">📲</div><div style="font-weight:700;font-size:13px;margin-bottom:4px">Envío por WhatsApp</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Resultados al celular apenas estén listos, sin filas</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:16px;text-align:center;border:1px solid var(--border)"><div style="font-size:28px;margin-bottom:8px">🔬</div><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:var(--azul)">Equipamiento moderno</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Tecnología de última generación para resultados precisos y confiables</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:16px;text-align:center;border:1px solid var(--border)"><div style="font-size:28px;margin-bottom:8px">⚡</div><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:var(--azul)">Resultados rápidos</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Mayoría de resultados disponibles el mismo día de extracción</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:16px;text-align:center;border:1px solid var(--border)"><div style="font-size:28px;margin-bottom:8px">📲</div><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px;color:var(--azul)">Envío por WhatsApp</div><div style="font-size:11.5px;color:var(--text2);line-height:1.5">Resultados al celular apenas estén listos, sin necesidad de concurrir</div></div>
     </div>
   </div>
   <div class="card">
     <div class="card-title"><span>📋 Preparaciones para análisis frecuentes</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--cyan)"><div style="font-weight:700;font-size:13px;color:var(--cyan);margin-bottom:6px">🩸 Hemograma / Glucosa / Colesterol</div><div style="font-size:12px;color:var(--text2);line-height:1.6">Ayunas de <strong style="color:var(--text)">8 horas mínimo</strong>. Agua permitida. No actividad física intensa 24hs antes. Concurrir entre 6:00 y 9:00 hs.</div></div>
-      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--green)"><div style="font-weight:700;font-size:13px;color:var(--green);margin-bottom:6px">💧 Orina completo</div><div style="font-size:12px;color:var(--text2);line-height:1.6">Primera orina de la mañana. Higiene genital previa. Recipiente estéril. Entregar en menos de 2 horas.</div></div>
-      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--amber)"><div style="font-weight:700;font-size:13px;color:var(--amber);margin-bottom:6px">🦋 TSH / T3 / T4 (Tiroides)</div><div style="font-size:12px;color:var(--text2);line-height:1.6">No requiere ayunas. Si toma medicación tiroidea, indicar al profesional. Extracción en cualquier horario.</div></div>
-      <div style="background:var(--bg3);border-radius:10px;padding:14px;border-left:3px solid var(--red)"><div style="font-weight:700;font-size:13px;color:var(--red);margin-bottom:6px">🧫 Cultivos bacteriológicos</div><div style="font-size:12px;color:var(--text2);line-height:1.6">No tomar antibióticos 48hs antes. Para urocultivo, primera orina. Recipiente estéril indicado por laboratorio.</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border-top:3px solid var(--azul)"><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--azul);margin-bottom:6px">🩸 Hemograma / Glucosa / Colesterol</div><div style="font-size:12px;color:var(--text2);line-height:1.6">Ayunas de <strong>8 horas mínimo</strong>. Agua permitida. No realizar actividad física intensa 24hs antes. Concurrir entre 6:00 y 9:00 hs.</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border-top:3px solid var(--verde)"><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--verde2);margin-bottom:6px">💧 Orina completo</div><div style="font-size:12px;color:var(--text2);line-height:1.6">Primera orina de la mañana. Higiene genital previa. Recipiente estéril. Entregar en menos de 2 horas.</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border-top:3px solid var(--amber)"><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--amber);margin-bottom:6px">🦋 TSH / T3 / T4 (Tiroides)</div><div style="font-size:12px;color:var(--text2);line-height:1.6">No requiere ayunas. Si toma medicación tiroidea, indicar al profesional. Extracción en cualquier horario.</div></div>
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border-top:3px solid var(--rojo)"><div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--rojo);margin-bottom:6px">🧫 Cultivos bacteriológicos</div><div style="font-size:12px;color:var(--text2);line-height:1.6">No tomar antibióticos 48hs antes. Para urocultivo, primera orina en recipiente estéril indicado por el laboratorio.</div></div>
     </div>
   </div>
 </div>
 
-<!-- FIN MAIN -->
+<!-- CONFIG -->
+<div id="screen-config" class="screen">
+  <div class="page-hdr"><div><div class="page-title">⚙️ Configuración</div><div class="page-sub">Datos del laboratorio y mensajes automáticos</div></div></div>
+  <div style="max-width:640px;display:flex;flex-direction:column;gap:16px">
+    <div class="card"><div class="card-title"><span>🏥 Datos del laboratorio</span></div><div class="form-grid"><div class="form-group"><label>Nombre</label><input value="Laboratorio San Juan"></div><div class="form-group"><label>Teléfono / WhatsApp</label><input value="(021) 4XX-XXXX"></div><div class="form-group full"><label>Dirección</label><input value="Encarnación, Paraguay"></div></div></div>
+    <div class="card"><div class="card-title"><span>💬 Mensajes automáticos WhatsApp</span></div><div style="display:flex;flex-direction:column;gap:12px"><div class="form-group"><label>Resultado listo</label><textarea>Hola {nombre} Sus resultados de {analisis} ya están listos — Laboratorio San Juan</textarea></div><div class="form-group"><label>Recordatorio retiro</label><textarea>Hola {nombre}, le recordamos que tiene resultados disponibles para retirar. — Lab. San Juan</textarea></div><div class="form-group"><label>Cobro pendiente</label><textarea>Hola {nombre}, tiene un saldo pendiente de {monto} por los análisis del {fecha}. — Lab. San Juan</textarea></div></div><button class="btn btn-azul" style="margin-top:14px" onclick="toast('✅ Configuración guardada')">Guardar cambios</button></div>
+  </div>
+</div>
 
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- MODALES -->
 <div class="modal-bg" id="modal-nuevo-turno">
   <div class="modal">
     <div class="modal-title">📅 Solicitar turno</div>
@@ -609,10 +756,7 @@ _Lab. San Juan — cualquier consulta respondemos este WhatsApp_</div>
       <div class="form-group"><label>Hora preferida</label><select><option>06:00</option><option>06:30</option><option>07:00</option><option>07:30</option><option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option><option>10:00</option><option>10:30</option><option>11:00</option></select></div>
       <div class="form-group"><label>Requiere ayunas</label><select><option>Sí</option><option>No</option></select></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-nuevo-turno')">Cancelar</button>
-      <button class="btn btn-cyan" onclick="closeModal('modal-nuevo-turno');toast('✅ Turno registrado — Confirmación enviada por WhatsApp')">Confirmar turno</button>
-    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-nuevo-turno')">Cancelar</button><button class="btn btn-azul" onclick="closeModal('modal-nuevo-turno');toast('✅ Turno registrado — Confirmación enviada por WhatsApp')">Confirmar turno</button></div>
   </div>
 </div>
 
@@ -625,13 +769,10 @@ _Lab. San Juan — cualquier consulta respondemos este WhatsApp_</div>
       <div class="form-group full"><label>Análisis solicitados</label><input placeholder="Hemograma, Glucosa, Colesterol..."></div>
       <div class="form-group"><label>Fecha</label><input type="date"></div>
       <div class="form-group"><label>Prioridad</label><select><option>Normal</option><option>Urgente</option></select></div>
-      <div class="form-group"><label>Monto</label><input type="number" placeholder="$0"></div>
+      <div class="form-group"><label>Monto (₲)</label><input type="number" placeholder="0"></div>
       <div class="form-group"><label>Estado cobro</label><select><option>Cobrado</option><option>Pendiente</option></select></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-nueva-orden')">Cancelar</button>
-      <button class="btn btn-cyan" onclick="closeModal('modal-nueva-orden');toast('✅ Orden #1045 registrada')">Registrar orden</button>
-    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-nueva-orden')">Cancelar</button><button class="btn btn-azul" onclick="closeModal('modal-nueva-orden');toast('✅ Orden #1045 registrada')">Registrar orden</button></div>
   </div>
 </div>
 
@@ -640,25 +781,20 @@ _Lab. San Juan — cualquier consulta respondemos este WhatsApp_</div>
     <div class="modal-title">👤 Nuevo paciente</div>
     <div class="form-grid">
       <div class="form-group"><label>Nombre y apellido</label><input placeholder="García, María Eugenia"></div>
-      <div class="form-group"><label>DNI</label><input type="number" placeholder="28441220"></div>
-      <div class="form-group"><label>Teléfono / WhatsApp</label><input placeholder="3704441220" type="tel"></div>
+      <div class="form-group"><label>DNI / CI</label><input type="number" placeholder="28441220"></div>
+      <div class="form-group"><label>Teléfono / WhatsApp</label><input placeholder="0981-XXXXXX" type="tel"></div>
       <div class="form-group"><label>Fecha de nacimiento</label><input type="date"></div>
       <div class="form-group"><label>Sexo</label><select><option>Femenino</option><option>Masculino</option><option>Otro</option></select></div>
-      <div class="form-group"><label>Obra social</label><input placeholder="OSDE, IOSE, Particular..."></div>
+      <div class="form-group"><label>Obra social / Seguro</label><input placeholder="Particular, IPS, etc."></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-nuevo-paciente')">Cancelar</button>
-      <button class="btn btn-cyan" onclick="closeModal('modal-nuevo-paciente');toast('✅ Paciente registrado')">Guardar</button>
-    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-nuevo-paciente')">Cancelar</button><button class="btn btn-azul" onclick="closeModal('modal-nuevo-paciente');toast('✅ Paciente registrado')">Guardar</button></div>
   </div>
 </div>
 
 <div class="modal-bg" id="modal-wpp-enviar">
   <div class="modal">
     <div class="modal-title">📲 Enviar resultado por WhatsApp</div>
-    <div class="wpp-row">
-      <div class="wpp-avatar">🔬</div>
-      <div class="wpp-bubble">*Laboratorio San Juan* ✚
+    <div class="wpp-wrap"><div class="wpp-av">🔬</div><div class="wpp-bubble">*Laboratorio San Juan* ✚
 
 Hola *María* 👋
 
@@ -669,27 +805,20 @@ Sus resultados ya están disponibles ✅
 
 ⚠️ Algunos valores requieren seguimiento médico.
 
-_Lab. San Juan_</div>
-    </div>
-    <div style="margin-top:12px;background:var(--bg3);border-radius:9px;padding:12px;font-size:12.5px;border:1px solid var(--border)"><span style="color:var(--text2)">Destino:</span> <strong>García, María Eugenia</strong> — <span style="font-family:'JetBrains Mono';color:var(--cyan)">+54 9 3704 441220</span></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-wpp-enviar')">Cancelar</button>
-      <button class="btn btn-wpp" onclick="closeModal('modal-wpp-enviar');toast('📲 Resultado enviado a García, María','#25d366','#fff')">📲 Confirmar envío</button>
-    </div>
+_Lab. San Juan_</div></div>
+    <div style="margin-top:12px;background:var(--bg3);border-radius:8px;padding:12px;font-size:13px;border:1px solid var(--border)"><span style="color:var(--text2)">Destino:</span> <strong>García, María Eugenia</strong> — <span style="font-family:monospace;color:var(--azul)">+595 981 XXXXXX</span></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-wpp-enviar')">Cancelar</button><button class="btn btn-wpp" onclick="closeModal('modal-wpp-enviar');toast('📲 Resultado enviado a García, María','#25d366','#fff')">📲 Confirmar envío</button></div>
   </div>
 </div>
 
 <div class="modal-bg" id="modal-historial">
-  <div class="modal" style="max-width:640px">
+  <div class="modal" style="max-width:620px">
     <div class="modal-title">📋 Historial — García, María Eugenia</div>
-    <table>
-      <thead><tr><th>Orden</th><th>Fecha</th><th>Análisis</th><th>Estado</th><th>WPP</th></tr></thead>
-      <tbody>
-        <tr><td style="font-family:'JetBrains Mono';color:var(--cyan)">#1042</td><td>19/05/2025</td><td>Hemograma · Glucosa · Colesterol</td><td><span class="badge listo">Listo</span></td><td><span style="color:var(--green);font-size:12px;font-weight:700">✓ Enviado</span></td></tr>
-        <tr><td style="font-family:'JetBrains Mono';color:var(--cyan)">#0998</td><td>12/02/2025</td><td>Hemograma completo</td><td><span class="badge entregado">Entregado</span></td><td><span style="color:var(--green);font-size:12px;font-weight:700">✓ Enviado</span></td></tr>
-        <tr><td style="font-family:'JetBrains Mono';color:var(--cyan)">#0871</td><td>03/10/2024</td><td>Glucosa · TSH · T4</td><td><span class="badge entregado">Entregado</span></td><td><span style="color:var(--green);font-size:12px;font-weight:700">✓ Enviado</span></td></tr>
-      </tbody>
-    </table>
+    <table><thead><tr><th>Orden</th><th>Fecha</th><th>Análisis</th><th>Estado</th><th>WPP</th></tr></thead><tbody>
+      <tr><td style="font-family:monospace;color:var(--azul)">#1042</td><td>19/05/2025</td><td>Hemograma · Glucosa · Colesterol</td><td><span class="badge listo">Listo</span></td><td><span style="color:var(--verde);font-weight:700;font-size:12px">✓ Enviado</span></td></tr>
+      <tr><td style="font-family:monospace;color:var(--azul)">#0998</td><td>12/02/2025</td><td>Hemograma completo</td><td><span class="badge entregado">Entregado</span></td><td><span style="color:var(--verde);font-weight:700;font-size:12px">✓ Enviado</span></td></tr>
+      <tr><td style="font-family:monospace;color:var(--azul)">#0871</td><td>03/10/2024</td><td>Glucosa · TSH · T4</td><td><span class="badge entregado">Entregado</span></td><td><span style="color:var(--verde);font-weight:700;font-size:12px">✓ Enviado</span></td></tr>
+    </tbody></table>
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('modal-historial')">Cerrar</button></div>
   </div>
 </div>
@@ -697,19 +826,29 @@ _Lab. San Juan_</div>
 <div id="toast"></div>
 
 <script>
-function go(id,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+// NAV
+function go(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(id==='presupuesto')setTimeout(()=>filtrarAnalisis(''),80);
+}
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.modal-bg').forEach(bg=>{bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');});});
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');}));
 function setTab(el){el.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
-function toast(msg,bg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'#1a1d2b';t.style.color=color||'#e8eaf2';t.style.border='1px solid rgba(255,255,255,.1)';t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-function verResultado(){document.getElementById('resultado-vacio').style.display='none';document.getElementById('resultado-contenido').style.display='block';const rb=document.getElementById('res-btns');if(rb)rb.style.display='flex';document.getElementById('res-sub').textContent='Orden #1042 — García, María Eugenia — 19/05/2025';}
+function toast(msg,bg,color){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bg||'#1e3a5f';t.style.color=color||'#fff';t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+function verResultado(){document.getElementById('resultado-vacio').style.display='none';document.getElementById('resultado-contenido').style.display='block';document.getElementById('res-btns').style.display='flex';document.getElementById('res-sub').textContent='Orden #1042 — García, María Eugenia — 19/05/2025';}
+document.querySelectorAll('input[type="date"]').forEach(i=>i.value=new Date().toISOString().split('T')[0]);
+
+// LOGIN
 function doLogin(){
   const user=document.getElementById('login-user').value.trim().toLowerCase();
   const pass=document.getElementById('login-pass').value;
   const err=document.getElementById('login-error');
   if(user==='sanjuan'&&pass==='lab2025'){
-    document.getElementById('login-screen').style.display='none';
+    document.getElementById('login-wrap').style.display='none';
     document.getElementById('app-shell').style.display='grid';
     initCharts();
   } else {
@@ -721,139 +860,221 @@ function doLogin(){
 }
 document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pass').focus();});
-document.querySelectorAll('input[type="date"]').forEach(i=>i.value=new Date().toISOString().split('T')[0]);
+
+// CHARTS
 function initCharts(){
-
-const CD={plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4a5070',font:{family:'Sora',size:11}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4a5070',font:{family:'Sora',size:11}}}}};
-
-new Chart(document.getElementById('chart-semana'),{type:'bar',data:{labels:['Lun','Mar','Mié','Jue','Vie','Sáb','Hoy'],datasets:[{data:[8,11,9,14,10,6,12],backgroundColor:['rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.25)','rgba(0,212,255,.85)'],borderColor:'rgba(0,212,255,.5)',borderWidth:1,borderRadius:6}]},options:{...CD,responsive:true,maintainAspectRatio:false}});
-
-new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['Listos','En proceso','Urgentes','Entregados'],datasets:[{data:[7,4,1,0],backgroundColor:['#00e5a0','#ffb347','#ff4d6a','#00d4ff'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
-
-new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[480000,620000,550000,710000,830000],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#00e5a0',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#4a5070',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:10},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});
-
-new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[680000,740000,810000,870000],backgroundColor:'rgba(0,229,160,.7)',borderRadius:6},{label:'Pendiente',data:[80000,50000,120000,70000],backgroundColor:'rgba(255,179,71,.5)',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#7b82a0',font:{family:'Sora',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4a5070',font:{size:11},callback:v=>'₲ '+v.toLocaleString('es-PY')}}}}});
-} // fin initCharts
-
-// ── PRESUPUESTO ─────────────────────────────────────
-const ANALISIS = [
-  {nombre:'Hemograma completo', precio:85000, cat:'Hematología'},
-  {nombre:'Glucosa en ayunas', precio:45000, cat:'Bioquímica'},
-  {nombre:'Colesterol total', precio:50000, cat:'Bioquímica'},
-  {nombre:'Triglicéridos', precio:55000, cat:'Bioquímica'},
-  {nombre:'HDL Colesterol', precio:55000, cat:'Bioquímica'},
-  {nombre:'LDL Colesterol', precio:55000, cat:'Bioquímica'},
-  {nombre:'Orina completo', precio:40000, cat:'Orina'},
-  {nombre:'Urocultivo', precio:85000, cat:'Orina'},
-  {nombre:'TSH (Tiroides)', precio:90000, cat:'Hormonas'},
-  {nombre:'T3 (Triyodotironina)', precio:80000, cat:'Hormonas'},
-  {nombre:'T4 Libre', precio:80000, cat:'Hormonas'},
-  {nombre:'Hemoglobina glicosilada HbA1c', precio:95000, cat:'Bioquímica'},
-  {nombre:'Urea', precio:45000, cat:'Bioquímica'},
-  {nombre:'Creatinina', precio:45000, cat:'Bioquímica'},
-  {nombre:'Ácido úrico', precio:45000, cat:'Bioquímica'},
-  {nombre:'TGO (AST)', precio:45000, cat:'Hepáticos'},
-  {nombre:'TGP (ALT)', precio:45000, cat:'Hepáticos'},
-  {nombre:'Fosfatasa alcalina', precio:50000, cat:'Hepáticos'},
-  {nombre:'Bilirrubina total', precio:50000, cat:'Hepáticos'},
-  {nombre:'Proteínas totales', precio:45000, cat:'Bioquímica'},
-  {nombre:'PCR (Proteína C Reactiva)', precio:70000, cat:'Inflamatorios'},
-  {nombre:'VSG (Eritrosedimentación)', precio:40000, cat:'Inflamatorios'},
-  {nombre:'ASTO cuantitativo', precio:65000, cat:'Inflamatorios'},
-  {nombre:'Factor reumatoide', precio:65000, cat:'Inflamatorios'},
-  {nombre:'PSA (Antígeno Prostático)', precio:110000, cat:'Oncología'},
-  {nombre:'HIV (SIDA)', precio:90000, cat:'Serología'},
-  {nombre:'VDRL (Sífilis)', precio:55000, cat:'Serología'},
-  {nombre:'Hepatitis B (Ag de superficie)', precio:95000, cat:'Serología'},
-  {nombre:'Hepatitis C (Anti HCV)', precio:95000, cat:'Serología'},
-  {nombre:'Toxoplasmosis IgG/IgM', precio:95000, cat:'Serología'},
-  {nombre:'Chagas (diagnóstico serológico)', precio:90000, cat:'Serología'},
-  {nombre:'Dengue (IgM)', precio:100000, cat:'Serología'},
-  {nombre:'Cultivo bacteriológico', precio:120000, cat:'Bacteriología'},
-  {nombre:'Antibiograma', precio:80000, cat:'Bacteriología'},
-  {nombre:'Espermograma', precio:150000, cat:'Andrología'},
-  {nombre:'Perfil lipídico completo', precio:180000, cat:'Paquetes'},
-  {nombre:'Perfil hepático completo', precio:200000, cat:'Paquetes'},
-  {nombre:'Control embarazo (1er trimestre)', precio:350000, cat:'Paquetes'},
-  {nombre:'Chequeo general adultos', precio:420000, cat:'Paquetes'},
-];
-
-let presupuestoSeleccionados = [];
-
-function fmt(n){return '₲ '+Math.round(n).toLocaleString('es-PY');}
-
-function filtrarAnalisis(q){
-  const lista = document.getElementById('lista-analisis');
-  if(!lista) return;
-  const txt = (q||'').toLowerCase();
-  const filtrados = txt ? ANALISIS.filter(a=>a.nombre.toLowerCase().includes(txt)||a.cat.toLowerCase().includes(txt)) : ANALISIS;
-  lista.innerHTML = filtrados.map(a=>{
-    const sel = presupuestoSeleccionados.find(s=>s.nombre===a.nombre);
-    return `<div onclick="toggleAnalisis('${a.nombre}',${a.precio})" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;border:1px solid ${sel?'var(--cyan)':'var(--border)'};background:${sel?'var(--cyan-dim)':'var(--bg3)'};transition:all .15s">
-      <div><div style="font-size:12.5px;font-weight:${sel?'700':'500'};color:${sel?'var(--cyan)':'var(--text)'}">${a.nombre}</div><div style="font-size:10.5px;color:var(--text3)">${a.cat}</div></div>
-      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--green)">${fmt(a.precio)}</span><span style="font-size:16px">${sel?'✓':''}</span></div>
+const CD={plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{family:'Open Sans',size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{family:'Open Sans',size:11}}}}};
+new Chart(document.getElementById('chart-semana'),{type:'bar',data:{labels:['Lun','Mar','Mié','Jue','Vie','Sáb','Hoy'],datasets:[{data:[8,11,9,14,10,6,12],backgroundColor:['rgba(30,58,95,.2)','rgba(30,58,95,.2)','rgba(30,58,95,.2)','rgba(30,58,95,.2)','rgba(30,58,95,.2)','rgba(30,58,95,.2)','rgba(30,58,95,.85)'],borderColor:'rgba(30,58,95,.4)',borderWidth:1,borderRadius:6}]},options:{...CD,responsive:true,maintainAspectRatio:false}});
+new Chart(document.getElementById('chart-dona'),{type:'doughnut',data:{labels:['Listos','En proceso','Urgentes','Entregados'],datasets:[{data:[7,4,1,0],backgroundColor:['#27ae60','#e67e22','#c0392b','#1e3a5f'],borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('chart-ingresos'),{type:'line',data:{labels:['S1','S2','S3','S4','S5'],datasets:[{data:[480000,620000,550000,710000,830000],borderColor:'#27ae60',backgroundColor:'rgba(39,174,96,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#27ae60',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#8a9ab5',font:{size:10}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{size:10},callback:v=>'₲'+v/1000+'k'}}}}});
+new Chart(document.getElementById('chart-cobros'),{type:'bar',data:{labels:['Sem 1','Sem 2','Sem 3','Sem 4'],datasets:[{label:'Cobrado',data:[680000,740000,810000,870000],backgroundColor:'rgba(39,174,96,.7)',borderRadius:5},{label:'Pendiente',data:[80000,50000,120000,70000],backgroundColor:'rgba(230,126,34,.5)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#4a5568',font:{family:'Open Sans',size:11},boxWidth:12}}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#8a9ab5',font:{size:11},callback:v=>'₲'+v/1000+'k'}}}}});
+// ── ENTRADA / LOGIN DOBLE ──────────────────────────
+function mostrarLoginAdmin(){document.getElementById('entrada-wrap').style.display='none';document.getElementById('login-admin-wrap').style.display='flex';}
+function mostrarLoginPaciente(){document.getElementById('entrada-wrap').style.display='none';document.getElementById('login-paciente-wrap').style.display='flex';}
+function volverEntrada(){['login-admin-wrap','login-paciente-wrap'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});document.getElementById('entrada-wrap').style.display='flex';}
+function showPacTab(tab){
+  document.getElementById('form-login-pac').style.display=tab==='login'?'block':'none';
+  document.getElementById('form-reg-pac').style.display=tab==='registro'?'block':'none';
+  document.getElementById('tab-login-pac').style.cssText=tab==='login'?'flex:1;text-align:center;padding:8px;font-weight:700;font-size:13px;color:var(--azul);border-bottom:2px solid var(--azul);margin-bottom:-2px;cursor:pointer':'flex:1;text-align:center;padding:8px;font-weight:500;font-size:13px;color:var(--text3);cursor:pointer';
+  document.getElementById('tab-reg-pac').style.cssText=tab==='registro'?'flex:1;text-align:center;padding:8px;font-weight:700;font-size:13px;color:var(--azul);border-bottom:2px solid var(--azul);margin-bottom:-2px;cursor:pointer':'flex:1;text-align:center;padding:8px;font-weight:500;font-size:13px;color:var(--text3);cursor:pointer';
+}
+function loginPaciente(){
+  const nombre=document.getElementById('pac-login-nombre').value.trim();
+  const dni=document.getElementById('pac-login-dni').value.trim();
+  if(!nombre||!dni){toast('Completá nombre y CI/DNI','#c0392b','#fff');return;}
+  document.getElementById('login-paciente-wrap').style.display='none';
+  abrirPortalPaciente(nombre);
+}
+function registrarPaciente(){
+  const nombre=document.getElementById('pac-reg-nombre').value.trim();
+  const dni=document.getElementById('pac-reg-dni').value.trim();
+  const tel=document.getElementById('pac-reg-tel').value.trim();
+  if(!nombre||!dni){toast('Completá nombre y CI/DNI','#c0392b','#fff');return;}
+  document.getElementById('login-paciente-wrap').style.display='none';
+  abrirPortalPaciente(nombre);
+  toast('✅ Perfil creado correctamente');
+}
+function abrirPortalPaciente(nombre){
+  const nombreCorto=nombre.includes(',')?(nombre.split(',')[1]||nombre).trim():nombre;
+  document.getElementById('pac-nombre-display').textContent=nombreCorto;
+  document.getElementById('pac-bienvenida-nombre').textContent=nombreCorto;
+  document.getElementById('pac-perfil-nombre').value=nombre;
+  document.getElementById('portal-paciente').style.display='block';
+  setTimeout(()=>{filtrarPac('');filtrarPrep('');},100);
+}
+function cerrarPortalPaciente(){
+  document.getElementById('portal-paciente').style.display='none';
+  document.getElementById('entrada-wrap').style.display='flex';
+}
+function goPac(id,btn){
+  document.querySelectorAll('.pac-screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);if(el)el.classList.add('active');
+  document.querySelectorAll('.pac-nav').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(id==='pac-presupuesto')setTimeout(()=>filtrarPac(''),80);
+  if(id==='pac-preparaciones')setTimeout(()=>filtrarPrep(''),80);
+}
+function solicitarTurnoPaciente(){
+  const analisis=document.getElementById('pac-turno-analisis').value.trim();
+  if(!analisis){toast('Ingresá los análisis que necesitás','#c0392b','#fff');return;}
+  toast('✅ Turno solicitado — Te contactaremos por WhatsApp para confirmar');
+  document.getElementById('pac-turno-analisis').value='';
+}
+// Presupuesto paciente (reutiliza el mismo array ANALISIS)
+let selPac=[];
+function filtrarPac(q){
+  const lista=document.getElementById('pac-lista');if(!lista)return;
+  const txt=(q||'').toLowerCase();
+  const f=txt?ANALISIS.filter(a=>a.nombre.toLowerCase().includes(txt)||a.cat.toLowerCase().includes(txt)):ANALISIS;
+  lista.innerHTML=f.map(a=>{
+    const sel=selPac.find(s=>s.nombre===a.nombre);
+    return `<div onclick="togglePac('${a.nombre.replace(/'/g,"\\'")}',${a.precio})" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;border:1.5px solid ${sel?'var(--azul)':'var(--border)'};background:${sel?'#e8f0fb':'#fff'};transition:all .15s;margin-bottom:2px">
+      <div><div style="font-size:12.5px;font-weight:${sel?'700':'500'};color:${sel?'var(--azul)':'var(--text)'}">${a.nombre}</div><div style="font-size:10.5px;color:var(--text3)">${a.cat}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--verde)">${fmtG(a.precio)}</span>${sel?'<span style="color:var(--azul);font-weight:800">✓</span>':''}</div>
     </div>`;
   }).join('');
 }
-
-function toggleAnalisis(nombre, precio){
-  const idx = presupuestoSeleccionados.findIndex(s=>s.nombre===nombre);
-  if(idx>=0) presupuestoSeleccionados.splice(idx,1);
-  else presupuestoSeleccionados.push({nombre,precio});
-  filtrarAnalisis(document.getElementById('busq-analisis')?.value||'');
-  renderPresupuesto();
+function togglePac(nombre,precio){
+  const idx=selPac.findIndex(s=>s.nombre===nombre);
+  if(idx>=0)selPac.splice(idx,1);else selPac.push({nombre,precio});
+  filtrarPac(document.getElementById('pac-busq')?.value||'');
+  const c=document.getElementById('pac-pres-items');
+  const t=document.getElementById('pac-total');
+  if(!selPac.length){c.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:16px 0">Seleccioná análisis →</div>';if(t)t.textContent='₲ 0';return;}
+  const total=selPac.reduce((s,a)=>s+a.precio,0);
+  c.innerHTML=selPac.map(a=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)"><span>${a.nombre}</span><div style="display:flex;gap:6px;align-items:center"><span style="font-weight:700;color:var(--verde)">${fmtG(a.precio)}</span><button onclick="togglePac('${a.nombre.replace(/'/g,"\\'")}',${a.precio})" style="background:none;border:none;cursor:pointer;color:var(--rojo);font-size:13px">✕</button></div></div>`).join('');
+  if(t)t.textContent=fmtG(total);
 }
 
-function renderPresupuesto(){
-  const container = document.getElementById('presupuesto-items');
-  const totalEl = document.getElementById('grand-total');
-  if(!container) return;
-  if(!presupuestoSeleccionados.length){
-    container.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0">Seleccioná análisis de la lista →</div>';
-    if(totalEl) totalEl.textContent='₲ 0';
-    return;
-  }
-  const total = presupuestoSeleccionados.reduce((s,a)=>s+a.precio,0);
-  container.innerHTML = presupuestoSeleccionados.map(a=>`
-    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)">
-      <span style="color:var(--text)">${a.nombre}</span>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-weight:700;color:var(--green)">${fmt(a.precio)}</span>
-        <button onclick="toggleAnalisis('${a.nombre}',${a.precio})" style="background:transparent;border:none;cursor:pointer;color:var(--red);font-size:14px">✕</button>
+// PREPARACIONES
+const PREPARACIONES=[
+  {nombre:'Glucosa en ayunas',cat:'Bioquímica',prep:'Ayunas de <strong>8 horas mínimo</strong>. Solo podés tomar agua. No realizar actividad física intensa las 24 horas previas. Concurrir preferentemente entre las 6:00 y 9:00 hs.',ayuno:true,color:'var(--azul)'},
+  {nombre:'Hemograma completo',cat:'Hematología',prep:'Ayunas de <strong>4 horas mínimo</strong> (preferentemente 8hs). No realizar actividad física intensa las 24 horas previas. Concurrir entre 6:00 y 9:00 hs.',ayuno:true,color:'var(--rojo)'},
+  {nombre:'Colesterol y Triglicéridos',cat:'Bioquímica',prep:'Ayunas de <strong>12 horas</strong>. Solo agua permitida. Evitar comidas grasas los 2 días previos. No consumir alcohol 72 horas antes.',ayuno:true,color:'var(--azul)'},
+  {nombre:'Orina completo',cat:'Orina',prep:'Recolectar la <strong>primera orina de la mañana</strong> (la más concentrada). Higiene genital previa. Desechar el primer chorro y recolectar el chorro medio en recipiente estéril. Entregar en menos de 2 horas.',ayuno:false,color:'var(--verde)'},
+  {nombre:'Urocultivo',cat:'Orina',prep:'Recolectar la <strong>primera orina de la mañana</strong>. Higiene genital con jabón neutro. Recipiente estéril provisto por el laboratorio. No tomar antibióticos 48 horas antes. Entregar de inmediato.',ayuno:false,color:'var(--verde)'},
+  {nombre:'TSH / T3 / T4 (Tiroides)',cat:'Hormonas',prep:'<strong>No requiere ayunas</strong>. Si toma medicación tiroidea (Levotiroxina), tomarla DESPUÉS de la extracción. Indicar al profesional si recibe tratamiento hormonal. Extracción en cualquier horario.',ayuno:false,color:'var(--amber)'},
+  {nombre:'HbA1c (Hemoglobina glicosilada)',cat:'Diabetes',prep:'<strong>No requiere ayunas</strong>. Refleja el promedio de glucosa de los últimos 3 meses. No hay restricciones especiales de alimentación.',ayuno:false,color:'var(--amber)'},
+  {nombre:'PSA (Antígeno Prostático)',cat:'Oncología',prep:'<strong>No tener relaciones sexuales</strong> en las 48 horas previas. No realizar ejercicio intenso ni andar en bicicleta 24 horas antes. No realizar tacto rectal previo a la extracción.',ayuno:false,color:'var(--rojo)'},
+  {nombre:'Perfil lipídico',cat:'Bioquímica',prep:'Ayunas de <strong>12 horas</strong>. Solo agua. Evitar alcohol y comidas grasas los 3 días previos. No hacer ejercicio intenso el día anterior.',ayuno:true,color:'var(--azul)'},
+  {nombre:'HIV',cat:'Serología',prep:'<strong>No requiere ayunas</strong>. Extracción de sangre simple. El resultado es confidencial. No se necesita preparación especial.',ayuno:false,color:'var(--rojo)'},
+  {nombre:'Hepatitis B / C',cat:'Serología',prep:'<strong>No requiere ayunas</strong>. Extracción de sangre venosa simple. Se recomienda llegar hidratado.',ayuno:false,color:'var(--rojo)'},
+  {nombre:'Chagas',cat:'Serología',prep:'<strong>No requiere ayunas</strong>. Se realiza con una extracción de sangre venosa. No hay restricciones especiales.',ayuno:false,color:'var(--rojo)'},
+  {nombre:'Urea y Creatinina',cat:'Función renal',prep:'Ayunas de <strong>8 horas</strong>. Beber abundante agua el día anterior (buena hidratación). Evitar consumo excesivo de proteínas 24 hs antes.',ayuno:true,color:'var(--azul)'},
+  {nombre:'Cultivo bacteriológico',cat:'Bacteriología',prep:'<strong>No tomar antibióticos</strong> al menos 48 horas antes. Para urocultivo usar recipiente estéril provisto por el laboratorio. Para hisopados y otros materiales, seguir las instrucciones del médico.',ayuno:false,color:'var(--rojo)'},
+  {nombre:'Toxoplasmosis',cat:'Serología',prep:'<strong>No requiere ayunas</strong>. Extracción de sangre venosa. Indicar al médico si está embarazada.',ayuno:false,color:'var(--amber)'},
+  {nombre:'Espermograma',cat:'Andrología',prep:'Abstinencia sexual de <strong>3 a 5 días</strong> (ni más ni menos). La muestra debe obtenerse por masturbación en recipiente estéril provisto por el laboratorio, preferentemente en el laboratorio. Trasladar al laboratorio en menos de 30 minutos a temperatura corporal.',ayuno:false,color:'var(--azul)'},
+  {nombre:'PCR proteína C reactiva',cat:'Inflamatorios',prep:'Ayunas de <strong>4 horas</strong> recomendadas. No realizar ejercicio intenso 24 horas antes.',ayuno:true,color:'var(--amber)'},
+  {nombre:'Glucemia postprandial',cat:'Bioquímica',prep:'Se extrae <strong>2 horas después</strong> del desayuno o almuerzo. Comer con normalidad. No realizar ejercicio entre la comida y la extracción.',ayuno:false,color:'var(--azul)'},
+];
+function filtrarPrep(q){
+  const lista=document.getElementById('prep-lista');if(!lista)return;
+  const txt=(q||'').toLowerCase();
+  const f=txt?PREPARACIONES.filter(p=>p.nombre.toLowerCase().includes(txt)||p.cat.toLowerCase().includes(txt)):PREPARACIONES;
+  lista.innerHTML=f.map(p=>`
+    <div style="background:#fff;border:1px solid var(--border);border-left:4px solid ${p.color};border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--azul)">${p.nombre}</div>
+        <div style="display:flex;gap:8px">
+          <span style="background:var(--bg3);color:var(--text3);border-radius:20px;font-size:10px;font-weight:600;padding:2px 10px">${p.cat}</span>
+          <span style="background:${p.ayuno?'#fef6ec':'#e8f8f0'};color:${p.ayuno?'var(--amber)':'var(--verde)'};border-radius:20px;font-size:10px;font-weight:700;padding:2px 10px">${p.ayuno?'⏰ Requiere ayunas':'✓ Sin ayunas'}</span>
+        </div>
       </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">${p.prep}</div>
     </div>`).join('');
-  if(totalEl) totalEl.textContent = fmt(total);
 }
 
+// ── PRESUPUESTO (admin) ──────────────────────────
+const ANALISIS=[
+  {nombre:'Hemograma completo',precio:85000,cat:'Hematología'},
+  {nombre:'Glucosa en ayunas',precio:45000,cat:'Bioquímica'},
+  {nombre:'Colesterol total',precio:50000,cat:'Bioquímica'},
+  {nombre:'Triglicéridos',precio:55000,cat:'Bioquímica'},
+  {nombre:'HDL Colesterol',precio:55000,cat:'Bioquímica'},
+  {nombre:'LDL Colesterol',precio:55000,cat:'Bioquímica'},
+  {nombre:'Orina completo',precio:40000,cat:'Orina'},
+  {nombre:'Urocultivo',precio:85000,cat:'Orina'},
+  {nombre:'TSH (Tiroides)',precio:90000,cat:'Hormonas'},
+  {nombre:'T3 Triyodotironina',precio:80000,cat:'Hormonas'},
+  {nombre:'T4 Libre',precio:80000,cat:'Hormonas'},
+  {nombre:'HbA1c (Hemoglobina glicosilada)',precio:95000,cat:'Bioquímica'},
+  {nombre:'Urea',precio:45000,cat:'Bioquímica'},
+  {nombre:'Creatinina',precio:45000,cat:'Bioquímica'},
+  {nombre:'Ácido úrico',precio:45000,cat:'Bioquímica'},
+  {nombre:'TGO (AST)',precio:45000,cat:'Hepáticos'},
+  {nombre:'TGP (ALT)',precio:45000,cat:'Hepáticos'},
+  {nombre:'Fosfatasa alcalina',precio:50000,cat:'Hepáticos'},
+  {nombre:'Bilirrubina total',precio:50000,cat:'Hepáticos'},
+  {nombre:'Proteínas totales',precio:45000,cat:'Bioquímica'},
+  {nombre:'PCR (Proteína C Reactiva)',precio:70000,cat:'Inflamatorios'},
+  {nombre:'VSG Eritrosedimentación',precio:40000,cat:'Inflamatorios'},
+  {nombre:'ASTO cuantitativo',precio:65000,cat:'Inflamatorios'},
+  {nombre:'Factor reumatoide',precio:65000,cat:'Inflamatorios'},
+  {nombre:'PSA (Antígeno Prostático)',precio:110000,cat:'Oncología'},
+  {nombre:'HIV SIDA',precio:90000,cat:'Serología'},
+  {nombre:'VDRL Sífilis',precio:55000,cat:'Serología'},
+  {nombre:'Hepatitis B (HBsAg)',precio:95000,cat:'Serología'},
+  {nombre:'Hepatitis C (Anti HCV)',precio:95000,cat:'Serología'},
+  {nombre:'Toxoplasmosis IgG/IgM',precio:95000,cat:'Serología'},
+  {nombre:'Chagas serológico',precio:90000,cat:'Serología'},
+  {nombre:'Dengue IgM',precio:100000,cat:'Serología'},
+  {nombre:'Cultivo bacteriológico',precio:120000,cat:'Bacteriología'},
+  {nombre:'Antibiograma',precio:80000,cat:'Bacteriología'},
+  {nombre:'Espermograma',precio:150000,cat:'Andrología'},
+  {nombre:'Perfil lipídico completo',precio:180000,cat:'Paquetes'},
+  {nombre:'Perfil hepático completo',precio:200000,cat:'Paquetes'},
+  {nombre:'Control embarazo 1er trimestre',precio:350000,cat:'Paquetes'},
+  {nombre:'Chequeo general adultos',precio:420000,cat:'Paquetes'},
+];
+let seleccionados=[];
+const fmtG=n=>'₲ '+Math.round(n).toLocaleString('es-PY');
+function filtrarAnalisis(q){
+  const lista=document.getElementById('lista-analisis');
+  if(!lista)return;
+  const txt=(q||'').toLowerCase();
+  const f=txt?ANALISIS.filter(a=>a.nombre.toLowerCase().includes(txt)||a.cat.toLowerCase().includes(txt)):ANALISIS;
+  lista.innerHTML=f.map(a=>{
+    const sel=seleccionados.find(s=>s.nombre===a.nombre);
+    return `<div onclick="toggleA('${a.nombre.replace(/'/g,"\\'")}',${a.precio})" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;border:1.5px solid ${sel?'var(--azul)':'var(--border)'};background:${sel?'#e8f0fb':'#fff'};transition:all .15s;margin-bottom:2px">
+      <div><div style="font-size:12.5px;font-weight:${sel?'700':'500'};color:${sel?'var(--azul)':'var(--text)'}">${a.nombre}</div><div style="font-size:10.5px;color:var(--text3)">${a.cat}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--verde)">${fmtG(a.precio)}</span>${sel?'<span style="color:var(--azul);font-weight:800">✓</span>':''}</div>
+    </div>`;
+  }).join('');
+}
+function toggleA(nombre,precio){
+  const idx=seleccionados.findIndex(s=>s.nombre===nombre);
+  if(idx>=0)seleccionados.splice(idx,1);
+  else seleccionados.push({nombre,precio});
+  filtrarAnalisis(document.getElementById('busq-analisis')?.value||'');
+  renderPres();
+}
+function renderPres(){
+  const c=document.getElementById('presupuesto-items');
+  const t=document.getElementById('grand-total');
+  if(!c)return;
+  if(!seleccionados.length){c.innerHTML='<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px 0">Seleccioná análisis de la lista →</div>';if(t)t.textContent='₲ 0';return;}
+  const total=seleccionados.reduce((s,a)=>s+a.precio,0);
+  c.innerHTML=seleccionados.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)"><span>${a.nombre}</span><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;color:var(--verde)">${fmtG(a.precio)}</span><button onclick="toggleA('${a.nombre.replace(/'/g,"\\'")}',${a.precio})" style="background:none;border:none;cursor:pointer;color:var(--rojo);font-size:14px">✕</button></div></div>`).join('');
+  if(t)t.textContent=fmtG(total);
+}
 function imprimirPresupuesto(){
-  const items = presupuestoSeleccionados.map(a=>`<tr><td style="padding:8px 12px">${a.nombre}</td><td style="padding:8px 12px;text-align:right;font-weight:600">₲ ${a.precio.toLocaleString('es-PY')}</td></tr>`).join('');
-  const total = presupuestoSeleccionados.reduce((s,a)=>s+a.precio,0);
-  const w = window.open('','_blank');
-  w.document.write(`<html><head><title>Presupuesto — Lab. San Juan</title><style>body{font-family:sans-serif;padding:30px;color:#1a2236}h2{color:#0a4fa3}table{width:100%;border-collapse:collapse;margin-top:16px}th{background:#0a4fa3;color:#fff;padding:10px 12px;text-align:left}tr:nth-child(even){background:#f4f6fa}td{padding:8px 12px;border-bottom:1px solid #eee}.total{font-size:18px;font-weight:800;color:#0a4fa3;text-align:right;margin-top:16px}.footer{font-size:11px;color:#888;margin-top:20px}</style></head><body><h2>✚ Laboratorio San Juan</h2><p style="color:#888">Presupuesto de análisis clínicos · ${new Date().toLocaleDateString('es-PY')}</p><table><thead><tr><th>Análisis</th><th style="text-align:right">Precio</th></tr></thead><tbody>${items}</tbody></table><div class="total">TOTAL: ₲ ${total.toLocaleString('es-PY')}</div><div class="footer">Precios orientativos. Pueden variar según convenio u obra social.<br>Asunción, Paraguay — (021) 4XX-XXXX</div></body></html>`);
-  w.document.close();
-  w.print();
+  const items=seleccionados.map(a=>`<tr><td style="padding:8px 12px">${a.nombre}</td><td style="padding:8px 12px;text-align:right;font-weight:600">₲ ${a.precio.toLocaleString('es-PY')}</td></tr>`).join('');
+  const total=seleccionados.reduce((s,a)=>s+a.precio,0);
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Presupuesto — Lab. San Juan</title><style>body{font-family:sans-serif;padding:30px;color:#1a2236}h2{color:#1e3a5f}table{width:100%;border-collapse:collapse;margin-top:16px}th{background:#1e3a5f;color:#fff;padding:10px 12px;text-align:left}tr:nth-child(even){background:#f4f6fa}td{padding:8px 12px;border-bottom:1px solid #eee}.total{font-size:18px;font-weight:800;color:#1e3a5f;text-align:right;margin-top:16px}.footer{font-size:11px;color:#888;margin-top:20px;border-top:1px solid #eee;padding-top:12px}</style></head><body><h2>✚ Laboratorio San Juan</h2><p style="color:#888">Presupuesto · ${new Date().toLocaleDateString('es-PY')}</p><table><thead><tr><th>Análisis</th><th style="text-align:right">Precio (₲)</th></tr></thead><tbody>${items}</tbody></table><div class="total">TOTAL: ₲ ${total.toLocaleString('es-PY')}</div><div class="footer">Precios orientativos. Pueden variar según convenio u obra social. — Encarnación, Paraguay</div></body></html>`);
+  w.document.close();w.print();
 }
-
-// ── IMPRIMIR RESULTADO ──────────────────────────────
 function imprimirResultado(){
-  const w = window.open('','_blank');
-  w.document.write(`<html><head><title>Resultado #1042 — Lab. San Juan</title><style>body{font-family:sans-serif;padding:30px;color:#1a2236}h2{color:#0a4fa3}.header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #0a4fa3}.seccion{margin-bottom:20px}.sec-title{font-size:12px;font-weight:700;color:#0a4fa3;text-transform:uppercase;border-bottom:1px solid #e0e8f0;padding-bottom:6px;margin-bottom:10px}table{width:100%;border-collapse:collapse}th{background:#f4f6fa;padding:8px 12px;text-align:left;font-size:11px;color:#666;text-transform:uppercase}td{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:13px}.H{color:#e03e3e;font-weight:700}.L{color:#f59e0b;font-weight:700}.N{color:#00a870}.alerta{background:#fef9e7;border-left:3px solid #f59e0b;padding:10px 14px;font-size:12px;margin-top:16px}.footer{font-size:10px;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}</style></head><body>
-  <div class="header"><div><h2>✚ Laboratorio San Juan</h2><div style="font-size:12px;color:#666">Análisis Clínicos · Asunción, Paraguay</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:700;color:#0a4fa3">Orden #1042</div><div style="font-size:12px;color:#666">19/05/2025</div></div></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;font-size:13px"><div><b>Paciente:</b> García, María Eugenia<br><b>DNI:</b> 28.441.220<br><b>Fecha nac.:</b> 14/03/1985 (40 años)</div><div><b>Médico:</b> Dr. Pérez, Carlos<br><b>Muestra:</b> Sangre venosa — 08:30 hs<br><b>Estado:</b> ✓ Listo</div></div>
-  <div class="seccion"><div class="sec-title">Hemograma completo</div><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Referencia</th><th>Flag</th></tr></thead><tbody><tr><td>Glóbulos Rojos</td><td class="N">4.82</td><td>4.20 – 5.40 mill/mm³</td><td class="N">N</td></tr><tr><td>Hemoglobina</td><td class="L">10.8</td><td>12.0 – 16.0 g/dL</td><td class="L">↓ L</td></tr><tr><td>Hematocrito</td><td class="L">33.2</td><td>37.0 – 47.0 %</td><td class="L">↓ L</td></tr><tr><td>Leucocitos</td><td class="N">6800</td><td>4000 – 11000 /mm³</td><td class="N">N</td></tr><tr><td>Plaquetas</td><td class="N">220000</td><td>150000 – 400000 /mm³</td><td class="N">N</td></tr></tbody></table></div>
-  <div class="seccion"><div class="sec-title">Bioquímica</div><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Referencia</th><th>Flag</th></tr></thead><tbody><tr><td>Glucosa en ayunas</td><td class="H">118</td><td>70 – 100 mg/dL</td><td class="H">↑ H</td></tr><tr><td>Colesterol total</td><td class="H">215</td><td>&lt; 200 mg/dL</td><td class="H">↑ H</td></tr><tr><td>Triglicéridos</td><td class="N">142</td><td>&lt; 150 mg/dL</td><td class="N">N</td></tr></tbody></table></div>
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Resultado #1042</title><style>body{font-family:sans-serif;padding:30px;color:#1a2236}h2{color:#1e3a5f}.hdr{display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:3px solid #1e3a5f;margin-bottom:20px}.sec{margin-bottom:18px}.sec-t{font-size:11px;font-weight:700;color:#1e3a5f;text-transform:uppercase;border-bottom:2px solid #e8f0fb;padding-bottom:6px;margin-bottom:8px}table{width:100%;border-collapse:collapse}th{background:#f0f4f8;padding:8px 12px;text-align:left;font-size:11px;color:#4a5568;text-transform:uppercase}td{padding:8px 12px;border-bottom:1px solid #eee;font-size:13px}.H{color:#c0392b;font-weight:700}.L{color:#e67e22;font-weight:700}.N{color:#27ae60}.alerta{background:#fef6ec;border-left:3px solid #e67e22;padding:10px 14px;font-size:12px;margin-top:16px}.footer{font-size:10px;color:#999;margin-top:24px;padding-top:12px;border-top:1px solid #eee}</style></head><body>
+  <div class="hdr"><div><h2>✚ Laboratorio San Juan</h2><div style="font-size:12px;color:#666">Análisis Clínicos — Encarnación, Paraguay</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:700;color:#1e3a5f">Orden #1042</div><div style="font-size:12px;color:#666">19/05/2025</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;font-size:13px"><div><b>Paciente:</b> García, María Eugenia<br><b>DNI:</b> 28.441.220<br><b>Fecha nac.:</b> 14/03/1985</div><div><b>Médico:</b> Dr. Pérez, Carlos<br><b>Muestra:</b> Sangre venosa — 08:30 hs<br><b>Estado:</b> ✓ Listo</div></div>
+  <div class="sec"><div class="sec-t">Hemograma completo</div><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Referencia</th><th>Flag</th></tr></thead><tbody><tr><td>Glóbulos Rojos</td><td class="N">4.82</td><td>4.20–5.40 mill/mm³</td><td class="N">N</td></tr><tr><td>Hemoglobina</td><td class="L">10.8</td><td>12.0–16.0 g/dL</td><td class="L">↓ L</td></tr><tr><td>Hematocrito</td><td class="L">33.2</td><td>37.0–47.0 %</td><td class="L">↓ L</td></tr><tr><td>Leucocitos</td><td class="N">6800</td><td>4000–11000 /mm³</td><td class="N">N</td></tr><tr><td>Plaquetas</td><td class="N">220000</td><td>150000–400000 /mm³</td><td class="N">N</td></tr></tbody></table></div>
+  <div class="sec"><div class="sec-t">Bioquímica</div><table><thead><tr><th>Parámetro</th><th>Resultado</th><th>Referencia</th><th>Flag</th></tr></thead><tbody><tr><td>Glucosa en ayunas</td><td class="H">118</td><td>70–100 mg/dL</td><td class="H">↑ H</td></tr><tr><td>Colesterol total</td><td class="H">215</td><td>&lt;200 mg/dL</td><td class="H">↑ H</td></tr><tr><td>Triglicéridos</td><td class="N">142</td><td>&lt;150 mg/dL</td><td class="N">N</td></tr></tbody></table></div>
   <div class="alerta">⚠️ <b>Valores alterados:</b> Hemoglobina y Hematocrito por debajo del rango normal. Glucosa y Colesterol levemente elevados. Consulte con su médico.</div>
-  <div class="footer">Este resultado es válido únicamente con firma y sello del profesional responsable. Laboratorio San Juan — Asunción, Paraguay</div></body></html>`);
-  w.document.close();
-  w.print();
+  <div class="footer">Resultado válido con firma y sello del profesional responsable. Laboratorio San Juan — Encarnación, Paraguay</div></body></html>`);
+  w.document.close();w.print();
 }
-
-// Inicializar lista de análisis al ir a presupuesto
-const _origGo = go;
-window.go = function(id,btn){
-  _origGo(id,btn);
-  if(id==='presupuesto') setTimeout(()=>filtrarAnalisis(''),100);
-};
 </script>
 </body>
 </html>
